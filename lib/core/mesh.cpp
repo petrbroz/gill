@@ -13,8 +13,7 @@ Mesh::~Mesh() {
 }
 
 BBox Mesh::Triangle::bounds() const {
-    BBox bbox;
-    bbox += mesh->vertices[i1];
+    BBox bbox(mesh->vertices[i1]);
     bbox += mesh->vertices[i2];
     bbox += mesh->vertices[i3];
     return bbox;
@@ -83,6 +82,7 @@ Mesh * Mesh::from_obj_file(const char *filename) {
     }
 
     mesh->kdtree = new KdTree<Mesh::Triangle>(mesh->triangles, 80.0, 1.0, 8, 32);
+    mesh->kdtree->print_info();
 
     return mesh;
 }

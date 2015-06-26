@@ -1,6 +1,7 @@
 #ifndef GILL_CORE_KDTREE_H_
 #define GILL_CORE_KDTREE_H_
 
+#include <iostream>
 #include <vector>
 #include <cstdint>
 #include <cmath>
@@ -206,8 +207,8 @@ public:
         max_depth = _max_depth;
         nodes.reserve(16);
 
-        std::vector<BBox> geom_bounds(geoms.size());
-        //geom_bounds.reserve(geoms.size());
+        std::vector<BBox> geom_bounds;
+        geom_bounds.reserve(geoms.size());
         for (const Geom &geom : geoms) {
             BBox bounds = geom.bounds();
             geom_bounds.push_back(bounds);
@@ -243,12 +244,13 @@ public:
         int num_segments = 1;
 
         while (num_segments-- > 0) {
-            TreeSegment &segment = segments[num_segments];
+            TreeSegment segment = segments[num_segments];
             if (segment.node->is_leaf()) {
                 int geom_index = segment.node->header >> 2;
                 int geom_count = segment.node->geom_count;
+
                 for (int i = geom_index; i < geom_index + geom_count; ++i) {
-                    const Geom &geom = geoms[i];
+                    const Geom &geom = geoms[geom_refs[i]];
                     if (geom.intersect(ray, nullptr)) {
                         return true;
                     }
@@ -283,6 +285,30 @@ public:
         }
 
         return false;
+    }
+
+    void print_info() {
+        std::cerr << "Intersection Cost: " << isec_cost << std::endl;
+        std::cerr << "Traverse Cost: " << trav_cost << std::endl;
+        std::cerr << "Max Geoms in Leaf: " << max_geoms << std::endl;
+        std::cerr << "Max Tree Depth: " << max_depth << std::endl;
+        std::cerr << "Tree Nodes: " << nodes.size() << std::endl;
+        std::cerr << "Geom Refs: " << geom_refs.size() << std::endl;
+    }
+
+    void print_dot() {
+        std::cerr << "digraph G {" << std::endl;
+        for (int i = 0; i < nodes.size(); i++) {
+            const Node &n = nodes[i];
+            if (n.is_leaf()) {
+                std::cerr << "\tn" << i << " [label=\"geoms " << n.geom_count << "\"];" << std::endl;
+            } else {
+                std::cerr << "\tn" << i << " [label=\"split " << n.split << "\"];" << std::endl;
+                std::cerr << "\tn" << i << " -> n" << (i + 1) << ";" << std::endl;
+                std::cerr << "\tn" << i << " -> n" << (n.header >> 2) << ";" << std::endl;
+            }
+        }
+        std::cerr << "}" << std::endl;
     }
 };
 
