@@ -5,6 +5,7 @@
 #include <limits>
 #include <cassert>
 #include "vector.h"
+#include "ray.h"
 
 namespace gill { namespace core {
 
@@ -23,6 +24,40 @@ struct BBox {
     bool contains(const Point &p) const {
         return p.x >= min.x && p.y >= min.y && p.z >= min.z
             && p.x <= max.x && p.y <= max.y && p.z <= max.z;
+    }
+
+    bool intersects(const Ray &r, float &tmin, float &tmax) const {
+        tmin = 0.0;
+        tmax = +Infinity;
+        for (int i = 0; i < 3; i++) {
+            float ro = r.o[i], rd = r.d[i];
+            float bmin = min[i], bmax = max[i];
+            if (almost_zero(rd)) {
+                if (ro < bmin || ro > bmax) {
+                    return false;
+                } else {
+                    continue;
+                }
+            }
+
+            float inv_rd = 1.0 / rd;
+            float t1 = (bmin - ro) * inv_rd;
+            float t2 = (bmax - ro) * inv_rd;
+            if (t1 > t2) {
+                std::swap(t1, t2);
+            }
+            if (t1 > tmin) {
+                tmin = t1;
+            }
+            if (t2 < tmax) {
+                tmax = t2;
+            }
+            if (tmin > tmax) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     void expand(float delta) {

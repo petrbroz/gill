@@ -7,6 +7,10 @@
 
 namespace gill { namespace core {
 
+inline bool almost_zero(float v) {
+    return std::abs(v) < 0.0001;
+}
+
 struct Vector;
 struct Point;
 struct Normal;
@@ -31,6 +35,8 @@ struct Vector {
     Vector(const Point &p);
     Vector(const Normal &n);
     
+    inline float& operator[](int i) { return i == 0 ? x : (i == 1 ? y : z); }
+    inline float operator[](int i) const { return i == 0 ? x : (i == 1 ? y : z); }
     inline bool operator==(const Vector &v) const { return x == v.x && y == v.y && z == v.z; }
     inline bool operator!=(const Vector &v) const { return x != v.x || y != v.y || z != v.z; }
     inline Vector operator-() const { return Vector(-x, -y, -z); }
@@ -54,6 +60,8 @@ struct Point {
     Point(const Vector &v);
     Point(const Normal &n);
 
+    inline float& operator[](int i) { return i == 0 ? x : (i == 1 ? y : z); }
+    inline float operator[](int i) const { return i == 0 ? x : (i == 1 ? y : z); }
     inline bool operator==(const Point &p) const { return x == p.x && y == p.y && z == p.z; }
     inline bool operator!=(const Point &p) const { return x != p.x || y != p.y || z != p.z; }
     inline Point operator+(const Vector &v) const { return Point(x + v.x, y + v.y, z + v.z); }
@@ -77,6 +85,8 @@ struct Normal {
     Normal(const Vector &v);
     Normal(const Point &p);
 
+    inline float& operator[](int i) { return i == 0 ? x : (i == 1 ? y : z); }
+    inline float operator[](int i) const { return i == 0 ? x : (i == 1 ? y : z); }
     inline bool operator==(const Normal &n) const { return x == n.x && y == n.y && z == n.z; }
     inline bool operator!=(const Normal &n) const { return x != n.x || y != n.y || z != n.z; }
     inline Normal operator-() const { return Normal(-x, -y, -z); }
@@ -96,6 +106,10 @@ inline float dot(const Vector &lhs, const Vector &rhs) {
     return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
 }
 
+inline float dot(const Normal &lhs, const Vector &rhs) {
+    return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
+}
+
 inline float abs_dot(const Vector &lhs, const Vector &rhs) {
     return std::abs(lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z);
 }
@@ -104,7 +118,7 @@ inline Vector cross(const Vector &lhs, const Vector &rhs) {
     return Vector(lhs.y * rhs.z - lhs.z * rhs.y, lhs.z * rhs.x - lhs.x * rhs.z, lhs.x * rhs.y - lhs.y * rhs.x);
 }
 
-inline Vector reflect(const Vector &v, const Vector &n) {
+inline Vector reflect(const Vector &v, const Normal &n) {
     return -v + (n * dot(n, -v) + v) * 2.0;
 }
 

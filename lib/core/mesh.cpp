@@ -8,6 +8,10 @@
 
 namespace gill { namespace core {
 
+Mesh::~Mesh() {
+    delete kdtree;
+}
+
 BBox Mesh::Triangle::bounds() const {
     BBox bbox;
     bbox += mesh->vertices[i1];
@@ -16,7 +20,7 @@ BBox Mesh::Triangle::bounds() const {
     return bbox;
 }
 
-bool Mesh::Triangle::intersect(const Ray &ray, Mesh::Intersection *i) const {
+bool Mesh::Triangle::intersect(const Ray &ray, Mesh::Triangle::Intersection *i) const {
     Point p0 = mesh->vertices[i1], p1 = mesh->vertices[i2], p2 = mesh->vertices[i3];
     Vector e1 = p1 - p0, e2 = p2 - p0;
     Vector P = cross(ray.d, e2);
@@ -52,12 +56,13 @@ bool Mesh::intersect(const Ray &ray, Mesh::Intersection *intersection) const {
 //            return true;
 //        }
 //    }
-    for (const Triangle &triangle : triangles) {
-        if (triangle.intersect(ray, nullptr)) {
-            return true;
-        }
-    }
-    return false;
+//    for (const Triangle &triangle : triangles) {
+//        if (triangle.intersect(ray, nullptr)) {
+//            return true;
+//        }
+//    }
+//    return false;
+    return kdtree->intersect(triangles, ray, nullptr);
 }
 
 Mesh * Mesh::from_obj_file(const char *filename) {
@@ -76,6 +81,8 @@ Mesh * Mesh::from_obj_file(const char *filename) {
             mesh->triangles.push_back({mesh, stoi(match[1]) - 1, stoi(match[2]) - 1, stoi(match[3]) - 1});
         }
     }
+
+    mesh->kdtree = new KdTree<Mesh::Triangle>(mesh->triangles, 80.0, 1.0, 8, 32);
 
     return mesh;
 }

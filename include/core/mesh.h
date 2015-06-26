@@ -6,6 +6,7 @@
 #include "vector.h"
 #include "ray.h"
 #include "bbox.h"
+#include "kdtree.h"
 
 namespace gill { namespace core {
 
@@ -37,6 +38,10 @@ class Mesh {
      * integration with accelerators, and for performance improvements through additional caching.
      */
     struct Triangle {
+        struct Intersection {
+            float t;
+        };
+
         Mesh *mesh;
         int i1, i2, i3;
 
@@ -48,11 +53,13 @@ class Mesh {
     std::vector<Point> vertices;
     std::vector<Normal> normals;
     BBox bbox;
+    KdTree<Triangle> *kdtree;
 
     Mesh() {}
 public:
     BBox bounds() const;
     bool intersect(const Ray &ray, Intersection *i) const;
+    ~Mesh();
 
     static Mesh * from_obj_file(const char *filename);
 };

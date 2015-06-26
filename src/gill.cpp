@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
     std::cout << "P3" << std::endl;
     std::cout << width << " " << height << std::endl;
     std::cout << "255" << std::endl;
-    for (int y = -height/2; y < height/2; y++) {
+    for (int y = +height/2; y > -height/2; y--) {
         for (int x = -width/2; x < width/2; x++) {
             ray.d = normalize(Point(x, y, 64.0) - ray.o);
             if (primitive.intersect(ray, nullptr)) {
