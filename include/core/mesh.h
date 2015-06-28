@@ -46,7 +46,7 @@ class Mesh {
         int i1, i2, i3;
 
         BBox bounds() const;
-        bool intersect(const Ray &ray, Intersection *i) const;
+        bool intersect(const Ray &ray, float &t, Intersection *i) const;
     };
 
     std::vector<Triangle> triangles;
@@ -58,7 +58,7 @@ class Mesh {
     Mesh() {}
 public:
     BBox bounds() const;
-    bool intersect(const Ray &ray, Intersection *i) const;
+    bool intersect(const Ray &ray, float &t, Intersection *i) const;
     ~Mesh();
 
     static Mesh * from_obj_file(const char *filename);

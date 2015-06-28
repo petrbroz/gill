@@ -233,7 +233,7 @@ public:
         delete[] overlapping; delete[] below; delete[] above;
     }
 
-    bool intersect(const std::vector<Geom> &geoms, const Ray &ray, Intersection *isec) {
+    bool intersect(const std::vector<Geom> &geoms, const Ray &ray, float &t, Intersection *isec) {
         float tmin, tmax;
         if (!total_bounds.intersects(ray, tmin, tmax)) {
             return false;
@@ -248,12 +248,20 @@ public:
             if (segment.node->is_leaf()) {
                 int geom_index = segment.node->header >> 2;
                 int geom_count = segment.node->geom_count;
-
+                float _t;
+                t = Infinity;
                 for (int i = geom_index; i < geom_index + geom_count; ++i) {
                     const Geom &geom = geoms[geom_refs[i]];
-                    if (geom.intersect(ray, nullptr)) {
+                    if (geom.intersect(ray, _t, nullptr)) {
                         return true;
+                        //if (_t < t) {
+                        //    t = _t;
+                        //}
                     }
+
+                    //if (t >= tmin && t <= tmax) {
+                    //    return true;
+                    //}
                 }
             } else {
                 float split = segment.node->split;
@@ -272,7 +280,7 @@ public:
                     segments[num_segments++] = { first_child, segment.tmin, segment.tmax };
                 } else {
                     float tsplit = (split - ro) / rd;
-                    if (tsplit > segment.tmax) {
+                    if (tsplit > segment.tmax || tsplit <= 0.0) {
                         segments[num_segments++] = { first_child, segment.tmin, segment.tmax };
                     } else if (tsplit < segment.tmin) {
                         segments[num_segments++] = { last_child, segment.tmin, segment.tmax };

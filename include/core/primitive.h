@@ -25,7 +25,6 @@ public:
      * Collection of data related to a specific primitive intersection.
      */
     struct Intersection {
-        float t;
         Primitive *primitive;
         /// Intersection point
         Point p;
@@ -39,7 +38,7 @@ public:
     Primitive(const Mesh *mesh, const Transform *localToWorld, const Transform *worldToLocal);
     BBox localBounds() const;
     BBox worldBounds() const;
-    bool intersect(const Ray &ray, Intersection *i) const;
+    bool intersect(const Ray &ray, float &t, Intersection *i) const;
 };
 
 }}

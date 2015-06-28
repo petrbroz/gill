@@ -19,12 +19,12 @@ BBox Mesh::Triangle::bounds() const {
     return bbox;
 }
 
-bool Mesh::Triangle::intersect(const Ray &ray, Mesh::Triangle::Intersection *i) const {
+bool Mesh::Triangle::intersect(const Ray &ray, float &t, Mesh::Triangle::Intersection *isec) const {
     Point p0 = mesh->vertices[i1], p1 = mesh->vertices[i2], p2 = mesh->vertices[i3];
     Vector e1 = p1 - p0, e2 = p2 - p0;
     Vector P = cross(ray.d, e2);
     float det = dot(e1, P);
-    if (det > -0.0001 && det < 0.0001) {
+    if (almost_zero(det)) {
         return false;
     }
 
@@ -41,7 +41,8 @@ bool Mesh::Triangle::intersect(const Ray &ray, Mesh::Triangle::Intersection *i) 
         return false;
     }
 
-    //float t = dot(e1, Q) * inv_det;
+    t = dot(e1, Q) * inv_det;
+
     return true;
 }
 
@@ -49,19 +50,17 @@ BBox Mesh::bounds() const {
     return bbox;
 }
 
-bool Mesh::intersect(const Ray &ray, Mesh::Intersection *intersection) const {
-//    for (int i = 0; i < triangles.size(); i++) {
-//        if (triangles[i].intersect(ray, intersection)) {
-//            return true;
-//        }
-//    }
-//    for (const Triangle &triangle : triangles) {
-//        if (triangle.intersect(ray, nullptr)) {
-//            return true;
-//        }
-//    }
-//    return false;
-    return kdtree->intersect(triangles, ray, nullptr);
+bool Mesh::intersect(const Ray &ray, float &t, Mesh::Intersection *intersection) const {
+#ifdef BRUTE_FORCE
+    for (const Triangle &triangle : triangles) {
+        if (triangle.intersect(ray, t, nullptr)) {
+            return true;
+        }
+    }
+    return false;
+#else
+    return kdtree->intersect(triangles, ray, t, nullptr);
+#endif
 }
 
 Mesh * Mesh::from_obj_file(const char *filename) {
@@ -81,8 +80,7 @@ Mesh * Mesh::from_obj_file(const char *filename) {
         }
     }
 
-    mesh->kdtree = new KdTree<Mesh::Triangle>(mesh->triangles, 80.0, 1.0, 8, 32);
-    mesh->kdtree->print_info();
+    mesh->kdtree = new KdTree<Mesh::Triangle>(mesh->triangles, 80.0, 10.0, 8, 32);
 
     return mesh;
 }
