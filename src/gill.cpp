@@ -31,7 +31,10 @@ int main(int argc, char *argv[]) {
         for (int x = frame_minx; x < frame_maxx; x++) {
             ray.d = normalize(Point(x, y, 64.0) - ray.o);
             if (primitive.intersect(ray, t, nullptr)) {
-                std::cout << "255 255 255 ";
+                int c = (int)t * 3;
+                if (c < 0) c = 0;
+                if (c > 255) c = 255;
+                std::cout << c << " " << c << " " << c << " ";
             } else {
                 std::cout << "0 0 0 ";
             }

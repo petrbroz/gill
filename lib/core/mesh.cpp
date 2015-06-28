@@ -41,7 +41,7 @@ bool Mesh::Triangle::intersect(const Ray &ray, float &t, Mesh::Triangle::Interse
         return false;
     }
 
-    t = dot(e1, Q) * inv_det;
+    t = dot(e2, Q) * inv_det;
 
     return true;
 }

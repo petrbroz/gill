@@ -253,15 +253,14 @@ public:
                 for (int i = geom_index; i < geom_index + geom_count; ++i) {
                     const Geom &geom = geoms[geom_refs[i]];
                     if (geom.intersect(ray, _t, nullptr)) {
-                        return true;
-                        //if (_t < t) {
-                        //    t = _t;
-                        //}
+                        if (_t < t) {
+                            t = _t;
+                        }
                     }
 
-                    //if (t >= tmin && t <= tmax) {
-                    //    return true;
-                    //}
+                    if (t >= tmin && t <= tmax) {
+                        return true;
+                    }
                 }
             } else {
                 float split = segment.node->split;
