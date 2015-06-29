@@ -19,7 +19,7 @@ BBox Mesh::Triangle::bounds() const {
     return bbox;
 }
 
-bool Mesh::Triangle::intersect(const Ray &ray, float &t, Mesh::Triangle::Intersection *isec) const {
+bool Mesh::Triangle::intersect(const Ray &ray, float &t, Mesh::Triangle::Intersection *i) const {
     Point p0 = mesh->vertices[i1], p1 = mesh->vertices[i2], p2 = mesh->vertices[i3];
     Vector e1 = p1 - p0, e2 = p2 - p0;
     Vector P = cross(ray.d, e2);
@@ -42,6 +42,10 @@ bool Mesh::Triangle::intersect(const Ray &ray, float &t, Mesh::Triangle::Interse
     }
 
     t = dot(e2, Q) * inv_det;
+    if (i) {
+        i->p = ray(t);
+        i->n = normalize(cross(e1, e2));
+    }
 
     return true;
 }
@@ -50,7 +54,7 @@ BBox Mesh::bounds() const {
     return bbox;
 }
 
-bool Mesh::intersect(const Ray &ray, float &t, Mesh::Intersection *intersection) const {
+bool Mesh::intersect(const Ray &ray, float &t, Mesh::Intersection *i) const {
 #ifdef BRUTE_FORCE
     for (const Triangle &triangle : triangles) {
         if (triangle.intersect(ray, t, nullptr)) {
@@ -59,7 +63,11 @@ bool Mesh::intersect(const Ray &ray, float &t, Mesh::Intersection *intersection)
     }
     return false;
 #else
-    return kdtree->intersect(triangles, ray, t, nullptr);
+    Mesh::Triangle::Intersection *_ti = nullptr;
+    if (i) {
+        _ti = &i->triangle_isec;
+    }
+    return kdtree->intersect(triangles, ray, t, _ti);
 #endif
 }
 

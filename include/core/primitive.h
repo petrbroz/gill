@@ -26,10 +26,7 @@ public:
      */
     struct Intersection {
         Primitive *primitive;
-        /// Intersection point
-        Point p;
-        /// Normal at the intersection
-        Normal n;
+        Mesh::Intersection mesh_isec;
         float u, v;
         Vector dpdu, dpdv;
         Normal dndu, dndv;

@@ -252,7 +252,7 @@ public:
                 t = Infinity;
                 for (int i = geom_index; i < geom_index + geom_count; ++i) {
                     const Geom &geom = geoms[geom_refs[i]];
-                    if (geom.intersect(ray, _t, nullptr)) {
+                    if (geom.intersect(ray, _t, isec)) {
                         if (_t < t) {
                             t = _t;
                         }

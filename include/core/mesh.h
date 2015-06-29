@@ -10,27 +10,13 @@
 
 namespace gill { namespace core {
 
-struct Triangle;
-
 /**
  * Geometry represented as a triangular mesh.
  * The geometry always works with local coordinate system. It is the purpose of Primitive
  * to position/orient/scale an instance of the geometry in the scene.
  */
 class Mesh {
-
-    /**
-     * Collection of data related to a particular mesh intersection.
-     */
-    struct Intersection {
-        const Mesh *mesh;
-        Point p;
-        Normal n;
-        float t;
-        float u, v;
-        Vector dpdu, dpdv;
-        Normal dndu, dndv;
-    };
+public:
 
     /**
      * Standalone representation of a mesh triangle.
@@ -39,7 +25,8 @@ class Mesh {
      */
     struct Triangle {
         struct Intersection {
-            float t;
+            Point p;
+            Normal n;
         };
 
         Mesh *mesh;
@@ -49,6 +36,25 @@ class Mesh {
         bool intersect(const Ray &ray, float &t, Intersection *i) const;
     };
 
+    /**
+     * Collection of data related to a particular mesh intersection.
+     */
+    struct Intersection {
+        const Mesh *mesh;
+        Triangle::Intersection triangle_isec;
+        float t;
+        float u, v;
+        Vector dpdu, dpdv;
+        Normal dndu, dndv;
+    };
+
+    BBox bounds() const;
+    bool intersect(const Ray &ray, float &t, Intersection *i) const;
+    ~Mesh();
+
+    static Mesh * from_obj_file(const char *filename);
+
+private:
     std::vector<Triangle> triangles;
     std::vector<Point> vertices;
     std::vector<Normal> normals;
@@ -56,12 +62,6 @@ class Mesh {
     KdTree<Triangle> *kdtree;
 
     Mesh() {}
-public:
-    BBox bounds() const;
-    bool intersect(const Ray &ray, float &t, Intersection *i) const;
-    ~Mesh();
-
-    static Mesh * from_obj_file(const char *filename);
 };
 
 }}

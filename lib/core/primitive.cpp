@@ -15,7 +15,11 @@ BBox Primitive::worldBounds() const {
 
 bool Primitive::intersect(const Ray &ray, float &t, Primitive::Intersection *i) const {
     Ray r = (*wtol)(ray);
-    return mesh->intersect(r, t, nullptr);
+    Mesh::Intersection *_mi = nullptr;
+    if (i) {
+        _mi = &i->mesh_isec;
+    }
+    return mesh->intersect(r, t, _mi);
 }
 
 }}

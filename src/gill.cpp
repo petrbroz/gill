@@ -17,11 +17,12 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    const Transform ltow = Transform::Translate(0.0, 0.0, +64.0);
-    const Transform wtol = Transform::Translate(0.0, 0.0, -64.0);
+    const Transform ltow = Transform::Translate(0.0, 0.0, 0.0);
+    const Transform wtol = Transform::Translate(0.0, 0.0, 0.0);
     const Mesh *mesh = Mesh::from_obj_file(argv[1]);
     Primitive primitive(mesh, &ltow, &wtol);
-    Ray ray(Point(0.0f), Vector(0.0f));
+    Ray ray(Point(0.0f, 16.0f, 64.0f), Vector(0.0f));
+    Primitive::Intersection pi;
     float t;
 
     std::cout << "P3" << std::endl;
@@ -29,12 +30,11 @@ int main(int argc, char *argv[]) {
     std::cout << "255" << std::endl;
     for (int y = frame_maxy; y > frame_miny; y--) {
         for (int x = frame_minx; x < frame_maxx; x++) {
-            ray.d = normalize(Point(x, y, 64.0) - ray.o);
-            if (primitive.intersect(ray, t, nullptr)) {
-                int c = (int)t * 3;
-                if (c < 0) c = 0;
-                if (c > 255) c = 255;
-                std::cout << c << " " << c << " " << c << " ";
+            ray.d = normalize(Point(x, y, 0.0f) - ray.o);
+            if (primitive.intersect(ray, t, &pi)) {
+                std::cout << (int)(pi.mesh_isec.triangle_isec.n.x * 128 + 127) << " ";
+                std::cout << (int)(pi.mesh_isec.triangle_isec.n.y * 128 + 127) << " ";
+                std::cout << (int)(pi.mesh_isec.triangle_isec.n.z * 128 + 127) << " ";
             } else {
                 std::cout << "0 0 0 ";
             }
