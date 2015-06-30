@@ -12,6 +12,7 @@ set(PROJECT_TEST_TARGET ${PROJECT_NAME}-test)
 set(CMAKE_CONFIGURATION_TYPES debug release)
 #set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -Wall")
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/tools/cmake")
 
 include_directories("include/core")
 include_directories("include/geometry")

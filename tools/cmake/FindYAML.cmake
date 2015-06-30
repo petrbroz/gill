@@ -1,0 +1,6 @@
+find_path(LIBYAML_INCLUDE_DIR NAMES yaml.h)
+find_library(LIBYAML_LIBRARIES NAMES yaml libyaml)
+
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(yaml DEFAULT_MSG LIBYAML_LIBRARIES LIBYAML_INCLUDE_DIR)
+mark_as_advanced(LIBYAML_INCLUDE_DIR LIBYAML_LIBRARIES)
