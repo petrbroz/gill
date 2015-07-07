@@ -1,6 +1,3 @@
-find_package(YAML REQUIRED)
-include_directories(${LIBYAML_INCLUDE_DIR})
-
 file(GLOB_RECURSE SRC_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
 add_executable(${PROJECT_BIN_TARGET} ${SRC_FILES})
-target_link_libraries(${PROJECT_BIN_TARGET} ${PROJECT_LIB_TARGET} ${LIBYAML_LIBRARIES})
+target_link_libraries(${PROJECT_BIN_TARGET} ${PROJECT_LIB_TARGET})

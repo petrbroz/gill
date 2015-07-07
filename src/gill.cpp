@@ -1,3 +1,4 @@
+#include "parser.h"
 #include "primitive.h"
 #include "mesh.h"
 #include "ray.h"
@@ -11,6 +12,10 @@ const int frame_maxx = 128;
 const int frame_miny = -128;
 
 int main(int argc, char *argv[]) {
+    scene_t scene;
+    parse_input(stdin, &scene);
+    return 0;
+
     if (argc < 2) {
         cout << "Usage: gill <file>" << endl;
         cout << "<file>\tPath to an .obj file" << endl;
