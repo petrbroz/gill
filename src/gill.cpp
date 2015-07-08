@@ -22,9 +22,9 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    const Transform ltow = Transform::Translate(0.0, 0.0, 0.0);
-    const Transform wtol = Transform::Translate(0.0, 0.0, 0.0);
-    const Mesh *mesh = Mesh::from_obj_file(argv[1]);
+    const Transform ltow = Transform::translate(0.0, 0.0, 0.0);
+    const Transform wtol = Transform::translate(0.0, 0.0, 0.0);
+    const MeshRef mesh = Mesh::from_obj_file(argv[1]);
     Primitive primitive(mesh, &ltow, &wtol);
     Ray ray(Point(0.0f, 16.0f, 64.0f), Vector(0.0f));
     Primitive::Intersection pi;
@@ -47,6 +47,5 @@ int main(int argc, char *argv[]) {
         cout << endl;
     }
 
-    delete mesh;
     return 0;
 }

@@ -8,19 +8,17 @@
 
 namespace gill { namespace core {
 
-Mesh::~Mesh() {
-    delete kdtree;
-}
+using namespace std;
 
 BBox Mesh::Triangle::bounds() const {
-    BBox bbox(mesh->vertices[i1]);
-    bbox += mesh->vertices[i2];
-    bbox += mesh->vertices[i3];
+    BBox bbox(mesh->_vertices[i1]);
+    bbox += mesh->_vertices[i2];
+    bbox += mesh->_vertices[i3];
     return bbox;
 }
 
 bool Mesh::Triangle::intersect(const Ray &ray, float &t, Mesh::Triangle::Intersection *i) const {
-    Point p0 = mesh->vertices[i1], p1 = mesh->vertices[i2], p2 = mesh->vertices[i3];
+    Point p0 = mesh->_vertices[i1], p1 = mesh->_vertices[i2], p2 = mesh->_vertices[i3];
     Vector e1 = p1 - p0, e2 = p2 - p0;
     Vector P = cross(ray.d, e2);
     float det = dot(e1, P);
@@ -51,45 +49,41 @@ bool Mesh::Triangle::intersect(const Ray &ray, float &t, Mesh::Triangle::Interse
 }
 
 BBox Mesh::bounds() const {
-    return bbox;
+    return _bounds;
 }
 
 bool Mesh::intersect(const Ray &ray, float &t, Mesh::Intersection *i) const {
 #ifdef BRUTE_FORCE
-    for (const Triangle &triangle : triangles) {
+    for (const Triangle &triangle : _triangles) {
         if (triangle.intersect(ray, t, nullptr)) {
             return true;
         }
     }
     return false;
 #else
-    Mesh::Triangle::Intersection *_ti = nullptr;
+    Mesh::Triangle::Intersection *ti = nullptr;
     if (i) {
-        _ti = &i->triangle_isec;
+        ti = &(i->triangle_isec);
     }
-    return kdtree->intersect(triangles, ray, t, _ti);
+    return _accelerator->intersect(_triangles, ray, t, ti);
 #endif
 }
 
-Mesh * Mesh::from_obj_file(const char *filename) {
-    using namespace std;
-
+MeshRef Mesh::from_obj_file(const char *filename) {
     ifstream input(filename);
     regex vertex_re("v ([0-9.-]+) ([0-9.-]+) ([0-9.-]+)");
     regex face_re("f ([0-9]*)/[0-9]*/[0-9]* ([0-9]*)/[0-9]*/[0-9]* ([0-9]*)/[0-9]*/[0-9]*");
     string line;
     smatch match;
-    Mesh * mesh = new Mesh();
+    MeshRef mesh = make_shared<Mesh>();
     while (getline(input, line)) {
         if (regex_match(line, match, vertex_re)) {
-            mesh->vertices.push_back({stof(match[1]), stof(match[2]), stof(match[3])});
+            mesh->_vertices.push_back({stof(match[1]), stof(match[2]), stof(match[3])});
         } else if (regex_match(line, match, face_re)) {
-            mesh->triangles.push_back({mesh, stoi(match[1]) - 1, stoi(match[2]) - 1, stoi(match[3]) - 1});
+            mesh->_triangles.push_back({mesh, stoi(match[1]) - 1, stoi(match[2]) - 1, stoi(match[3]) - 1});
         }
     }
-
-    mesh->kdtree = new KdTree<Mesh::Triangle>(mesh->triangles, 80.0, 10.0, 8, 32);
-
+    mesh->_accelerator.reset(new KdTree<Mesh::Triangle>(mesh->_triangles, 80.0, 10.0, 8, 32));
     return mesh;
 }
 
