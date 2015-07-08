@@ -12,9 +12,9 @@ const int frame_maxx = 128;
 const int frame_miny = -128;
 
 int main(int argc, char *argv[]) {
-    scene_t scene;
-    parse_input(stdin, &scene);
-    return 0;
+    //scene_t scene;
+    //parse_input(stdin, &scene);
+    //return 0;
 
     if (argc < 2) {
         cout << "Usage: gill <file>" << endl;
@@ -30,21 +30,21 @@ int main(int argc, char *argv[]) {
     Primitive::Intersection pi;
     float t;
 
-    std::cout << "P3" << std::endl;
-    std::cout << (frame_maxx - frame_minx) << " " << (frame_maxy - frame_miny) << std::endl;
-    std::cout << "255" << std::endl;
+    cout << "P3" << endl;
+    cout << (frame_maxx - frame_minx) << " " << (frame_maxy - frame_miny) << endl;
+    cout << "255" << endl;
     for (int y = frame_maxy; y > frame_miny; y--) {
         for (int x = frame_minx; x < frame_maxx; x++) {
             ray.d = normalize(Point(x, y, 0.0f) - ray.o);
             if (primitive.intersect(ray, t, &pi)) {
-                std::cout << (int)(pi.mesh_isec.triangle_isec.n.x * 128 + 127) << " ";
-                std::cout << (int)(pi.mesh_isec.triangle_isec.n.y * 128 + 127) << " ";
-                std::cout << (int)(pi.mesh_isec.triangle_isec.n.z * 128 + 127) << " ";
+                cout << (int)(pi.mesh_isec.triangle_isec.n.x * 128 + 127) << " ";
+                cout << (int)(pi.mesh_isec.triangle_isec.n.y * 128 + 127) << " ";
+                cout << (int)(pi.mesh_isec.triangle_isec.n.z * 128 + 127) << " ";
             } else {
-                std::cout << "0 0 0 ";
+                cout << "0 0 0 ";
             }
         }
-        std::cout << std::endl;
+        cout << endl;
     }
 
     delete mesh;

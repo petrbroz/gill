@@ -1,15 +1,14 @@
-#ifndef GILL_CORE_PARSER_H_
-#define GILL_CORE_PARSER_H_
+#ifndef GILL_PARSER_H_
+#define GILL_PARSER_H_
 
 #include "primitive.h"
 #include "mesh.h"
-
-namespace gill { namespace core {
+#include "transform.h"
 
 typedef struct _scene {
-    std::vector<Primitive> primitives;
-    std::vector<Mesh> meshes;
-    std::vector<Transform> transforms;
+    std::vector<gill::core::Primitive> primitives;
+    std::vector<gill::core::Mesh> meshes;
+    std::vector<gill::core::Transform> transforms;
     struct {
         float position[3];
         float direction[3];
@@ -20,7 +19,5 @@ typedef struct _scene {
 } scene_t;
 
 void parse_input(FILE *input, scene_t *scene);
-
-}}
 
 #endif

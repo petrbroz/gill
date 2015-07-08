@@ -3,8 +3,7 @@
 #include "parser.h"
 
 using namespace std;
-
-namespace gill { namespace core {
+using namespace gill::core;
 
 void parse_document(yaml_node_t *node, yaml_document_t *doc, scene_t *scene);
 void parse_primitives(yaml_node_t *node, yaml_document_t *doc, scene_t *scene);
@@ -132,5 +131,3 @@ void get_sequence(yaml_node_t *node, yaml_document_t *doc, T *values) {
         cout << "get_sequence: got scalar " << val << endl;
     }
 }
-
-}}
