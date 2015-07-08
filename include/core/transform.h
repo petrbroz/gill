@@ -10,18 +10,21 @@
 
 namespace gill { namespace core {
 
+class Transform;
+typedef std::shared_ptr<Transform> TransformRef;
+
 class Transform {
-    Matrix m, inv;
+    Matrix _m, _inv;
 
 public:
-    Transform() : m(Identity), inv(Identity) {}
-    Transform(const Matrix& _m) : m(_m), inv(inverse(_m)) {}
-    Transform(const Matrix& _m, const Matrix& _inv) : m(_m), inv(_inv) {}
+    Transform() : _m(Identity), _inv(Identity) {}
+    Transform(const Matrix& m) : _m(m), _inv(inverse(m)) {}
+    Transform(const Matrix& m, const Matrix& inv) : _m(m), _inv(inv) {}
 
-    static Transform Translate(const Vector& delta);
-    static Transform Translate(float dx, float dy, float dz);
-    static Transform Scale(const Vector& coefs);
-    static Transform Scale(float sx, float sy, float sz);
+    static Transform translate(const Vector& delta);
+    static Transform translate(float dx, float dy, float dz);
+    static Transform scale(const Vector& coefs);
+    static Transform scale(float sx, float sy, float sz);
     friend bool operator==(const Transform &lhs, const Transform &rhs);
     friend bool operator!=(const Transform &lhs, const Transform &rhs);
     friend Transform inverse(const Transform &t);
@@ -30,53 +33,53 @@ public:
 
     inline Vector operator()(const Vector& v) const {
         return Vector(
-            m.m00 * v.x + m.m01 * v.y + m.m02 * v.z,
-            m.m10 * v.x + m.m11 * v.y + m.m12 * v.z,
-            m.m20 * v.x + m.m21 * v.y + m.m22 * v.z
+            _m.m00 * v.x + _m.m01 * v.y + _m.m02 * v.z,
+            _m.m10 * v.x + _m.m11 * v.y + _m.m12 * v.z,
+            _m.m20 * v.x + _m.m21 * v.y + _m.m22 * v.z
         );
     }
 
     inline void operator()(Vector *v) const {
         float x = v->x, y = v->y, z = v->z;
-        v->x = m.m00 * x + m.m01 * y + m.m02 * z;
-        v->y = m.m10 * x + m.m11 * y + m.m12 * z;
-        v->z = m.m20 * x + m.m21 * y + m.m22 * z;
+        v->x = _m.m00 * x + _m.m01 * y + _m.m02 * z;
+        v->y = _m.m10 * x + _m.m11 * y + _m.m12 * z;
+        v->z = _m.m20 * x + _m.m21 * y + _m.m22 * z;
     }
 
     inline Point operator()(const Point& p) const {
         Point tmp(
-            m.m00 * p.x + m.m01 * p.y + m.m02 * p.z + m.m03,
-            m.m10 * p.x + m.m11 * p.y + m.m12 * p.z + m.m13,
-            m.m20 * p.x + m.m21 * p.y + m.m22 * p.z + m.m23
+            _m.m00 * p.x + _m.m01 * p.y + _m.m02 * p.z + _m.m03,
+            _m.m10 * p.x + _m.m11 * p.y + _m.m12 * p.z + _m.m13,
+            _m.m20 * p.x + _m.m21 * p.y + _m.m22 * p.z + _m.m23
         );
-        float w = m.m30 * p.x + m.m31 * p.y + m.m32 * p.z + m.m33;
+        float w = _m.m30 * p.x + _m.m31 * p.y + _m.m32 * p.z + _m.m33;
         assert(w != 0.0);
         return tmp / w;
     }
 
     inline void operator()(Point *p) const {
         float x = p->x, y = p->y, z = p->z;
-        p->x = m.m00 * x + m.m01 * y + m.m02 * z + m.m03;
-        p->y = m.m10 * x + m.m11 * y + m.m12 * z + m.m13;
-        p->z = m.m20 * x + m.m21 * y + m.m22 * z + m.m23;
-        float w = m.m30 * x + m.m31 * y + m.m32 * z + m.m33;
+        p->x = _m.m00 * x + _m.m01 * y + _m.m02 * z + _m.m03;
+        p->y = _m.m10 * x + _m.m11 * y + _m.m12 * z + _m.m13;
+        p->z = _m.m20 * x + _m.m21 * y + _m.m22 * z + _m.m23;
+        float w = _m.m30 * x + _m.m31 * y + _m.m32 * z + _m.m33;
         assert(w != 0.0);
         *p /= w;
     }
 
     inline Normal operator()(const Normal& n) const {
         return Normal(
-            inv.m00 * n.x + inv.m10 * n.y + inv.m20 * n.z,
-            inv.m01 * n.x + inv.m11 * n.y + inv.m21 * n.z,
-            inv.m02 * n.x + inv.m12 * n.y + inv.m22 * n.z
+            _inv.m00 * n.x + _inv.m10 * n.y + _inv.m20 * n.z,
+            _inv.m01 * n.x + _inv.m11 * n.y + _inv.m21 * n.z,
+            _inv.m02 * n.x + _inv.m12 * n.y + _inv.m22 * n.z
         );
     }
 
     inline void operator()(Normal *n) const {
         float x = n->x, y = n->y, z = n->z;
-        n->x = inv.m00 * x + inv.m10 * y + inv.m20 * z;
-        n->y = inv.m01 * x + inv.m11 * y + inv.m21 * z;
-        n->z = inv.m02 * x + inv.m12 * y + inv.m22 * z;
+        n->x = _inv.m00 * x + _inv.m10 * y + _inv.m20 * z;
+        n->y = _inv.m01 * x + _inv.m11 * y + _inv.m21 * z;
+        n->z = _inv.m02 * x + _inv.m12 * y + _inv.m22 * z;
     }
 
     inline BBox operator()(const BBox &bbox) const {
@@ -106,24 +109,24 @@ public:
 };
 
 inline bool operator==(const Transform &lhs, const Transform &rhs) {
-    return lhs.m == rhs.m;
+    return lhs._m == rhs._m;
 }
 
 inline bool operator!=(const Transform &lhs, const Transform &rhs) {
-    return lhs.m != rhs.m;
+    return lhs._m != rhs._m;
 }
 
 inline Transform inverse(const Transform &t) {
-    return Transform(t.inv, t.m);
+    return Transform(t._inv, t._m);
 }
 
 inline Transform operator*(const Transform &lhs, const Transform &rhs) {
-    return Transform(lhs.m * rhs.m, rhs.inv * lhs.inv);
+    return Transform(lhs._m * rhs._m, rhs._inv * lhs._inv);
 }
 
 inline void operator*=(Transform &lhs, const Transform &rhs) {
-    lhs.m *= rhs.m;
-    lhs.inv = rhs.inv * lhs.inv;
+    lhs._m *= rhs._m;
+    lhs._inv = rhs._inv * lhs._inv;
 }
 
 }}

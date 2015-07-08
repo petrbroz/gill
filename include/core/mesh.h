@@ -10,6 +10,9 @@
 
 namespace gill { namespace core {
 
+class Mesh;
+typedef std::shared_ptr<Mesh> MeshRef;
+
 /**
  * Geometry represented as a triangular mesh.
  * The geometry always works with local coordinate system. It is the purpose of Primitive
@@ -29,7 +32,7 @@ public:
             Normal n;
         };
 
-        Mesh *mesh;
+        MeshRef mesh;
         int i1, i2, i3;
 
         BBox bounds() const;
@@ -40,7 +43,7 @@ public:
      * Collection of data related to a particular mesh intersection.
      */
     struct Intersection {
-        const Mesh *mesh;
+        const MeshRef mesh;
         Triangle::Intersection triangle_isec;
         float t;
         float u, v;
@@ -50,18 +53,15 @@ public:
 
     BBox bounds() const;
     bool intersect(const Ray &ray, float &t, Intersection *i) const;
-    ~Mesh();
 
-    static Mesh * from_obj_file(const char *filename);
+    static MeshRef from_obj_file(const char *filename);
 
 private:
-    std::vector<Triangle> triangles;
-    std::vector<Point> vertices;
-    std::vector<Normal> normals;
-    BBox bbox;
-    KdTree<Triangle> *kdtree;
-
-    Mesh() {}
+    std::vector<Triangle> _triangles;
+    std::vector<Point> _vertices;
+    std::vector<Normal> _normals;
+    BBox _bounds;
+    std::unique_ptr<KdTree<Triangle>> _accelerator;
 };
 
 }}

@@ -2,24 +2,24 @@
 
 namespace gill { namespace core {
 
-Primitive::Primitive(const Mesh *_mesh, const Transform *localToWorld, const Transform *worldToLocal)
-    : mesh(_mesh), ltow(localToWorld), wtol(worldToLocal) { }
+Primitive::Primitive(const MeshRef mesh, const Transform *ltow, const Transform *wtol)
+    : _mesh(mesh), _ltow(ltow), _wtol(wtol) { }
 
-BBox Primitive::localBounds() const {
-    return mesh->bounds();
+BBox Primitive::local_bounds() const {
+    return _mesh->bounds();
 }
 
-BBox Primitive::worldBounds() const {
-    return (*ltow)(mesh->bounds());
+BBox Primitive::world_bounds() const {
+    return (*_ltow)(_mesh->bounds());
 }
 
 bool Primitive::intersect(const Ray &ray, float &t, Primitive::Intersection *i) const {
-    Ray r = (*wtol)(ray);
-    Mesh::Intersection *_mi = nullptr;
+    Ray r = (*_wtol)(ray);
+    Mesh::Intersection *mi = nullptr;
     if (i) {
-        _mi = &i->mesh_isec;
+        mi = &i->mesh_isec;
     }
-    return mesh->intersect(r, t, _mi);
+    return _mesh->intersect(r, t, mi);
 }
 
 }}
