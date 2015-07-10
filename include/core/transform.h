@@ -10,9 +10,6 @@
 
 namespace gill { namespace core {
 
-class Transform;
-typedef std::shared_ptr<Transform> TransformRef;
-
 class Transform {
     Matrix _m, _inv;
 
@@ -21,10 +18,10 @@ public:
     Transform(const Matrix& m) : _m(m), _inv(inverse(m)) {}
     Transform(const Matrix& m, const Matrix& inv) : _m(m), _inv(inv) {}
 
-    static Transform translate(const Vector& delta);
-    static Transform translate(float dx, float dy, float dz);
-    static Transform scale(const Vector& coefs);
-    static Transform scale(float sx, float sy, float sz);
+    static std::shared_ptr<Transform> translate(const Vector& delta);
+    static std::shared_ptr<Transform> translate(float dx, float dy, float dz);
+    static std::shared_ptr<Transform> scale(const Vector& coefs);
+    static std::shared_ptr<Transform> scale(float sx, float sy, float sz);
     friend bool operator==(const Transform &lhs, const Transform &rhs);
     friend bool operator!=(const Transform &lhs, const Transform &rhs);
     friend Transform inverse(const Transform &t);

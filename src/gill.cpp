@@ -22,10 +22,10 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    const Transform ltow = Transform::translate(0.0, 0.0, 0.0);
-    const Transform wtol = Transform::translate(0.0, 0.0, 0.0);
-    const MeshRef mesh = Mesh::from_obj_file(argv[1]);
-    Primitive primitive(mesh, &ltow, &wtol);
+    auto ltow = Transform::translate(0.0, 0.0, 0.0);
+    auto wtol = Transform::translate(0.0, 0.0, 0.0);
+    auto mesh = Mesh::from_obj_file(argv[1]);
+    Primitive primitive(mesh, ltow, wtol);
     Ray ray(Point(0.0f, 16.0f, 64.0f), Vector(0.0f));
     Primitive::Intersection pi;
     float t;
@@ -37,9 +37,9 @@ int main(int argc, char *argv[]) {
         for (int x = frame_minx; x < frame_maxx; x++) {
             ray.d = normalize(Point(x, y, 0.0f) - ray.o);
             if (primitive.intersect(ray, t, &pi)) {
-                cout << (int)(pi.mesh_isec.triangle_isec.n.x * 128 + 127) << " ";
-                cout << (int)(pi.mesh_isec.triangle_isec.n.y * 128 + 127) << " ";
-                cout << (int)(pi.mesh_isec.triangle_isec.n.z * 128 + 127) << " ";
+                cout << (int)(pi.mi.triangle_isec.n.x * 128 + 127) << " ";
+                cout << (int)(pi.mi.triangle_isec.n.y * 128 + 127) << " ";
+                cout << (int)(pi.mi.triangle_isec.n.z * 128 + 127) << " ";
             } else {
                 cout << "0 0 0 ";
             }

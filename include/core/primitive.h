@@ -9,36 +9,34 @@
 
 namespace gill { namespace core {
 
-class Primitive;
-typedef std::shared_ptr<Primitive> PrimitiveRef;
-
 /**
  * Geometry, material and transform of a specific scene object.
  */
 class Primitive {
-protected:
-    const MeshRef _mesh;
-    /// Transformation from local to world coordinate system
-    const Transform *_ltow;
-    /// Transformation from world to local coordinate system
-    const Transform *_wtol;
 public:
 
     /**
      * Collection of data related to a specific primitive intersection.
      */
     struct Intersection {
-        PrimitiveRef primitive;
-        Mesh::Intersection mesh_isec;
+        Primitive *primitive;
+        Mesh::Intersection mi;
         float u, v;
         Vector dpdu, dpdv;
         Normal dndu, dndv;
     };
 
-    Primitive(const MeshRef mesh, const Transform *ltow, const Transform *wtol);
+    Primitive(std::shared_ptr<Mesh> mesh, std::shared_ptr<Transform> ltow, std::shared_ptr<Transform> wtol);
     BBox local_bounds() const;
-    BBox world_bounds() const;
+    BBox bounds() const;
     bool intersect(const Ray &ray, float &t, Intersection *i) const;
+
+protected:
+    std::shared_ptr<Mesh> _mesh;
+    /// Transformation from local to world coordinate system
+    std::shared_ptr<Transform> _ltow;
+    /// Transformation from world to local coordinate system
+    std::shared_ptr<Transform> _wtol;
 };
 
 }}

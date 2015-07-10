@@ -2,16 +2,12 @@
 #define GILL_CORE_MESH_H_
 
 #include <vector>
-
 #include "vector.h"
 #include "ray.h"
 #include "bbox.h"
 #include "kdtree.h"
 
 namespace gill { namespace core {
-
-class Mesh;
-typedef std::shared_ptr<Mesh> MeshRef;
 
 /**
  * Geometry represented as a triangular mesh.
@@ -32,7 +28,7 @@ public:
             Normal n;
         };
 
-        MeshRef mesh;
+        std::shared_ptr<Mesh> mesh;
         int i1, i2, i3;
 
         BBox bounds() const;
@@ -43,7 +39,7 @@ public:
      * Collection of data related to a particular mesh intersection.
      */
     struct Intersection {
-        const MeshRef mesh;
+        std::shared_ptr<Mesh> mesh;
         Triangle::Intersection triangle_isec;
         float t;
         float u, v;
@@ -53,10 +49,9 @@ public:
 
     BBox bounds() const;
     bool intersect(const Ray &ray, float &t, Intersection *i) const;
+    static std::shared_ptr<Mesh> from_obj_file(const char *filename);
 
-    static MeshRef from_obj_file(const char *filename);
-
-private:
+protected:
     std::vector<Triangle> _triangles;
     std::vector<Point> _vertices;
     std::vector<Normal> _normals;

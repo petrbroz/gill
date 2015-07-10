@@ -7,10 +7,11 @@ primitives:
     material: !emissive { color: [255, 255, 255] }
     transform: !rotate { angle: 90.0, axis: [0.0, 1.0, 0.0] }
 camera:
-  position: [0, 10.0, 0]
-  look_at: [0, 0, 64]
+  position: [0, 0, -32.0]
+  look_at: [0, 0, 0]
+  field_of_view: 90.0
   film:
-    - resolution: [256, 256]
+    resolution: [256, 256]
 settings:
-  renderer: !metropolis { samplesperpixel: 128, directsamples: 8 }
-  sampler: !lowdiscrepancy { pixelsamples: 4 }
+  renderer: !metropolis { samples_per_pixel: 128, direct_samples: 8 }
+  sampler: !low_discrepancy { pixel_samples: 4 }
