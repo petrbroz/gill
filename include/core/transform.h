@@ -17,6 +17,7 @@ public:
     Transform() : _m(Identity), _inv(Identity) {}
     Transform(const Matrix& m) : _m(m), _inv(inverse(m)) {}
     Transform(const Matrix& m, const Matrix& inv) : _m(m), _inv(inv) {}
+    Transform(const Transform& t) : _m(t._m), _inv(t._inv) {}
 
     static std::shared_ptr<Transform> translate(const Vector& delta);
     static std::shared_ptr<Transform> translate(float dx, float dy, float dz);
@@ -27,6 +28,7 @@ public:
     friend Transform inverse(const Transform &t);
     friend Transform operator*(const Transform &lhs, const Transform &rhs);
     friend void operator*=(Transform &lhs, const Transform &rhs);
+    friend std::ostream& operator<<(std::ostream &out, const Transform &transform);
 
     inline Vector operator()(const Vector& v) const {
         return Vector(
@@ -124,6 +126,11 @@ inline Transform operator*(const Transform &lhs, const Transform &rhs) {
 inline void operator*=(Transform &lhs, const Transform &rhs) {
     lhs._m *= rhs._m;
     lhs._inv = rhs._inv * lhs._inv;
+}
+
+inline std::ostream& operator<<(std::ostream &out, const Transform &transform) {
+    out << transform._m;
+    return out;
 }
 
 }}

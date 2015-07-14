@@ -294,6 +294,10 @@ public:
         return false;
     }
 
+    BBox bounds() {
+        return total_bounds;
+    }
+
     void print_info() {
         std::cerr << "Intersection Cost: " << isec_cost << std::endl;
         std::cerr << "Traverse Cost: " << trav_cost << std::endl;

@@ -1,6 +1,7 @@
 #ifndef GILL_CORE_PRIMITIVE_H_
 #define GILL_CORE_PRIMITIVE_H_
 
+#include <iostream>
 #include "transform.h"
 #include "bbox.h"
 #include "ray.h"
@@ -30,6 +31,7 @@ public:
     BBox local_bounds() const;
     BBox bounds() const;
     bool intersect(const Ray &ray, float &t, Intersection *i) const;
+    friend std::ostream& operator<<(std::ostream &out, const Primitive &primitive);
 
 protected:
     std::shared_ptr<Mesh> _mesh;
@@ -38,6 +40,14 @@ protected:
     /// Transformation from world to local coordinate system
     std::shared_ptr<Transform> _wtol;
 };
+
+inline std::ostream& operator<<(std::ostream &out, const Primitive &primitive) {
+    out << "{";
+    out << "\"mesh\":\"" << primitive._mesh << "\",";
+    out << "\"transform\":" << *(primitive._ltow);
+    out << "}";
+    return out;
+}
 
 }}
 

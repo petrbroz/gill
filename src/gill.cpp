@@ -4,6 +4,7 @@
 #include "ray.h"
 
 using namespace std;
+using namespace gill;
 using namespace gill::core;
 
 const int frame_minx = -128;
@@ -12,10 +13,14 @@ const int frame_maxx = 128;
 const int frame_miny = -128;
 
 int main(int argc, char *argv[]) {
-    //scene_t scene;
-    //parse_input(stdin, &scene);
-    //return 0;
+    Parser parser;
+    while (auto scene = parser.next_scene()) {
+        cerr << *scene << endl;
+        scene->capture();
+    }
+    return 0;
 
+    /*
     if (argc < 2) {
         cout << "Usage: gill <file>" << endl;
         cout << "<file>\tPath to an .obj file" << endl;
@@ -48,4 +53,5 @@ int main(int argc, char *argv[]) {
     }
 
     return 0;
+    */
 }

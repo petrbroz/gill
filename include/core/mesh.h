@@ -40,7 +40,7 @@ public:
      */
     struct Intersection {
         std::shared_ptr<Mesh> mesh;
-        Triangle::Intersection triangle_isec;
+        Triangle::Intersection ti;
         float t;
         float u, v;
         Vector dpdu, dpdv;

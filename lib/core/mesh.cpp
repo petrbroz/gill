@@ -52,7 +52,7 @@ BBox Mesh::bounds() const {
     return _bounds;
 }
 
-bool Mesh::intersect(const Ray &ray, float &t, Mesh::Intersection *i) const {
+bool Mesh::intersect(const Ray &ray, float &t, Mesh::Intersection *mi) const {
 #ifdef BRUTE_FORCE
     for (const Triangle &triangle : _triangles) {
         if (triangle.intersect(ray, t, nullptr)) {
@@ -62,8 +62,8 @@ bool Mesh::intersect(const Ray &ray, float &t, Mesh::Intersection *i) const {
     return false;
 #else
     Mesh::Triangle::Intersection *ti = nullptr;
-    if (i) {
-        ti = &(i->triangle_isec);
+    if (mi) {
+        ti = &(mi->ti);
     }
     return _accelerator->intersect(_triangles, ray, t, ti);
 #endif
@@ -84,6 +84,7 @@ shared_ptr<Mesh> Mesh::from_obj_file(const char *filename) {
         }
     }
     mesh->_accelerator.reset(new KdTree<Mesh::Triangle>(mesh->_triangles, 80.0, 10.0, 8, 32));
+    mesh->_bounds = mesh->_accelerator->bounds();
     return mesh;
 }
 

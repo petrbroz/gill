@@ -1,23 +1,38 @@
 #ifndef GILL_PARSER_H_
 #define GILL_PARSER_H_
 
-#include "primitive.h"
+#include <yaml.h>
+#include <vector>
+
+#include "camera.h"
+#include "film.h"
+#include "material.h"
 #include "mesh.h"
-#include "transform.h"
+#include "primitive.h"
+#include "scene.h"
 
-typedef struct _scene {
-    std::vector<gill::core::Primitive> primitives;
-    std::vector<gill::core::Mesh> meshes;
-    std::vector<gill::core::Transform> transforms;
-    struct {
-        float position[3];
-        float direction[3];
-    } camera;
-    struct {
-        int frame[4];
-    } settings;
-} scene_t;
+namespace gill {
 
-void parse_input(FILE *input, scene_t *scene);
+class Parser {
+public:
+    Parser();
+    ~Parser();
+    std::shared_ptr<core::Scene> next_scene();
+
+protected:
+    yaml_parser_t _parser;
+
+    std::shared_ptr<core::Scene> parse_scene(yaml_document_t *doc, yaml_node_t *node);
+    std::vector<core::Primitive> parse_primitives(yaml_document_t *doc, yaml_node_t *node);
+    core::Primitive parse_primitive(yaml_document_t *doc, yaml_node_t *node);
+    std::shared_ptr<core::Mesh> parse_geometry(yaml_document_t *doc, yaml_node_t *node);
+    std::shared_ptr<core::Material> parse_material(yaml_document_t *doc, yaml_node_t *node);
+    std::shared_ptr<core::Transform> parse_transform(yaml_document_t *doc, yaml_node_t *node);
+    core::Camera parse_camera(yaml_document_t *doc, yaml_node_t *node);
+    core::Film parse_film(yaml_document_t *doc, yaml_node_t *node);
+    core::Scene::Settings parse_settings(yaml_document_t *doc, yaml_node_t *node);
+};
+
+}
 
 #endif

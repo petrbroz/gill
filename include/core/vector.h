@@ -4,6 +4,7 @@
 #include <cmath>
 #include <iostream>
 #include <type_traits>
+#include <vector>
 
 namespace gill { namespace core {
 
@@ -31,10 +32,11 @@ struct Vector {
     float x, y, z;
     Vector(float value = 0.0) : x(value), y(value), z(value) {}
     Vector(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
+    Vector(const float *f) : x(*(f)), y(*(f + 1)), z(*(f + 2)) {}
     Vector(const Vector &v) : x(v.x), y(v.y), z(v.z) {}
     Vector(const Point &p);
     Vector(const Normal &n);
-    
+
     inline float& operator[](int i) { return i == 0 ? x : (i == 1 ? y : z); }
     inline float operator[](int i) const { return i == 0 ? x : (i == 1 ? y : z); }
     inline bool operator==(const Vector &v) const { return x == v.x && y == v.y && z == v.z; }
@@ -50,12 +52,16 @@ struct Vector {
     inline Vector& operator/=(float c) { *this *= (1.0 / c); return *this; }
 };
 
-std::ostream& operator<<(std::ostream &out, const Vector &v);
+inline std::ostream& operator<<(std::ostream &out, const Vector &v) {
+    out << "[" << v.x << "," << v.y << "," << v.z << "]";
+    return out;
+}
 
 struct Point {
     float x, y, z;
     Point(float value = 0.0) : x(value), y(value), z(value) {}
     Point(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
+    Point(const float *f) : x(*(f)), y(*(f + 1)), z(*(f + 2)) {}
     Point(const Point &p) : x(p.x), y(p.y), z(p.z) {}
     Point(const Vector &v);
     Point(const Normal &n);
@@ -75,12 +81,16 @@ struct Point {
     inline Point& operator/=(float c) { *this *= (1.0 / c); return *this; }
 };
 
-std::ostream& operator<<(std::ostream &out, const Point &p);
+inline std::ostream& operator<<(std::ostream &out, const Point &p) {
+    out << "[" << p.x << "," << p.y << "," << p.z << "]";
+    return out;
+}
 
 struct Normal {
     float x, y, z;
     Normal(float value = 0.0) : x(value), y(value), z(value) {}
     Normal(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
+    Normal(const float *f) : x(*(f)), y(*(f + 1)), z(*(f + 2)) {}
     Normal(const Normal &n) : x(n.x), y(n.y), z(n.z) {}
     Normal(const Vector &v);
     Normal(const Point &p);
@@ -100,7 +110,10 @@ struct Normal {
     inline Normal& operator/=(float c) { *this *= (1.0 / c); return *this; }
 };
 
-std::ostream& operator<<(std::ostream &out, const Normal &n);
+inline std::ostream& operator<<(std::ostream &out, const Normal &n) {
+    out << "[" << n.x << "," << n.y << "," << n.z << "]";
+    return out;
+}
 
 inline float dot(const Vector &lhs, const Vector &rhs) {
     return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
