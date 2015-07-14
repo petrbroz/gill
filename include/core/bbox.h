@@ -107,7 +107,10 @@ inline float volume(const BBox &b) {
     return d.x * d.y * d.z;
 }
 
-std::ostream& operator<<(std::ostream &out, const BBox &bbox);
+inline std::ostream& operator<<(std::ostream &out, const BBox &bbox) {
+    out << "{\"min\":" << bbox.min << ",\"max\":" << bbox.max << "}";
+    return out;
+}
 
 }}
 

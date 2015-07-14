@@ -54,7 +54,6 @@ shared_ptr<Scene> Parser::parse_scene(yaml_document_t *doc, yaml_node_t *node) {
     assert(node->type == YAML_MAPPING_NODE);
     vector<Primitive> primitives;
     Camera camera(Point(0.0), Point(0.0), 90.0, Film(0, 0));
-    Scene::Settings settings;
     auto map = node->data.mapping;
     for (auto *item = map.pairs.start; item != map.pairs.top; item++) {
         auto knode = yaml_document_get_node(doc, item->key);
@@ -65,10 +64,10 @@ shared_ptr<Scene> Parser::parse_scene(yaml_document_t *doc, yaml_node_t *node) {
         } else if (key == "camera") {
             camera = parse_camera(doc, vnode);
         } else if (key == "settings") {
-            settings = parse_settings(doc, vnode);
+            //settings = parse_settings(doc, vnode);
         }
     }
-    return make_shared<Scene>(primitives, camera, settings);
+    return make_shared<Scene>(primitives, camera);
 }
 
 vector<Primitive> Parser::parse_primitives(yaml_document_t *doc, yaml_node_t *node) {
@@ -180,6 +179,7 @@ Film Parser::parse_film(yaml_document_t *doc, yaml_node_t *node) {
     return Film(xres, yres);
 }
 
+/*
 Scene::Settings Parser::parse_settings(yaml_document_t *doc, yaml_node_t *node) {
     assert(node->type == YAML_MAPPING_NODE);
     Scene::Settings settings;
@@ -199,5 +199,6 @@ Scene::Settings Parser::parse_settings(yaml_document_t *doc, yaml_node_t *node) 
     }
     return settings;
 }
+*/
 
 }

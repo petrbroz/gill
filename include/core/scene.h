@@ -13,16 +13,11 @@ namespace gill { namespace core {
 
 class Scene {
 public:
-    struct Settings {
-        int frame[4];
-        friend std::ostream& operator<<(std::ostream &out, const Settings &settings);
-    };
-
     struct Intersection {
         Primitive::Intersection pi;
     };
 
-    Scene(std::vector<Primitive> primitives, Camera camera, Settings settings);
+    Scene(std::vector<Primitive> primitives, Camera camera);
     BBox bounds() const;
     bool intersect(const Ray &ray, float &t, Intersection *i) const;
     void capture();
@@ -33,15 +28,7 @@ protected:
     BBox _bounds;
     std::unique_ptr<KdTree<Primitive>> _accelerator;
     Camera _camera;
-    Settings _settings;
 };
-
-inline std::ostream& operator<<(std::ostream &out, const Scene::Settings &settings) {
-    out << "{";
-    out << "\"frame\":[" << settings.frame[0] << "," << settings.frame[1] << "," << settings.frame[2] << "," << settings.frame[3] << "]";
-    out << "}";
-    return out;
-}
 
 inline std::ostream& operator<<(std::ostream &out, const Scene &scene) {
     out << "{";
@@ -53,8 +40,7 @@ inline std::ostream& operator<<(std::ostream &out, const Scene &scene) {
         out << *primitive;
     }
     out << "],";
-    out << "\"camera\":" << scene._camera << ",";
-    out << "\"settings\":" << scene._settings;
+    out << "\"camera\":" << scene._camera;
     out << "}";
     return out;
 }

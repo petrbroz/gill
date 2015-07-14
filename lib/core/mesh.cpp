@@ -72,7 +72,7 @@ bool Mesh::intersect(const Ray &ray, float &t, Mesh::Intersection *mi) const {
 shared_ptr<Mesh> Mesh::from_obj_file(const char *filename) {
     ifstream input(filename);
     regex vertex_re("v ([0-9.e-]+) ([0-9.e-]+) ([0-9.e-]+)");
-    regex face_re("f ([0-9]*)/[0-9]*/[0-9]* ([0-9]*)/[0-9]*/[0-9]* ([0-9]*)/[0-9]*/[0-9]*");
+    regex face_re("f ([0-9]*)(?:/[0-9]*)?(?:/[0-9]*)? ([0-9]*)(?:/[0-9]*)?(?:/[0-9]*)? ([0-9]*)(?:/[0-9]*)?(?:/[0-9]*)?");
     string line;
     smatch match;
     auto mesh = make_shared<Mesh>();

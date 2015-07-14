@@ -30,7 +30,15 @@ const Matrix Identity(
     0.0, 0.0, 0.0, 1.0
 );
 
-std::ostream& operator<<(std::ostream& out, const Matrix& m);
+inline std::ostream& operator<<(std::ostream& out, const Matrix& m) {
+    out << "[";
+    out << m.m00 << "," << m.m01 << "," << m.m02 << "," << m.m03 << ",";
+    out << m.m10 << "," << m.m11 << "," << m.m12 << "," << m.m13 << ",";
+    out << m.m20 << "," << m.m21 << "," << m.m22 << "," << m.m23 << ",";
+    out << m.m30 << "," << m.m31 << "," << m.m32 << "," << m.m33 << "]";
+    return out;
+}
+
 bool has_nans(const Matrix& m);
 Matrix inverse(const Matrix& m);
 

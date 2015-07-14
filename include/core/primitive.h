@@ -43,8 +43,9 @@ protected:
 
 inline std::ostream& operator<<(std::ostream &out, const Primitive &primitive) {
     out << "{";
-    out << "\"mesh\":\"" << primitive._mesh << "\",";
-    out << "\"transform\":" << *(primitive._ltow);
+    out << "\"mesh\":" << *(primitive._mesh) << ",";
+    out << "\"local_to_world\":" << *(primitive._ltow) << ",";
+    out << "\"world_to_local\":" << *(primitive._wtol);
     out << "}";
     return out;
 }

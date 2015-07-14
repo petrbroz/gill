@@ -28,7 +28,10 @@ inline bool has_nans(const Ray& ray) {
     return has_nans(ray.o) || has_nans(ray.d);
 }
 
-std::ostream& operator<<(std::ostream& out, const Ray& ray);
+inline std::ostream& operator<<(std::ostream& out, const Ray& ray) {
+    out << "{\"origin\":" << ray.o << ",\"direction\":" << ray.d << "}";
+    return out;
+}
 
 }}
 

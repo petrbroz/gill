@@ -2,15 +2,6 @@
 
 namespace gill { namespace core {
 
-std::ostream& operator<<(std::ostream& out, const Matrix& m) {
-    out << "[";
-    out << m.m00 << "," << m.m01 << "," << m.m02 << "," << m.m03 << ",";
-    out << m.m10 << "," << m.m11 << "," << m.m12 << "," << m.m13 << ",";
-    out << m.m20 << "," << m.m21 << "," << m.m22 << "," << m.m23 << ",";
-    out << m.m30 << "," << m.m31 << "," << m.m32 << "," << m.m33 << "]";
-    return out;
-}
-
 bool has_nans(const Matrix& m) {
     return std::isnan(m.m00) || std::isnan(m.m01) || std::isnan(m.m02) || std::isnan(m.m03)
         || std::isnan(m.m10) || std::isnan(m.m11) || std::isnan(m.m12) || std::isnan(m.m13)

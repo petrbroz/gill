@@ -4,8 +4,8 @@ namespace gill { namespace core {
 
 using namespace std;
 
-Scene::Scene(std::vector<Primitive> primitives, Camera camera, Scene::Settings settings)
-        : _primitives(primitives), _camera(camera), _settings(settings) {
+Scene::Scene(std::vector<Primitive> primitives, Camera camera)
+        : _primitives(primitives), _camera(camera) {
     _accelerator.reset(new KdTree<Primitive>(_primitives, 80.0, 10.0, 8, 32));
 }
 

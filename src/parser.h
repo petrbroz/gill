@@ -30,7 +30,7 @@ protected:
     std::shared_ptr<core::Transform> parse_transform(yaml_document_t *doc, yaml_node_t *node);
     core::Camera parse_camera(yaml_document_t *doc, yaml_node_t *node);
     core::Film parse_film(yaml_document_t *doc, yaml_node_t *node);
-    core::Scene::Settings parse_settings(yaml_document_t *doc, yaml_node_t *node);
+    //core::Scene::Settings parse_settings(yaml_document_t *doc, yaml_node_t *node);
 };
 
 }

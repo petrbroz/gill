@@ -2,7 +2,7 @@
 primitives:
   - geometry: !mesh { url: obj/bunny.obj }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !scale [1000.0, 1000.0, 1000.0]
+    transform: !scale [100.0, 100.0, 100.0]
 camera:
   position: [0.0, 0.0, -32.0]
   look_at: [0, 0.0, 0.0]

@@ -2,6 +2,7 @@
 #define GILL_CORE_MESH_H_
 
 #include <vector>
+#include <iostream>
 #include "vector.h"
 #include "ray.h"
 #include "bbox.h"
@@ -33,6 +34,7 @@ public:
 
         BBox bounds() const;
         bool intersect(const Ray &ray, float &t, Intersection *i) const;
+        friend std::ostream& operator<<(std::ostream& out, const Mesh& mesh);
     };
 
     /**
@@ -50,6 +52,7 @@ public:
     BBox bounds() const;
     bool intersect(const Ray &ray, float &t, Intersection *i) const;
     static std::shared_ptr<Mesh> from_obj_file(const char *filename);
+    friend std::ostream& operator<<(std::ostream& out, const Mesh& mesh);
 
 protected:
     std::vector<Triangle> _triangles;
@@ -58,6 +61,29 @@ protected:
     BBox _bounds;
     std::unique_ptr<KdTree<Triangle>> _accelerator;
 };
+
+inline std::ostream& operator<<(std::ostream& out, const Mesh& mesh) {
+    out << "{";
+    out << "\"vertices\":[";
+    for (auto v = mesh._vertices.begin(); v != mesh._vertices.end(); ++v) {
+        if (v != mesh._vertices.begin()) {
+            out << ",";
+        }
+        out << v->x << "," << v->y << "," << v->z;
+    }
+    out << "],";
+    out << "\"triangles\":[";
+    for (auto t = mesh._triangles.begin(); t != mesh._triangles.end(); ++t) {
+        if (t != mesh._triangles.begin()) {
+            out << ",";
+        }
+        out << t->i1 << "," << t->i2 << "," << t->i3;
+    }
+    out << "],";
+    out << "\"bounds\":" << mesh._bounds;
+    out << "}";
+    return out;
+}
 
 }}
 
