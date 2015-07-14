@@ -125,7 +125,15 @@ shared_ptr<Material> Parser::parse_material(yaml_document_t *doc, yaml_node_t *n
 }
 
 shared_ptr<Transform> Parser::parse_transform(yaml_document_t *doc, yaml_node_t *node) {
-    assert(node->type == YAML_MAPPING_NODE);
+    //assert(node->type == YAML_MAPPING_NODE);
+    string tag((char *)node->tag);
+    if (tag == "!translate") {
+        auto seq = get_sequence<float, 3>(doc, node);
+        return Transform::translate(seq[0], seq[1], seq[2]);
+    } else if (tag == "!scale") {
+        auto seq = get_sequence<float, 3>(doc, node);
+        return Transform::scale(seq[0], seq[1], seq[2]);
+    }
     return Transform::translate(0.0, 0.0, 0.0);
 }
 
