@@ -16,11 +16,13 @@ namespace gill {
 class Parser {
 public:
     Parser();
+    Parser(const char *filename);
     ~Parser();
     std::shared_ptr<core::Scene> next_scene();
 
 protected:
     yaml_parser_t _parser;
+    FILE *_input;
 
     std::shared_ptr<core::Scene> parse_scene(yaml_document_t *doc, yaml_node_t *node);
     std::vector<core::Primitive> parse_primitives(yaml_document_t *doc, yaml_node_t *node);

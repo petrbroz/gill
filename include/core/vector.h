@@ -9,7 +9,7 @@
 namespace gill { namespace core {
 
 inline bool almost_zero(float v) {
-    return std::abs(v) < 0.0001;
+    return std::abs(v) < 1e-8;
 }
 
 struct Vector;

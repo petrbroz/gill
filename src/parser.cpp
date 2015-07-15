@@ -34,8 +34,17 @@ Parser::Parser() {
     yaml_parser_set_input_file(&_parser, stdin);
 }
 
+Parser::Parser(const char *filename) {
+    yaml_parser_initialize(&_parser);
+    _input = fopen(filename, "r");
+    yaml_parser_set_input_file(&_parser, _input);
+}
+
 Parser::~Parser() {
     yaml_parser_delete(&_parser);
+    if (_input) {
+        fclose(_input);
+    }
 }
 
 shared_ptr<Scene> Parser::next_scene() {
