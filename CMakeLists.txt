@@ -21,7 +21,3 @@ add_subdirectory(lib)
 add_subdirectory(src)
 add_subdirectory(doc)
 add_subdirectory(test)
-
-set_property(TARGET ${PROJECT_LIB_TARGET} PROPERTY CXX_STANDARD 11)
-set_property(TARGET ${PROJECT_BIN_TARGET} PROPERTY CXX_STANDARD 11)
-set_property(TARGET ${PROJECT_TEST_TARGET} PROPERTY CXX_STANDARD 11)
