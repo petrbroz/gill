@@ -13,6 +13,7 @@
 namespace gill { namespace core {
 
 const int MaxTreeSegments = 64;
+const int KdTreeFileMagic = 0xacc1;
 
 template <typename Geom>
 class KdTree {
@@ -233,6 +234,10 @@ public:
         delete[] overlapping; delete[] below; delete[] above;
     }
 
+    KdTree(const char *filename) {
+        load(filename);
+    }
+
     bool intersect(const std::vector<Geom> &geoms, const Ray &ray, float &t, Intersection *isec) {
         float tmin, tmax;
         if (!total_bounds.intersects(ray, tmin, tmax)) {
@@ -321,6 +326,54 @@ public:
         }
         std::cerr << "}" << std::endl;
     }
+
+    void save(const char *filename) {
+        auto f = fopen(filename, "wb");
+        fwrite(&KdTreeFileMagic, sizeof(KdTreeFileMagic), 1, f);
+        fwrite(&isec_cost, sizeof(isec_cost), 1, f);
+        fwrite(&trav_cost, sizeof(trav_cost), 1, f);
+        fwrite(&max_geoms, sizeof(max_geoms), 1, f);
+        fwrite(&max_depth, sizeof(max_depth), 1, f);
+        fwrite(&total_bounds, sizeof(total_bounds), 1, f);
+        size_t ncount = nodes.size();
+        fwrite(&ncount, sizeof(ncount), 1, f);
+        size_t rcount = geom_refs.size();
+        fwrite(&rcount, sizeof(rcount), 1, f);
+        fwrite(&nodes[0], sizeof(Node), ncount, f);
+        fwrite(&geom_refs[0], sizeof(uint32_t), rcount, f);
+
+        fclose(f);
+    }
+
+    void load(const char *filename) {
+        auto f = fopen(filename, "rb");
+        int magic;
+        fread(&magic, sizeof(KdTreeFileMagic), 1, f);
+        if (magic != KdTreeFileMagic) {
+            std::cerr << "KdTree::load - incorrect magic number" << std::endl;
+            exit(1);
+        }
+        fread(&isec_cost, sizeof(isec_cost), 1, f);
+        fread(&trav_cost, sizeof(trav_cost), 1, f);
+        fread(&max_geoms, sizeof(max_geoms), 1, f);
+        fread(&max_depth, sizeof(max_depth), 1, f);
+        fread(&total_bounds, sizeof(total_bounds), 1, f);
+        size_t ncount, rcount;
+        fread(&ncount, sizeof(size_t), 1, f);
+        fread(&rcount, sizeof(size_t), 1, f);
+        Node *n = new Node[ncount];
+        uint32_t *r = new uint32_t[rcount];
+        fread(n, sizeof(Node), ncount, f);
+        nodes.clear();
+        nodes.insert(nodes.begin(), n, n + ncount);
+        fread(r, sizeof(uint32_t), rcount, f);
+        geom_refs.clear();
+        geom_refs.insert(geom_refs.begin(), r, r + rcount);
+        delete[] r;
+        delete[] n;
+        fclose(f);
+    }
+
 };
 
 }}

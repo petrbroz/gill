@@ -29,6 +29,16 @@ vector<T> get_sequence(yaml_document_t *doc, yaml_node_t *node) {
     return output;
 }
 
+bool file_exists(const string &filename) {
+    auto f = fopen(filename.c_str(), "r");
+    if (f) {
+        fclose(f);
+        return true;
+    } else {
+        return false;
+    }
+}
+
 Parser::Parser() {
     yaml_parser_initialize(&_parser);
     yaml_parser_set_input_file(&_parser, stdin);
@@ -124,7 +134,11 @@ shared_ptr<Mesh> Parser::parse_geometry(yaml_document_t *doc, yaml_node_t *node)
             url = get_scalar<string>(vnode);
         }
     }
-    return Mesh::from_obj_file(url.data());
+    if (file_exists(url + ".mesh") && file_exists(url + ".kdtree")) {
+        return Mesh::from_cache_file(url.c_str());
+    } else {
+        return Mesh::from_obj_file(url.c_str());
+    }
 }
 
 shared_ptr<Material> Parser::parse_material(yaml_document_t *doc, yaml_node_t *node) {

@@ -29,7 +29,7 @@ public:
             Normal n;
         };
 
-        std::shared_ptr<Mesh> mesh;
+        Mesh *mesh;
         int i1, i2, i3;
 
         BBox bounds() const;
@@ -51,7 +51,10 @@ public:
 
     BBox bounds() const;
     bool intersect(const Ray &ray, float &t, Intersection *i) const;
+    void save(const char *filename);
+    void load(const char *filename);
     static std::shared_ptr<Mesh> from_obj_file(const char *filename);
+    static std::shared_ptr<Mesh> from_cache_file(const char *filename);
     friend std::ostream& operator<<(std::ostream& out, const Mesh& mesh);
 
 protected:
