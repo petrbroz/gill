@@ -1,0 +1,14 @@
+# Basic scene example
+primitives:
+  - geometry: !mesh { url: obj/bunny.obj }
+    material: !diffuse { color: [255, 255, 255] }
+    transform: !scale [1.0, 1.0, 1.0]
+camera:
+  position: [0.0, 0.1, -1.0]
+  look_at: [0, 10.0, 1000.0]
+  field_of_view: 90.0
+  film:
+    resolution: [256, 256]
+settings:
+  renderer: !metropolis { samples_per_pixel: 128, direct_samples: 8 }
+  sampler: !low_discrepancy { pixel_samples: 4 }

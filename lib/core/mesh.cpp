@@ -5,6 +5,7 @@
 #include <string>
 #include <regex>
 #include <vector>
+#include <ctime>
 
 namespace gill { namespace core {
 
@@ -70,6 +71,7 @@ bool Mesh::intersect(const Ray &ray, float &t, Mesh::Intersection *mi) const {
 }
 
 shared_ptr<Mesh> Mesh::from_obj_file(const char *filename) {
+    auto begin_time = clock();
     ifstream input(filename);
     regex vertex_re("v ([0-9.e-]+) ([0-9.e-]+) ([0-9.e-]+)");
     regex face_re("f ([0-9]*)(?:/[0-9]*)?(?:/[0-9]*)? ([0-9]*)(?:/[0-9]*)?(?:/[0-9]*)? ([0-9]*)(?:/[0-9]*)?(?:/[0-9]*)?");
@@ -85,6 +87,8 @@ shared_ptr<Mesh> Mesh::from_obj_file(const char *filename) {
     }
     mesh->_accelerator.reset(new KdTree<Mesh::Triangle>(mesh->_triangles, 80.0, 10.0, 8, 32));
     mesh->_bounds = mesh->_accelerator->bounds();
+    auto end_time = clock();
+    cerr << "Mesh::from_obj_file " << float(end_time - begin_time) / CLOCKS_PER_SEC << "s" << endl;
     return mesh;
 }
 

@@ -1,3 +1,4 @@
+#include <ctime>
 #include "scene.h"
 
 namespace gill { namespace core {
@@ -14,6 +15,7 @@ BBox Scene::bounds() const {
 }
 
 void Scene::capture() {
+    auto begin_time = clock();
     int xres = _camera._film._xres / 2;
     int yres = _camera._film._yres / 2;
     float t;
@@ -39,6 +41,8 @@ void Scene::capture() {
         }
         cout << endl;
     }
+    auto end_time = clock();
+    cerr << "Scene::capture " << float(end_time - begin_time) / CLOCKS_PER_SEC << "s" << endl;
 }
 
 bool Scene::intersect(const Ray &ray, float &t, Scene::Intersection *si) const {
