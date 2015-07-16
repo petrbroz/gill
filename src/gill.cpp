@@ -15,7 +15,6 @@ int main(int argc, char *argv[]) {
 
     Parser parser(argv[1]);
     while (auto scene = parser.next_scene()) {
-        //cerr << *scene << endl;
         scene->capture();
     }
     return 0;

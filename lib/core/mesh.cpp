@@ -164,7 +164,8 @@ shared_ptr<Mesh> Mesh::from_obj_file(const char *filename) {
     mesh->_accelerator->save(tree_file.c_str());
 
     auto end_time = clock();
-    cerr << "Mesh::from_obj_file " << float(end_time - begin_time) / CLOCKS_PER_SEC << "s" << endl;
+    cerr << "load_time:" << float(end_time - begin_time) / CLOCKS_PER_SEC << "s" << endl;
+    cerr << "triangles:" << mesh->_triangles.size() << endl;
     return mesh;
 }
 
@@ -180,7 +181,8 @@ shared_ptr<Mesh> Mesh::from_cache_file(const char *filename) {
     mesh->_accelerator.reset(new KdTree<Mesh::Triangle>(tree_file.c_str()));
 
     auto end_time = clock();
-    cerr << "Mesh::from_cache_file " << float(end_time - begin_time) / CLOCKS_PER_SEC << "s" << endl;
+    cerr << "load_time:" << float(end_time - begin_time) / CLOCKS_PER_SEC << "s" << endl;
+    cerr << "triangles:" << mesh->_triangles.size() << endl;
     return mesh;
 }
 
