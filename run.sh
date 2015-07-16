@@ -1,9 +1,15 @@
 #!/bin/bash
 
+process()
+{
+    (cd data; ../build/src/gill-cli ${1}.yaml > ../build/${1}.ppm 2> ../build/${1}.log)
+    logs=`cat build/${1}.log`
+    convert build/${1}.ppm -gravity SouthWest -fill White -annotate 0 "$logs" build/${1}.png
+    rm build/${1}.ppm build/${1}.log
+    open build/${1}.png
+}
+
 (cd build; make)
-(cd data; ../build/src/gill-cli walt.yaml > ../build/walt.ppm)
-open build/walt.ppm
-(cd data; ../build/src/gill-cli bunny.yaml > ../build/bunny.ppm)
-open build/bunny.ppm
-(cd data; ../build/src/gill-cli woola.yaml > ../build/woola.ppm)
-open build/woola.ppm
+process walt
+process bunny
+process woola
