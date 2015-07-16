@@ -23,6 +23,7 @@ public:
     static std::shared_ptr<Transform> translate(float dx, float dy, float dz);
     static std::shared_ptr<Transform> scale(const Vector& coefs);
     static std::shared_ptr<Transform> scale(float sx, float sy, float sz);
+    static std::shared_ptr<Transform> rotate(const Vector& axis, float angle);
     friend bool operator==(const Transform &lhs, const Transform &rhs);
     friend bool operator!=(const Transform &lhs, const Transform &rhs);
     friend Transform inverse(const Transform &t);

@@ -44,4 +44,21 @@ shared_ptr<Transform> Transform::scale(float sx, float sy, float sz) {
     return make_shared<Transform>(m, inv);
 }
 
+shared_ptr<Transform> Transform::rotate(const Vector& axis, float angle) {
+    float s = sin(radians(angle));
+    float c = cos(radians(angle));
+    Matrix m(0.0);
+    m.m00 = axis.x * axis.x + (1.0 - axis.x * axis.x) * c;
+    m.m01 = axis.x * axis.y * (1.0 - c) - axis.z * s;
+    m.m02 = axis.x * axis.z * (1.0 - c) + axis.y * s;
+    m.m10 = axis.x * axis.y * (1.0 - c) + axis.z * s;
+    m.m11 = axis.y * axis.y + (1.0 - axis.y * axis.y) * c;
+    m.m12 = axis.y * axis.z * (1.0 - c) - axis.x * s;
+    m.m20 = axis.x * axis.z * (1.0 - c) - axis.y * s;
+    m.m21 = axis.y * axis.z * (1.0 - c) + axis.x * s;
+    m.m22 = axis.z * axis.z + (1.0 - axis.z * axis.z) * c;
+    m.m33 = 1.0;
+    return make_shared<Transform>(m, transpose(m));
+}
+
 }}

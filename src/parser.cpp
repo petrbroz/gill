@@ -155,6 +155,22 @@ shared_ptr<Transform> Parser::parse_transform(yaml_document_t *doc, yaml_node_t 
     } else if (tag == "!scale") {
         auto seq = get_sequence<float, 3>(doc, node);
         return Transform::scale(seq[0], seq[1], seq[2]);
+    } else if (tag == "!rotate") {
+        Vector axis(0.0, 1.0, 0.0);
+        float angle = 0.0;
+        auto map = node->data.mapping;
+        for (auto *item = map.pairs.start; item != map.pairs.top; item++) {
+            auto knode = yaml_document_get_node(doc, item->key);
+            auto vnode = yaml_document_get_node(doc, item->value);
+            string key = get_scalar<string>(knode);
+            if (key == "axis") {
+                auto seq = get_sequence<float, 3>(doc, vnode);
+                axis = Vector(&seq[0]);
+            } else if (key == "angle") {
+                angle = get_scalar<float>(vnode);
+            }
+        }
+        return Transform::rotate(axis, angle);
     }
     return Transform::translate(0.0, 0.0, 0.0);
 }

@@ -22,7 +22,7 @@ void Scene::capture() {
     Vector dir = _camera._look_at - _camera._position;
     int res_x = _camera._film._xres;
     int res_y = _camera._film._yres;
-    float dim_x = 2.0 * length(dir) * tan(_camera._fov * 0.5 * 3.14159265 / 180.0);
+    float dim_x = 2.0 * length(dir) * tan(0.5 * radians(_camera._fov));
     float dim_y = dim_x * res_y / res_x;
     float dx = dim_x / res_x;
     float dy = dim_y / res_y;

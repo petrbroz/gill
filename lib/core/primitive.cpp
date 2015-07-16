@@ -21,7 +21,11 @@ bool Primitive::intersect(const Ray &ray, float &t, Primitive::Intersection *i) 
     if (i) {
         mi = &i->mi;
     }
-    return _mesh->intersect(r, t, mi);
+    bool hit = _mesh->intersect(r, t, mi);
+    if (mi) {
+        mi->ti.n = (*_ltow)(mi->ti.n);
+    }
+    return hit;
 }
 
 }}
