@@ -2,6 +2,8 @@
 #include <sstream>
 
 #include "core/parser.h"
+#include "geometry/mesh.h"
+#include "geometry/sphere.h"
 
 namespace gill { namespace core {
 
@@ -102,7 +104,7 @@ vector<Primitive> Parser::parse_primitives(yaml_document_t *doc, yaml_node_t *no
 
 Primitive Parser::parse_primitive(yaml_document_t *doc, yaml_node_t *node) {
     assert(node->type == YAML_MAPPING_NODE);
-    shared_ptr<Mesh> mesh = nullptr;
+    shared_ptr<Geometry> geometry = nullptr;
     shared_ptr<Material> material = nullptr;
     shared_ptr<Transform> transform = nullptr;
     auto map = node->data.mapping;
@@ -111,7 +113,7 @@ Primitive Parser::parse_primitive(yaml_document_t *doc, yaml_node_t *node) {
         auto vnode = yaml_document_get_node(doc, item->value);
         string key = get_scalar<string>(knode);
         if (key == "geometry") {
-            mesh = parse_geometry(doc, vnode);
+            geometry = parse_geometry(doc, vnode);
         } else if (key == "material") {
             material = parse_material(doc, vnode);
         } else if (key == "transform") {
@@ -119,25 +121,43 @@ Primitive Parser::parse_primitive(yaml_document_t *doc, yaml_node_t *node) {
         }
     }
     Transform inv = inverse(*transform);
-    return Primitive(mesh, transform, make_shared<Transform>(inv));
+    return Primitive(geometry, transform, make_shared<Transform>(inv));
 }
 
-shared_ptr<Mesh> Parser::parse_geometry(yaml_document_t *doc, yaml_node_t *node) {
-    assert(node->type == YAML_MAPPING_NODE);
-    string url;
-    auto map = node->data.mapping;
-    for (auto *item = map.pairs.start; item != map.pairs.top; item++) {
-        auto knode = yaml_document_get_node(doc, item->key);
-        auto vnode = yaml_document_get_node(doc, item->value);
-        string key = get_scalar<string>(knode);
-        if (key == "url") {
-            url = get_scalar<string>(vnode);
+shared_ptr<Geometry> Parser::parse_geometry(yaml_document_t *doc, yaml_node_t *node) {
+    string tag((char *)node->tag);
+    if (tag == "!mesh") {
+        assert(node->type == YAML_MAPPING_NODE);
+        string url;
+        auto map = node->data.mapping;
+        for (auto *item = map.pairs.start; item != map.pairs.top; item++) {
+            auto knode = yaml_document_get_node(doc, item->key);
+            auto vnode = yaml_document_get_node(doc, item->value);
+            string key = get_scalar<string>(knode);
+            if (key == "url") {
+                url = get_scalar<string>(vnode);
+            }
         }
-    }
-    if (file_exists(url + ".mesh") && file_exists(url + ".kdtree")) {
-        return Mesh::from_cache_file(url.c_str());
+        if (file_exists(url + ".mesh") && file_exists(url + ".kdtree")) {
+            return Mesh::from_cache_file(url.c_str());
+        } else {
+            return Mesh::from_obj_file(url.c_str());
+        }
+    } else if (tag == "!sphere") {
+        assert(node->type == YAML_MAPPING_NODE);
+        float radius = 1.0;
+        auto map = node->data.mapping;
+        for (auto *item = map.pairs.start; item != map.pairs.top; item++) {
+            auto knode = yaml_document_get_node(doc, item->key);
+            auto vnode = yaml_document_get_node(doc, item->value);
+            string key = get_scalar<string>(knode);
+            if (key == "radius") {
+                radius = get_scalar<float>(vnode);
+            }
+        }
+        return make_shared<Sphere>(radius);
     } else {
-        return Mesh::from_obj_file(url.c_str());
+        return make_shared<Sphere>(0.0);
     }
 }
 

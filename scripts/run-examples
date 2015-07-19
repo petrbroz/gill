@@ -11,6 +11,8 @@ process()
     open build/${1}.png
 }
 
-process walt
-process bunny
-process woola
+for line in `ls data/*.yaml`
+do
+    filename=`basename $line`
+    process ${filename%.*}
+done
