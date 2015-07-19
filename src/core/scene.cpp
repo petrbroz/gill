@@ -64,7 +64,7 @@ bool Scene::intersect(const Ray &ray, float &t, Scene::Intersection *si) const {
     if (si) {
         pi = &(si->pi);
     }
-    t = -Infinity;
+    t = Infinity;
     return _accelerator->intersect(_primitives, ray, t, pi);
 }
 

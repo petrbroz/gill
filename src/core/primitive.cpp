@@ -22,7 +22,7 @@ bool Primitive::intersect(const Ray &ray, float &t, Primitive::Intersection *i) 
         gi = &i->gi;
     }
     bool hit = _geom->intersect(r, t, gi);
-    if (gi) {
+    if (hit && gi) {
         gi->p = (*_ltow)(gi->p);
         gi->n = (*_ltow)(gi->n);
     }

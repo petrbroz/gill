@@ -253,19 +253,14 @@ public:
             if (segment.node->is_leaf()) {
                 int geom_index = segment.node->header >> 2;
                 int geom_count = segment.node->geom_count;
-                float _t;
-                t = Infinity;
+                float _t = Infinity;
                 for (int i = geom_index; i < geom_index + geom_count; ++i) {
                     const Geom &geom = geoms[geom_refs[i]];
-                    if (geom.intersect(ray, _t, isec)) {
-                        if (_t < t) {
-                            t = _t;
-                        }
-                    }
-
-                    if (t >= tmin && t <= tmax) {
-                        return true;
-                    }
+                    geom.intersect(ray, _t, isec);
+                }
+                if (_t >= segment.tmin && _t <= segment.tmax) {
+                    t = _t;
+                    return true;
                 }
             } else {
                 float split = segment.node->split;

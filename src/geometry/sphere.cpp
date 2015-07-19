@@ -21,22 +21,22 @@ bool Sphere::intersect(const Ray &ray, float &t, Geometry::Intersection *gi) con
     float b = 2.0 * dot(ro, rd);
     float c = dot(ro, ro) - _radius * _radius;
     float discriminant = b * b - 4 * a * c;
-    t = -Infinity;
+    float _t = +Infinity;
 
     if (discriminant > 0.0) {
         float d = sqrt(discriminant);
         float t1 = 0.5 * (-b + d) / a;
         float t2 = 0.5 * (-b - d) / a;
-        t = std::min(t1, t2);
+        _t = std::min(t1, t2);
     } else if (discriminant == 0.0) {
-        t = -0.5 * b / a;
+        _t = -0.5 * b / a;
     }
 
-    if (t >= 0.0) {
+    if (_t >= 0.0 && _t < t) {
+        t = _t;
         if (gi) {
             gi->p = ray(t);
-            //gi->n = Normal((gi->p - Point(0.0)) / _radius);
-            gi->n = Normal(normalize(gi->p - Point(0.0)));
+            gi->n = Normal((gi->p - Point(0.0)) / _radius);
         }
         return true;
     } else {
