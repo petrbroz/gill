@@ -7,7 +7,9 @@
 #include "core/bbox.h"
 #include "core/ray.h"
 #include "core/vector.h"
-#include "core/mesh.h"
+#include "geometry/geometry.h"
+
+using namespace gill::geometry;
 
 namespace gill { namespace core {
 
@@ -22,20 +24,20 @@ public:
      */
     struct Intersection {
         Primitive *primitive;
-        Mesh::Intersection mi;
+        Geometry::Intersection gi;
         float u, v;
         Vector dpdu, dpdv;
         Normal dndu, dndv;
     };
 
-    Primitive(std::shared_ptr<Mesh> mesh, std::shared_ptr<Transform> ltow, std::shared_ptr<Transform> wtol);
+    Primitive(std::shared_ptr<Geometry> geom, std::shared_ptr<Transform> ltow, std::shared_ptr<Transform> wtol);
     BBox local_bounds() const;
     BBox bounds() const;
     bool intersect(const Ray &ray, float &t, Intersection *i) const;
     friend std::ostream& operator<<(std::ostream &out, const Primitive &primitive);
 
 protected:
-    std::shared_ptr<Mesh> _mesh;
+    std::shared_ptr<Geometry> _geom;
     /// Transformation from local to world coordinate system
     std::shared_ptr<Transform> _ltow;
     /// Transformation from world to local coordinate system
@@ -44,7 +46,7 @@ protected:
 
 inline std::ostream& operator<<(std::ostream &out, const Primitive &primitive) {
     out << "{";
-    out << "\"mesh\":" << *(primitive._mesh) << ",";
+    out << "\"geometry\":" << primitive._geom << ",";
     out << "\"local_to_world\":" << *(primitive._ltow) << ",";
     out << "\"world_to_local\":" << *(primitive._wtol);
     out << "}";

@@ -5,9 +5,9 @@
 #include <vector>
 #include <ctime>
 
-#include "core/mesh.h"
+#include "geometry/mesh.h"
 
-namespace gill { namespace core {
+namespace gill { namespace geometry {
 
 const int MeshFileMagicNum = 0xdeadbeef;
 
@@ -55,7 +55,7 @@ BBox Mesh::bounds() const {
     return _bounds;
 }
 
-bool Mesh::intersect(const Ray &ray, float &t, Mesh::Intersection *mi) const {
+bool Mesh::intersect(const Ray &ray, float &t, Geometry::Intersection *gi) const {
 #ifdef BRUTE_FORCE
     for (const Triangle &triangle : _triangles) {
         if (triangle.intersect(ray, t, nullptr)) {
@@ -64,11 +64,13 @@ bool Mesh::intersect(const Ray &ray, float &t, Mesh::Intersection *mi) const {
     }
     return false;
 #else
-    Mesh::Triangle::Intersection *ti = nullptr;
-    if (mi) {
-        ti = &(mi->ti);
+    Mesh::Triangle::Intersection ti;
+    bool hit = _accelerator->intersect(_triangles, ray, t, &ti);
+    if (gi) {
+        gi->p = ti.p;
+        gi->n = ti.n;
     }
-    return _accelerator->intersect(_triangles, ray, t, ti);
+    return hit;
 #endif
 }
 

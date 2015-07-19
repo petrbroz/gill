@@ -4,26 +4,27 @@ namespace gill { namespace core {
 
 using namespace std;
 
-Primitive::Primitive(shared_ptr<Mesh> mesh, shared_ptr<Transform> ltow, shared_ptr<Transform> wtol)
-    : _mesh(mesh), _ltow(ltow), _wtol(wtol) { }
+Primitive::Primitive(shared_ptr<Geometry> geom, shared_ptr<Transform> ltow, shared_ptr<Transform> wtol)
+    : _geom(geom), _ltow(ltow), _wtol(wtol) { }
 
 BBox Primitive::local_bounds() const {
-    return _mesh->bounds();
+    return _geom->bounds();
 }
 
 BBox Primitive::bounds() const {
-    return (*_ltow)(_mesh->bounds());
+    return (*_ltow)(_geom->bounds());
 }
 
 bool Primitive::intersect(const Ray &ray, float &t, Primitive::Intersection *i) const {
     Ray r = (*_wtol)(ray);
-    Mesh::Intersection *mi = nullptr;
+    Geometry::Intersection *gi = nullptr;
     if (i) {
-        mi = &i->mi;
+        gi = &i->gi;
     }
-    bool hit = _mesh->intersect(r, t, mi);
-    if (mi) {
-        mi->ti.n = (*_ltow)(mi->ti.n);
+    bool hit = _geom->intersect(r, t, gi);
+    if (gi) {
+        gi->p = (*_ltow)(gi->p);
+        gi->n = (*_ltow)(gi->n);
     }
     return hit;
 }

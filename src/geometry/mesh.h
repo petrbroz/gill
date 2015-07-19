@@ -1,5 +1,5 @@
-#ifndef GILL_CORE_MESH_H_
-#define GILL_CORE_MESH_H_
+#ifndef GILL_GEOMETRY_MESH_H_
+#define GILL_GEOMETRY_MESH_H_
 
 #include <vector>
 #include <iostream>
@@ -8,15 +8,18 @@
 #include "core/ray.h"
 #include "core/bbox.h"
 #include "core/kdtree.h"
+#include "geometry/geometry.h"
 
-namespace gill { namespace core {
+using namespace gill::core;
+
+namespace gill { namespace geometry {
 
 /**
  * Geometry represented as a triangular mesh.
  * The geometry always works with local coordinate system. It is the purpose of Primitive
  * to position/orient/scale an instance of the geometry in the scene.
  */
-class Mesh {
+class Mesh : public Geometry {
 public:
 
     /**
@@ -38,20 +41,8 @@ public:
         friend std::ostream& operator<<(std::ostream& out, const Mesh& mesh);
     };
 
-    /**
-     * Collection of data related to a particular mesh intersection.
-     */
-    struct Intersection {
-        std::shared_ptr<Mesh> mesh;
-        Triangle::Intersection ti;
-        float t;
-        float u, v;
-        Vector dpdu, dpdv;
-        Normal dndu, dndv;
-    };
-
-    BBox bounds() const;
-    bool intersect(const Ray &ray, float &t, Intersection *i) const;
+    BBox bounds() const override;
+    bool intersect(const Ray &ray, float &t, Geometry::Intersection *i) const override;
     void save(const char *filename);
     void load(const char *filename);
     static std::shared_ptr<Mesh> from_obj_file(const char *filename);

@@ -7,9 +7,11 @@
 #include "core/camera.h"
 #include "core/film.h"
 #include "core/material.h"
-#include "core/mesh.h"
 #include "core/primitive.h"
 #include "core/scene.h"
+#include "geometry/mesh.h"
+
+using namespace gill::geometry;
 
 namespace gill { namespace core {
 

@@ -44,9 +44,9 @@ void Scene::capture() {
             x += dx;
             Ray ray(_camera._position, normalize(_camera._look_at + right * x + up * y - _camera._position));
             if (intersect(ray, t, &si)) {
-                cout << (int)(si.pi.mi.ti.n.x * 128 + 127) << " ";
-                cout << (int)(si.pi.mi.ti.n.y * 128 + 127) << " ";
-                cout << (int)(si.pi.mi.ti.n.z * 128 + 127) << " ";
+                cout << (int)(si.pi.gi.n.x * 128 + 127) << " ";
+                cout << (int)(si.pi.gi.n.y * 128 + 127) << " ";
+                cout << (int)(si.pi.gi.n.z * 128 + 127) << " ";
             } else {
                 cout << "0 0 0 ";
             }
