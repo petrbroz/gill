@@ -1,11 +1,11 @@
 #include <cassert>
 #include <sstream>
-#include "parser.h"
 
-namespace gill {
+#include "core/parser.h"
+
+namespace gill { namespace core {
 
 using namespace std;
-using namespace core;
 
 template <typename T>
 T get_scalar(yaml_node_t *node) {
@@ -240,4 +240,4 @@ Scene::Settings Parser::parse_settings(yaml_document_t *doc, yaml_node_t *node) 
 }
 */
 
-}
+}}

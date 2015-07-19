@@ -4,8 +4,9 @@
 #include <iostream>
 #include <limits>
 #include <cassert>
-#include "vector.h"
-#include "ray.h"
+
+#include "core/vector.h"
+#include "core/ray.h"
 
 namespace gill { namespace core {
 

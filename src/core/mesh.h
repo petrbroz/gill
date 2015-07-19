@@ -3,10 +3,11 @@
 
 #include <vector>
 #include <iostream>
-#include "vector.h"
-#include "ray.h"
-#include "bbox.h"
-#include "kdtree.h"
+
+#include "core/vector.h"
+#include "core/ray.h"
+#include "core/bbox.h"
+#include "core/kdtree.h"
 
 namespace gill { namespace core {
 

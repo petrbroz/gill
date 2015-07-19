@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "ray.h"
+#include "core/ray.h"
 
 using namespace gill::core;
 

@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "vector.h"
+#include "core/vector.h"
 
 using namespace gill::core;
 

@@ -6,9 +6,9 @@
 #include <cstdint>
 #include <cmath>
 
-#include "vector.h"
-#include "ray.h"
-#include "bbox.h"
+#include "core/vector.h"
+#include "core/ray.h"
+#include "core/bbox.h"
 
 namespace gill { namespace core {
 

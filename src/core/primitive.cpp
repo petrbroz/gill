@@ -1,4 +1,4 @@
-#include "primitive.h"
+#include "core/primitive.h"
 
 namespace gill { namespace core {
 

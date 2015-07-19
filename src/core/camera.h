@@ -2,8 +2,9 @@
 #define GILL_CORE_CAMERA_H_
 
 #include <iostream>
-#include "vector.h"
-#include "film.h"
+
+#include "core/vector.h"
+#include "core/film.h"
 
 namespace gill { namespace core {
 

@@ -1,6 +1,7 @@
 #include <ctime>
 #include <cmath>
-#include "scene.h"
+
+#include "core/scene.h"
 
 namespace gill { namespace core {
 

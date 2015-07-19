@@ -2,11 +2,12 @@
 #define GILL_CORE_PRIMITIVE_H_
 
 #include <iostream>
-#include "transform.h"
-#include "bbox.h"
-#include "ray.h"
-#include "vector.h"
-#include "mesh.h"
+
+#include "core/transform.h"
+#include "core/bbox.h"
+#include "core/ray.h"
+#include "core/vector.h"
+#include "core/mesh.h"
 
 namespace gill { namespace core {
 

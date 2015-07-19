@@ -2,7 +2,8 @@
 #define GILL_CORE_RAY_H_
 
 #include <iostream>
-#include "vector.h"
+
+#include "core/vector.h"
 
 namespace gill { namespace core {
 

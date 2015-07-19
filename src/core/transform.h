@@ -3,10 +3,11 @@
 
 #include <iostream>
 #include <cassert>
-#include "vector.h"
-#include "matrix.h"
-#include "ray.h"
-#include "bbox.h"
+
+#include "core/vector.h"
+#include "core/matrix.h"
+#include "core/ray.h"
+#include "core/bbox.h"
 
 namespace gill { namespace core {
 

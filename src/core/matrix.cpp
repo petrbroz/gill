@@ -1,4 +1,4 @@
-#include "matrix.h"
+#include "core/matrix.h"
 
 namespace gill { namespace core {
 

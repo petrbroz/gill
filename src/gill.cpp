@@ -1,10 +1,6 @@
-#include "parser.h"
-#include "primitive.h"
-#include "mesh.h"
-#include "ray.h"
+#include "core/parser.h"
 
 using namespace std;
-using namespace gill;
 using namespace gill::core;
 
 int main(int argc, char *argv[]) {

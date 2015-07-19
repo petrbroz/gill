@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "matrix.h"
+#include "core/matrix.h"
 
 using namespace gill::core;
 

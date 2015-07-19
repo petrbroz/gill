@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "bbox.h"
+#include "core/bbox.h"
 
 using namespace gill::core;
 

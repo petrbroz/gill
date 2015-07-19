@@ -1,11 +1,11 @@
-#include "mesh.h"
-
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <regex>
 #include <vector>
 #include <ctime>
+
+#include "core/mesh.h"
 
 namespace gill { namespace core {
 
