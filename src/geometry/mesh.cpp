@@ -42,13 +42,17 @@ bool Mesh::Triangle::intersect(const Ray &ray, float &t, Mesh::Triangle::Interse
         return false;
     }
 
-    t = dot(e2, Q) * inv_det;
-    if (i) {
-        i->p = ray(t);
-        i->n = normalize(cross(e1, e2));
+    float _t = dot(e2, Q) * inv_det;
+    if (_t < t) {
+        t = _t;
+        if (i) {
+            i->p = ray(t);
+            i->n = normalize(cross(e1, e2));
+        }
+        return true;
+    } else {
+        return false;
     }
-
-    return true;
 }
 
 BBox Mesh::bounds() const {
