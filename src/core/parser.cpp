@@ -4,6 +4,7 @@
 #include "core/parser.h"
 #include "geometry/mesh.h"
 #include "geometry/sphere.h"
+#include "geometry/plane.h"
 
 namespace gill { namespace core {
 
@@ -156,6 +157,8 @@ shared_ptr<Geometry> Parser::parse_geometry(yaml_document_t *doc, yaml_node_t *n
             }
         }
         return make_shared<Sphere>(radius);
+    } else if (tag == "!plane") {
+        return make_shared<Plane>();
     } else {
         return make_shared<Sphere>(0.0);
     }
