@@ -170,32 +170,63 @@ shared_ptr<Material> Parser::parse_material(yaml_document_t *doc, yaml_node_t *n
 }
 
 shared_ptr<Transform> Parser::parse_transform(yaml_document_t *doc, yaml_node_t *node) {
-    //assert(node->type == YAML_MAPPING_NODE);
-    string tag((char *)node->tag);
-    if (tag == "!translate") {
-        auto seq = get_sequence<float, 3>(doc, node);
-        return Transform::translate(seq[0], seq[1], seq[2]);
-    } else if (tag == "!scale") {
-        auto seq = get_sequence<float, 3>(doc, node);
-        return Transform::scale(seq[0], seq[1], seq[2]);
-    } else if (tag == "!rotate") {
-        Vector axis(0.0, 1.0, 0.0);
-        float angle = 0.0;
-        auto map = node->data.mapping;
-        for (auto *item = map.pairs.start; item != map.pairs.top; item++) {
-            auto knode = yaml_document_get_node(doc, item->key);
-            auto vnode = yaml_document_get_node(doc, item->value);
-            string key = get_scalar<string>(knode);
-            if (key == "axis") {
-                auto seq = get_sequence<float, 3>(doc, vnode);
-                axis = Vector(&seq[0]);
-            } else if (key == "angle") {
-                angle = get_scalar<float>(vnode);
-            }
+    if (node->type == YAML_SEQUENCE_NODE) {
+        vector<shared_ptr<Transform>> transforms;
+        auto seq = node->data.sequence;
+        for (auto *item = seq.items.start; item != seq.items.top; item++) {
+            auto inode = yaml_document_get_node(doc, *item);
+            transforms.push_back(parse_transform(doc, inode));
         }
-        return Transform::rotate(axis, angle);
+        return Transform::compose(transforms);
+    } else {
+        string tag((char *)node->tag);
+        if (tag == "!translate") {
+            Vector delta(0.0, 0.0, 0.0);
+            auto map = node->data.mapping;
+            for (auto *item = map.pairs.start; item != map.pairs.top; item++) {
+                auto knode = yaml_document_get_node(doc, item->key);
+                auto vnode = yaml_document_get_node(doc, item->value);
+                string key = get_scalar<string>(knode);
+                if (key == "delta") {
+                    auto seq = get_sequence<float, 3>(doc, vnode);
+                    delta = Vector(&seq[0]);
+                }
+            }
+            return Transform::translate(delta);
+        } else if (tag == "!scale") {
+            Vector coefs(1.0, 1.0, 1.0);
+            auto map = node->data.mapping;
+            for (auto *item = map.pairs.start; item != map.pairs.top; item++) {
+                auto knode = yaml_document_get_node(doc, item->key);
+                auto vnode = yaml_document_get_node(doc, item->value);
+                string key = get_scalar<string>(knode);
+                if (key == "coefs") {
+                    auto seq = get_sequence<float, 3>(doc, vnode);
+                    coefs = Vector(&seq[0]);
+                }
+            }
+            return Transform::scale(coefs);
+        } else if (tag == "!rotate") {
+            Vector axis(0.0, 1.0, 0.0);
+            float angle = 0.0;
+            auto map = node->data.mapping;
+            for (auto *item = map.pairs.start; item != map.pairs.top; item++) {
+                auto knode = yaml_document_get_node(doc, item->key);
+                auto vnode = yaml_document_get_node(doc, item->value);
+                string key = get_scalar<string>(knode);
+                if (key == "axis") {
+                    auto seq = get_sequence<float, 3>(doc, vnode);
+                    axis = Vector(&seq[0]);
+                } else if (key == "angle") {
+                    angle = get_scalar<float>(vnode);
+                }
+            }
+            return Transform::rotate(axis, angle);
+        } else if (tag == "!identity") {
+            return make_shared<Transform>();
+        }
+        return make_shared<Transform>();
     }
-    return Transform::translate(0.0, 0.0, 0.0);
 }
 
 Camera Parser::parse_camera(yaml_document_t *doc, yaml_node_t *node) {

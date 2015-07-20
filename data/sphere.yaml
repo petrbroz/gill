@@ -1,67 +1,69 @@
 primitives:
   - geometry: !sphere { radius: 0.1 }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !translate [-1.0, -1.0, -1.0]
+    transform: !translate { delta: [-1.0, -1.0, -1.0] }
   - geometry: !sphere { radius: 0.1 }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !translate [-0.9, -0.9, -0.9]
+    transform: !translate { delta: [-0.9, -0.9, -0.9] }
   - geometry: !sphere { radius: 0.1 }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !translate [-0.8, -0.8, -0.8]
+    transform: !translate { delta: [-0.8, -0.8, -0.8] }
   - geometry: !sphere { radius: 0.1 }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !translate [-0.7, -0.7, -0.7]
+    transform: !translate { delta: [-0.7, -0.7, -0.7] }
   - geometry: !sphere { radius: 0.1 }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !translate [-0.6, -0.6, -0.6]
+    transform: !translate { delta: [-0.6, -0.6, -0.6] }
   - geometry: !sphere { radius: 0.1 }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !translate [-0.5, -0.5, -0.5]
+    transform: !translate { delta: [-0.5, -0.5, -0.5] }
   - geometry: !sphere { radius: 0.1 }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !translate [-0.4, -0.4, -0.4]
+    transform: !translate { delta: [-0.4, -0.4, -0.4] }
   - geometry: !sphere { radius: 0.1 }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !translate [-0.3, -0.3, -0.3]
+    transform: !translate { delta: [-0.3, -0.3, -0.3] }
   - geometry: !sphere { radius: 0.1 }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !translate [-0.2, -0.2, -0.2]
+    transform: !translate { delta: [-0.2, -0.2, -0.2] }
   - geometry: !sphere { radius: 0.1 }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !translate [-0.1, -0.1, -0.1]
+    transform: !translate { delta: [-0.1, -0.1, -0.1] }
   - geometry: !sphere { radius: 0.1 }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !translate [0.0, 0.0, 0.0]
+    transform: !translate { delta: [0.0, 0.0, 0.0] }
   - geometry: !sphere { radius: 0.1 }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !translate [0.1, 0.1, 0.1]
+    transform: !translate { delta: [0.1, 0.1, 0.1] }
   - geometry: !sphere { radius: 0.1 }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !translate [0.2, 0.2, 0.2]
+    transform: !translate { delta: [0.2, 0.2, 0.2] }
   - geometry: !sphere { radius: 0.1 }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !translate [0.3, 0.3, 0.3]
+    transform: !translate { delta: [0.3, 0.3, 0.3] }
   - geometry: !sphere { radius: 0.1 }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !translate [0.4, 0.4, 0.4]
+    transform: !translate { delta: [0.4, 0.4, 0.4] }
   - geometry: !sphere { radius: 0.1 }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !translate [0.5, 0.5, 0.5]
+    transform: !translate { delta: [0.5, 0.5, 0.5] }
   - geometry: !sphere { radius: 0.1 }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !translate [0.6, 0.6, 0.6]
+    transform: !translate { delta: [0.6, 0.6, 0.6] }
   - geometry: !sphere { radius: 0.1 }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !translate [0.7, 0.7, 0.7]
+    transform: !translate { delta: [0.7, 0.7, 0.7] }
   - geometry: !sphere { radius: 0.1 }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !translate [0.8, 0.8, 0.8]
+    transform: !translate { delta: [0.8, 0.8, 0.8] }
   - geometry: !sphere { radius: 0.1 }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !translate [0.9, 0.9, 0.9]
+    transform: !translate { delta: [0.9, 0.9, 0.9] }
   - geometry: !sphere { radius: 0.1 }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !translate [1.0, 1.0, 1.0]
+    transform:
+      - !scale { coefs: [2.0, 2.0, 2.0] }
+      - !translate { delta: [1.0, 1.0, 1.0] }
 camera:
   position: [0.0, 0.0, -2.0]
   look_at: [0.0, 0.0, 0.0]

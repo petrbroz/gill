@@ -1,7 +1,7 @@
 primitives:
   - geometry: !mesh { url: obj/woola.obj }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !scale [1.0, 1.0, 1.0]
+    transform: !identity {}
 camera:
   position: [-3.0, 0.0, -3.0]
   look_at: [0.0, 0.0, 0.0]

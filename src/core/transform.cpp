@@ -61,4 +61,15 @@ shared_ptr<Transform> Transform::rotate(const Vector& axis, float angle) {
     return make_shared<Transform>(m, transpose(m));
 }
 
+shared_ptr<Transform> Transform::compose(vector<shared_ptr<Transform>> transforms) {
+    Matrix m = Identity, inv = Identity;
+    for (auto t = transforms.rbegin(); t != transforms.rend(); t++) {
+        m *= t->get()->_m;
+    }
+    for (auto t = transforms.begin(); t != transforms.end(); t++) {
+        inv *= t->get()->_inv;
+    }
+    return make_shared<Transform>(m, inv);
+}
+
 }}
