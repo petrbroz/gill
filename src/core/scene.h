@@ -9,6 +9,7 @@
 #include "core/kdtree.h"
 #include "core/primitive.h"
 #include "core/ray.h"
+#include "core/spectrum.h"
 
 namespace gill { namespace core {
 

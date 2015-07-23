@@ -8,14 +8,6 @@
 
 namespace gill { namespace core {
 
-inline bool almost_zero(float v) {
-    return std::abs(v) < 1e-8;
-}
-
-inline float radians(float degrees) {
-    return degrees * 3.14159265 / 180.0;
-}
-
 struct Vector;
 struct Point;
 struct Normal;
