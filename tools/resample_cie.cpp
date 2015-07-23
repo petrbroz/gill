@@ -7,7 +7,7 @@ using namespace gill::core;
 
 const int NumSamples = 471;
 
-const float X[NumSamples] = {
+const float CIEX[NumSamples] = {
     0.0001299000f, 0.0001458470f, 0.0001638021f, 0.0001840037f,
     0.0002066902f,  0.0002321000f,  0.0002607280f,  0.0002930750f,
     0.0003293880f,  0.0003699140f,  0.0004149000f,  0.0004641587f,
@@ -128,7 +128,7 @@ const float X[NumSamples] = {
     0.000001439440f, 0.000001341977f, 0.000001251141f
 };
 
-const float Y[NumSamples] = {
+const float CIEY[NumSamples] = {
     0.000003917000f,  0.000004393581f,  0.000004929604f,  0.000005532136f,
     0.000006208245f,  0.000006965000f,  0.000007813219f,  0.000008767336f,
     0.000009839844f,  0.00001104323f,  0.00001239000f,  0.00001388641f,
@@ -249,7 +249,7 @@ const float Y[NumSamples] = {
     0.0000005198080f, 0.0000004846123f, 0.0000004518100f
 };
 
-const float Z[NumSamples] = {
+const float CIEZ[NumSamples] = {
     0.0006061000f,  0.0006808792f,  0.0007651456f,  0.0008600124f,
     0.0009665928f,  0.001086000f,  0.001220586f,  0.001372729f,
     0.001543579f,  0.001734286f,  0.001946000f,  0.002177777f,
@@ -412,36 +412,25 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    float *cie_x = new float[SPECTRUM_RES];
-    float *cie_y = new float[SPECTRUM_RES];
-    float *cie_z = new float[SPECTRUM_RES];
-    resample(Wavelengths, X, NumSamples, cie_x, SPECTRUM_MIN, SPECTRUM_MAX, SPECTRUM_RES);
-    resample(Wavelengths, Y, NumSamples, cie_y, SPECTRUM_MIN, SPECTRUM_MAX, SPECTRUM_RES);
-    resample(Wavelengths, Z, NumSamples, cie_z, SPECTRUM_MIN, SPECTRUM_MAX, SPECTRUM_RES);
-
     ofstream output(argv[1]);
     if (!output) {
         cerr << "Could not open " << argv[1] << endl;
         return -1;
     }
-    output << "const float CIEX[SPECTRUM_RES] = {" << cie_x[0];
-    for (int i = 1; i < SPECTRUM_RES; ++i) {
-        output << ", " << cie_x[i];
-    }
-    output << "};" << endl;
-    output << "const float CIEY[SPECTRUM_RES] = {" << cie_y[0];
-    for (int i = 1; i < SPECTRUM_RES; ++i) {
-        output << ", " << cie_y[i];
-    }
-    output << "};" << endl;
-    output << "const float CIEZ[SPECTRUM_RES] = {" << cie_z[0];
-    for (int i = 1; i < SPECTRUM_RES; ++i) {
-        output << ", " << cie_z[i];
-    }
-    output << "};" << endl;
+    float *resampled = new float[SPECTRUM_RES];
 
-    delete[] cie_x;
-    delete[] cie_y;
-    delete[] cie_z;
+#define process(arr)                                                                                \
+    resample(Wavelengths, (arr), NumSamples, resampled, SPECTRUM_MIN, SPECTRUM_MAX, SPECTRUM_RES);  \
+    output << "const float " #arr "[SPECTRUM_RES] = {" << resampled[0];                             \
+    for (int i = 1; i < SPECTRUM_RES; ++i) {                                                        \
+        output << ", " << resampled[i];                                                             \
+    }                                                                                               \
+    output << "};" << endl;                                                                         \
+
+    process(CIEX)
+    process(CIEY)
+    process(CIEZ)
+
+    delete[] resampled;
     return 0;
 }

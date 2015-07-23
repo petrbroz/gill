@@ -13,5 +13,7 @@ SampledSpectrum SampledSpectrum::from_samples(const float *wavelengths, const fl
 
 // Precomputed CIE XYZ spectra
 #include "_cie.h"
+// Precomputed RGB reflectance/illumination spectra
+#include "_rgb.h"
 
 }}

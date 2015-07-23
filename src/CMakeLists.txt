@@ -7,13 +7,22 @@ set_property(TARGET resample_cie PROPERTY CXX_STANDARD 11)
 add_custom_command(
     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/_cie.h
     COMMAND resample_cie ${CMAKE_CURRENT_BINARY_DIR}/_cie.h
-    DEPENDS resample_cie
-)
+    DEPENDS resample_cie)
+add_executable(resample_rgb "${PROJECT_SOURCE_DIR}/tools/resample_rgb.cpp" "core/math.cpp")
+set_property(TARGET resample_rgb PROPERTY CXX_STANDARD 11)
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/_rgb.h
+    COMMAND resample_rgb ${CMAKE_CURRENT_BINARY_DIR}/_rgb.h
+    DEPENDS resample_rgb)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 file(GLOB_RECURSE LIB_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
 list(REMOVE_ITEM LIB_FILES "gill.cpp")
-add_library(${PROJECT_LIB_TARGET} STATIC ${LIB_FILES} ${CMAKE_CURRENT_BINARY_DIR}/_cie.h)
+add_library(
+    ${PROJECT_LIB_TARGET}
+    STATIC ${LIB_FILES}
+    ${CMAKE_CURRENT_BINARY_DIR}/_cie.h
+    ${CMAKE_CURRENT_BINARY_DIR}/_rgb.h)
 target_link_libraries(${PROJECT_LIB_TARGET} ${LIBYAML_LIBRARIES})
 set_property(TARGET ${PROJECT_LIB_TARGET} PROPERTY CXX_STANDARD 11)
 
