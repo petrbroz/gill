@@ -431,6 +431,16 @@ int main(int argc, char *argv[]) {
     process(CIEY)
     process(CIEZ)
 
+    float sum_ciex = 0.0, sum_ciey = 0.0, sum_ciez = 0.0;
+    for (int i = 1; i < NumSamples; ++i) {
+        sum_ciex += CIEX[i];
+        sum_ciey += CIEY[i];
+        sum_ciez += CIEZ[i];
+    }
+    output << "const float CIEXIntegral = " << sum_ciex << ";" << endl;
+    output << "const float CIEYIntegral = " << sum_ciey << ";" << endl;
+    output << "const float CIEZIntegral = " << sum_ciez << ";" << endl;
+
     delete[] resampled;
     return 0;
 }
