@@ -1,14 +1,18 @@
 #include <cassert>
 #include <sstream>
+#include <stdexcept>
 
 #include "core/parser.h"
 #include "geometry/mesh.h"
 #include "geometry/sphere.h"
 #include "geometry/plane.h"
+#include "camera/perspective.h"
 
 namespace gill { namespace core {
 
 using namespace std;
+using namespace gill::geometry;
+using namespace gill::camera;
 
 template <typename T>
 T get_scalar(yaml_node_t *node) {
@@ -75,7 +79,7 @@ shared_ptr<Scene> Parser::next_scene() {
 shared_ptr<Scene> Parser::parse_scene(yaml_document_t *doc, yaml_node_t *node) {
     assert(node->type == YAML_MAPPING_NODE);
     vector<Primitive> primitives;
-    Camera camera(Point(0.0), Point(0.0), 90.0, Film(0, 0));
+    shared_ptr<Camera> camera = nullptr;
     auto map = node->data.mapping;
     for (auto *item = map.pairs.start; item != map.pairs.top; item++) {
         auto knode = yaml_document_get_node(doc, item->key);
@@ -222,6 +226,27 @@ shared_ptr<Transform> Parser::parse_transform(yaml_document_t *doc, yaml_node_t 
                 }
             }
             return Transform::rotate(axis, angle);
+        } else if (tag == "!look_at") {
+            Vector position(0.0, 0.0, 0.0);
+            Vector target(0.0, 0.0, 1.0);
+            Vector up(0.0, 1.0, 0.0);
+            auto map = node->data.mapping;
+            for (auto *item = map.pairs.start; item != map.pairs.top; item++) {
+                auto knode = yaml_document_get_node(doc, item->key);
+                auto vnode = yaml_document_get_node(doc, item->value);
+                string key = get_scalar<string>(knode);
+                if (key == "position") {
+                    auto seq = get_sequence<float, 3>(doc, vnode);
+                    position = Vector(&seq[0]);
+                } else if (key == "target") {
+                    auto seq = get_sequence<float, 3>(doc, vnode);
+                    target = Vector(&seq[0]);
+                } else if (key == "up") {
+                    auto seq = get_sequence<float, 3>(doc, vnode);
+                    up = Vector(&seq[0]);
+                }
+            }
+            return Transform::look_at(position, target, up);
         } else if (tag == "!identity") {
             return make_shared<Transform>();
         }
@@ -229,33 +254,38 @@ shared_ptr<Transform> Parser::parse_transform(yaml_document_t *doc, yaml_node_t 
     }
 }
 
-Camera Parser::parse_camera(yaml_document_t *doc, yaml_node_t *node) {
-    assert(node->type == YAML_MAPPING_NODE);
-    Point position;
-    Point look_at;
-    float fov;
-    Film film(0, 0);
-    auto map = node->data.mapping;
-    for (auto *item = map.pairs.start; item != map.pairs.top; item++) {
-        auto knode = yaml_document_get_node(doc, item->key);
-        auto vnode = yaml_document_get_node(doc, item->value);
-        string key = get_scalar<string>(knode);
-        if (key == "position") {
-            auto seq = get_sequence<float, 3>(doc, vnode);
-            position = Point(&seq[0]);
-        } else if (key == "look_at") {
-            auto seq = get_sequence<float, 3>(doc, vnode);
-            look_at = Point(&seq[0]);
-        } else if (key == "field_of_view") {
-            fov = get_scalar<float>(vnode);
-        } else if (key == "film") {
-            film = parse_film(doc, vnode);
+shared_ptr<Camera> Parser::parse_camera(yaml_document_t *doc, yaml_node_t *node) {
+    string tag((char *)node->tag);
+    if (tag == "!perspective") {
+        assert(node->type == YAML_MAPPING_NODE);
+        shared_ptr<Transform> transform = nullptr;
+        shared_ptr<Film> film = nullptr;
+        float field_of_view = 60.0;
+        float lens_radius = 1.0;
+        float focal_distance = 100.0;
+        auto map = node->data.mapping;
+        for (auto *item = map.pairs.start; item != map.pairs.top; item++) {
+            auto knode = yaml_document_get_node(doc, item->key);
+            auto vnode = yaml_document_get_node(doc, item->value);
+            string key = get_scalar<string>(knode);
+            if (key == "transform") {
+                transform = parse_transform(doc, vnode);
+            } else if (key == "field_of_view") {
+                field_of_view = get_scalar<float>(vnode);
+            } else if (key == "lens_radius") {
+                lens_radius = get_scalar<float>(vnode);
+            } else if (key == "focal_distance") {
+                focal_distance = get_scalar<float>(vnode);
+            } else if (key == "film") {
+                film = parse_film(doc, vnode);
+            }
         }
+        return make_shared<PerspectiveCamera>(transform, film, field_of_view, lens_radius, focal_distance);
     }
-    return Camera(position, look_at, fov, film);
+    throw std::runtime_error("unknown camera type");
 }
 
-Film Parser::parse_film(yaml_document_t *doc, yaml_node_t *node) {
+shared_ptr<Film> Parser::parse_film(yaml_document_t *doc, yaml_node_t *node) {
     assert(node->type == YAML_MAPPING_NODE);
     int xres = 0, yres = 0;
     auto map = node->data.mapping;
@@ -269,7 +299,7 @@ Film Parser::parse_film(yaml_document_t *doc, yaml_node_t *node) {
             yres = seq[1];
         }
     }
-    return Film(xres, yres);
+    return make_shared<Film>(xres, yres);
 }
 
 /*

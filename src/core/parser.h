@@ -32,8 +32,8 @@ protected:
     std::shared_ptr<Geometry> parse_geometry(yaml_document_t *doc, yaml_node_t *node);
     std::shared_ptr<Material> parse_material(yaml_document_t *doc, yaml_node_t *node);
     std::shared_ptr<Transform> parse_transform(yaml_document_t *doc, yaml_node_t *node);
-    Camera parse_camera(yaml_document_t *doc, yaml_node_t *node);
-    Film parse_film(yaml_document_t *doc, yaml_node_t *node);
+    std::shared_ptr<Camera> parse_camera(yaml_document_t *doc, yaml_node_t *node);
+    std::shared_ptr<Film> parse_film(yaml_document_t *doc, yaml_node_t *node);
     //Scene::Settings parse_settings(yaml_document_t *doc, yaml_node_t *node);
 };
 

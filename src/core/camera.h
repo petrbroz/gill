@@ -3,32 +3,39 @@
 
 #include <iostream>
 
-#include "core/vector.h"
+#include "core/transform.h"
 #include "core/film.h"
 
 namespace gill { namespace core {
 
 class Camera {
 public:
-    Point _position;
-    Point _look_at;
-    float _fov;
-    Film _film;
+    struct Sample {
+        float image_x, image_y;
+        float lens_u, lens_v;
+    };
 
-    Camera(const Point &position, const Point &look_at, float fov, const Film &film)
-        : _position(position), _look_at(look_at), _fov(fov), _film(film) {}
-    friend std::ostream& operator<<(std::ostream& out, const Camera& camera);
+    Camera(std::shared_ptr<Transform> ltow, std::shared_ptr<Film> film);
+    virtual Ray generate_ray(const Sample &sample) const = 0;
+
+    std::shared_ptr<Film> _film;
+protected:
+    std::shared_ptr<Transform> _ltow;
 };
 
-inline std::ostream& operator<<(std::ostream &out, const Camera &camera) {
-    out << "{";
-    out << "\"position\":" << camera._position << ",";
-    out << "\"look_at\":" << camera._look_at << ",";
-    out << "\"fov\":" << camera._fov << ",";
-    out << "\"film\":" << camera._film;
-    out << "}";
-    return out;
-}
+class ProjectiveCamera : public Camera {
+public:
+    ProjectiveCamera(std::shared_ptr<Transform> ltow, std::shared_ptr<Transform> projection,
+            float lens_radius, float focal_dist, std::shared_ptr<Film> film);
+
+protected:
+    float _lens_radius;
+    float _focal_dist;
+    std::shared_ptr<Transform> _cam_to_screen;
+    std::shared_ptr<Transform> _screen_to_film;
+    std::shared_ptr<Transform> _film_to_screen;
+    std::shared_ptr<Transform> _film_to_cam;
+};
 
 }}
 

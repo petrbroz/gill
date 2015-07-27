@@ -19,7 +19,7 @@ public:
         Primitive::Intersection pi;
     };
 
-    Scene(std::vector<Primitive> primitives, Camera camera);
+    Scene(std::vector<Primitive> primitives, std::shared_ptr<Camera> camera);
     BBox bounds() const;
     bool intersect(const Ray &ray, float &t, Intersection *i) const;
     void capture();
@@ -29,7 +29,7 @@ protected:
     std::vector<Primitive> _primitives;
     BBox _bounds;
     std::unique_ptr<KdTree<Primitive>> _accelerator;
-    Camera _camera;
+    std::shared_ptr<Camera> _camera;
 };
 
 inline std::ostream& operator<<(std::ostream &out, const Scene &scene) {

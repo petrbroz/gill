@@ -23,10 +23,11 @@ primitives:
 - geometry: !plane {}
   material: !diffuse { color: [255, 255, 255] }
   transform: !rotate { axis: [1.0, 0.0, 0.0], angle: 160.0 }
-camera:
-  position: [0.0, 0.0, -2.0]
-  look_at: [0.0, 0.0, 0.0]
+camera: !perspective
+  transform: !look_at { position: [0.0, 0.0, -2.0], target: [0.0, 0.0, 0.0] }
   field_of_view: 60.0
+  lens_radius: 0.0
+  focal_distance: 100.0
   film:
     resolution: [512, 512]
 settings:

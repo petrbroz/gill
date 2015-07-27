@@ -7,7 +7,7 @@ namespace gill { namespace core {
 
 using namespace std;
 
-Scene::Scene(std::vector<Primitive> primitives, Camera camera)
+Scene::Scene(std::vector<Primitive> primitives, shared_ptr<Camera> camera)
         : _primitives(primitives), _camera(camera) {
     _accelerator.reset(new KdTree<Primitive>(_primitives, 80.0, 10.0, 8, 32));
 }
@@ -20,29 +20,17 @@ void Scene::capture() {
     auto begin_time = clock();
     float t;
     Scene::Intersection si;
-    Vector dir = _camera._look_at - _camera._position;
-    int res_x = _camera._film._xres;
-    int res_y = _camera._film._yres;
-    float dim_x = 2.0 * length(dir) * tan(0.5 * radians(_camera._fov));
-    float dim_y = dim_x * res_y / res_x;
-    float dx = dim_x / res_x;
-    float dy = dim_y / res_y;
-    float x = -0.5 * dim_x;
-    float y = +0.5 * dim_y;
-    dir = normalize(dir);
-    Vector up(0.0, 1.0, 0.0);
-    Vector right = normalize(cross(up, dir));
-    up = normalize(cross(dir, right));
+
+    int res_x = _camera->_film->_xres;
+    int res_y = _camera->_film->_yres;
 
     cout << "P3" << endl;
     cout << res_x << " " << res_y << endl;
     cout << "255" << endl;
-    for (int i = 0; i < res_y; i += 1) {
-        y -= dy;
-        x = -0.5 * dim_x;
-        for (int j = 0; j < res_x; j += 1) {
-            x += dx;
-            Ray ray(_camera._position, normalize(_camera._look_at + right * x + up * y - _camera._position));
+    for (int y = 0; y < res_y; ++y) {
+        for (int x = 0; x < res_x; ++x) {
+            Camera::Sample sample = {(float)x, (float)(res_y - y), 0.0, 0.0};
+            Ray ray = _camera->generate_ray(sample);
             if (intersect(ray, t, &si)) {
                 Normal n = normalize(si.pi.gi.n);
                 cout << (int)(n.x * 127 + 128) << " ";

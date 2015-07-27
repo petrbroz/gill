@@ -40,6 +40,7 @@ inline std::ostream& operator<<(std::ostream& out, const Matrix& m) {
 }
 
 bool has_nans(const Matrix& m);
+float determinant(const Matrix& m);
 Matrix inverse(const Matrix& m);
 
 inline bool operator==(const Matrix& lhs, const Matrix& rhs) {

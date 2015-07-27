@@ -2,10 +2,11 @@ primitives:
   - geometry: !mesh { url: obj/woola.obj }
     material: !diffuse { color: [255, 255, 255] }
     transform: !identity {}
-camera:
-  position: [-3.0, 0.0, -3.0]
-  look_at: [0.0, 0.0, 0.0]
+camera: !perspective
+  transform: !look_at { position: [-3.0, 0.0, -3.0], target: [0.0, 0.0, 0.0] }
   field_of_view: 60.0
+  lens_radius: 0.0
+  focal_distance: 100.0
   film:
     resolution: [512, 512]
 settings:

@@ -3,10 +3,11 @@ primitives:
   - geometry: !mesh { url: obj/bunny.obj }
     material: !diffuse { color: [255, 255, 255] }
     transform: !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
-camera:
-  position: [0.0, 0.1, -0.25]
-  look_at: [0.01, 0.1, 0.0]
+camera: !perspective
+  transform: !look_at { position: [0.0, 0.1, -0.25], target: [0.0, 0.1, 0.0] }
   field_of_view: 60.0
+  lens_radius: 0.0
+  focal_distance: 100.0
   film:
     resolution: [512, 512]
 settings:

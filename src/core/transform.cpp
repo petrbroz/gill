@@ -1,3 +1,4 @@
+#include <cstdarg>
 #include "core/transform.h"
 
 namespace gill { namespace core {
@@ -47,7 +48,7 @@ shared_ptr<Transform> Transform::scale(float sx, float sy, float sz) {
 shared_ptr<Transform> Transform::rotate(const Vector& axis, float angle) {
     float s = sin(radians(angle));
     float c = cos(radians(angle));
-    Matrix m(0.0);
+    Matrix m = Identity;
     m.m00 = axis.x * axis.x + (1.0 - axis.x * axis.x) * c;
     m.m01 = axis.x * axis.y * (1.0 - c) - axis.z * s;
     m.m02 = axis.x * axis.z * (1.0 - c) + axis.y * s;
@@ -57,11 +58,47 @@ shared_ptr<Transform> Transform::rotate(const Vector& axis, float angle) {
     m.m20 = axis.x * axis.z * (1.0 - c) - axis.y * s;
     m.m21 = axis.y * axis.z * (1.0 - c) + axis.x * s;
     m.m22 = axis.z * axis.z + (1.0 - axis.z * axis.z) * c;
-    m.m33 = 1.0;
     return make_shared<Transform>(m, transpose(m));
 }
 
-shared_ptr<Transform> Transform::compose(vector<shared_ptr<Transform>> transforms) {
+shared_ptr<Transform> Transform::look_at(const Vector &pos, const Vector &target, const Vector &up) {
+    Vector dir = normalize(target - pos);
+    Vector right = cross(normalize(up), dir);
+    if (length_squared(right) == 0) {
+        throw std::domain_error("Cannot compute LookAt transform due to colinear dir and up vectors");
+    }
+    right = normalize(right);
+    Vector _up = normalize(cross(dir, right));
+    Matrix m = Identity;
+    m.m00 = right.x; m.m10 = right.y; m.m20 = right.z;
+    m.m01 = _up.x; m.m11 = _up.y; m.m21 = _up.z;
+    m.m02 = dir.x; m.m12 = dir.y; m.m22 = dir.z;
+    m.m03 = pos.x; m.m13 = pos.y; m.m23 = pos.z;
+    //return make_shared<Transform>(inverse(m), m);
+    return make_shared<Transform>(m);
+}
+
+shared_ptr<Transform> Transform::orthographic(float near, float far) {
+    vector<shared_ptr<Transform>> xforms;
+    xforms.push_back(translate(0.0, 0.0, -near));
+    xforms.push_back(scale(1.0, 1.0, 1.0 / (far - near)));
+    return compose(xforms);
+}
+
+shared_ptr<Transform> Transform::perspective(float fov, float near, float far) {
+    Matrix m = Identity;
+    m.m22 = far / (far - near);
+    m.m23 = -far * near / (far - near);
+    m.m32 = 1.0;
+    m.m33 = 0.0;
+    float inv_tan = 1.0 / tan(0.5 * radians(fov));
+    vector<shared_ptr<Transform>> xforms;
+    xforms.push_back(make_shared<Transform>(m));
+    xforms.push_back(scale(inv_tan, inv_tan, 1.0));
+    return compose(xforms);
+}
+
+shared_ptr<Transform> Transform::compose(const vector<shared_ptr<Transform>> &transforms) {
     Matrix m = Identity, inv = Identity;
     for (auto t = transforms.rbegin(); t != transforms.rend(); t++) {
         m *= t->get()->_m;
