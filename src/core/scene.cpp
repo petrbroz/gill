@@ -1,5 +1,6 @@
 #include <ctime>
 #include <cmath>
+#include <thread>
 
 #include "core/scene.h"
 
@@ -16,43 +17,44 @@ BBox Scene::bounds() const {
     return BBox();
 }
 
-void Scene::capture() {
-    auto begin_time = clock();
+const int samples = 32;
+
+void capture_fragment(const Scene *scene, const Camera *camera, int minx, int miny, int maxx, int maxy) {
     float t;
     Scene::Intersection si;
-
-    int res_x = _camera->_film->_xres;
-    int res_y = _camera->_film->_yres;
-
-    const int samples = 64;
-
-    cout << "P3" << endl;
-    cout << res_x << " " << res_y << endl;
-    cout << "255" << endl;
-    for (int y = 0; y < res_y; ++y) {
-        for (int x = 0; x < res_x; ++x) {
-            int r = 0, g = 0, b = 0;
+    for (int y = miny; y <= maxy; ++y) {
+        for (int x = minx; x <= maxx; ++x) {
+            float r = 0.0, g = 0.0, b = 0.0;
             for (int s = 0; s < samples; ++s) {
                 float u = 2.0 * rand() / RAND_MAX - 1.0;
                 float v = 2.0 * rand() / RAND_MAX - 1.0;
-                Camera::Sample sample = {(float)x, (float)(res_y - y), u, v};
-                Ray ray = _camera->generate_ray(sample);
-                if (intersect(ray, t, &si)) {
+                Camera::Sample sample = {(float)x, (float)y, u, v};
+                Ray ray = camera->generate_ray(sample);
+                if (scene->intersect(ray, t, &si)) {
                     Normal n = normalize(si.pi.gi.n);
-                    r += (int)(n.x * 127 + 128);
-                    g += (int)(n.y * 127 + 128);
-                    b += (int)(n.z * 127 + 128);
+                    r += n.x * 0.5 + 0.5;
+                    g += n.y * 0.5 + 0.5;
+                    b += n.z * 0.5 + 0.5;
                 }
             }
-            cout << (r / samples) << " ";
-            cout << (g / samples) << " ";
-            cout << (b / samples) << " ";
+            camera->_film->set_sample(x, y, Spectrum(r / samples, g / samples, b / samples));
         }
-        cout << endl;
     }
+}
+
+void Scene::capture() {
+    int res_x = _camera->_film->_xres;
+    int res_y = _camera->_film->_yres;
+    auto begin_time = clock();
+    thread t1(capture_fragment, this, _camera.get(), 0, 0, 255, 255);
+    thread t2(capture_fragment, this, _camera.get(), 256, 0, 511, 255);
+    thread t3(capture_fragment, this, _camera.get(), 0, 256, 255, 511);
+    thread t4(capture_fragment, this, _camera.get(), 256, 256, 511, 511);
+    t1.join(); t2.join(); t3.join(); t4.join();
     auto end_time = clock();
+    _camera->_film->print_ppm();
     cerr << "resolution:[" << res_x << "," << res_y << "]" << endl;
-    cerr << "samples_per_pixel:1" << endl;
+    cerr << "samples_per_pixel:" << samples << endl;
     cerr << "render_time:" << float(end_time - begin_time) / CLOCKS_PER_SEC << "s" << endl;
 }
 

@@ -160,11 +160,17 @@ inline void rgb_to_xyz(const float rgb[3], float xyz[3]) {
 }
 
 class RGB : public CoefficientSpectrum<3> {
+public:
+    RGB(float r = 0.0, float g = 0.0, float b = 0.0) {
+        c[0] = r; c[1] = g; c[2] = b;
+    }
 };
 
 
 class XYZ : public CoefficientSpectrum<3> {
 };
+
+typedef RGB Spectrum;
 
 }}
 
