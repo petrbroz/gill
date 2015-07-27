@@ -6,8 +6,8 @@ primitives:
 camera: !perspective
   transform: !look_at { position: [0.0, 0.1, -0.25], target: [0.0, 0.1, 0.0] }
   field_of_view: 60.0
-  lens_radius: 0.0
-  focal_distance: 100.0
+  lens_radius: 0.01
+  focal_distance: 0.25
   film:
     resolution: [512, 512]
 settings:
