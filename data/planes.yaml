@@ -30,6 +30,6 @@ camera: !perspective
   focal_distance: 2.0
   film:
     resolution: [512, 512]
-settings:
-  renderer: !metropolis { samples_per_pixel: 128, direct_samples: 8 }
-  sampler: !low_discrepancy { pixel_samples: 4 }
+renderer: !sampler
+  samples_per_pixel: 256
+  thread_tiles: [2, 2]

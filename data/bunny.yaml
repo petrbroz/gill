@@ -2,14 +2,15 @@
 primitives:
   - geometry: !mesh { url: obj/bunny.obj }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
+    transform:
+      - !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
 camera: !perspective
   transform: !look_at { position: [0.0, 0.1, -0.25], target: [0.0, 0.1, 0.0] }
   field_of_view: 60.0
-  lens_radius: 0.01
-  focal_distance: 0.25
+  lens_radius: 0.02
+  focal_distance: 0.2
   film:
     resolution: [512, 512]
-settings:
-  renderer: !metropolis { samples_per_pixel: 128, direct_samples: 8 }
-  sampler: !low_discrepancy { pixel_samples: 4 }
+renderer: !sampler
+  samples_per_pixel: 256
+  thread_tiles: [2, 2]

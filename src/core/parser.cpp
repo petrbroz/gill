@@ -7,12 +7,14 @@
 #include "geometry/sphere.h"
 #include "geometry/plane.h"
 #include "camera/perspective.h"
+#include "renderer/sampler.h"
 
 namespace gill { namespace core {
 
 using namespace std;
 using namespace gill::geometry;
 using namespace gill::camera;
+using namespace gill::renderer;
 
 template <typename T>
 T get_scalar(yaml_node_t *node) {
@@ -78,25 +80,26 @@ shared_ptr<Scene> Parser::next_scene() {
 
 shared_ptr<Scene> Parser::parse_scene(yaml_document_t *doc, yaml_node_t *node) {
     assert(node->type == YAML_MAPPING_NODE);
-    vector<Primitive> primitives;
+    shared_ptr<Aggregate> aggregate = nullptr;
     shared_ptr<Camera> camera = nullptr;
+    shared_ptr<Renderer> renderer = nullptr;
     auto map = node->data.mapping;
     for (auto *item = map.pairs.start; item != map.pairs.top; item++) {
         auto knode = yaml_document_get_node(doc, item->key);
         auto vnode = yaml_document_get_node(doc, item->value);
         string key = get_scalar<string>(knode);
         if (key == "primitives") {
-            primitives = parse_primitives(doc, vnode);
+            aggregate = parse_primitives(doc, vnode);
         } else if (key == "camera") {
             camera = parse_camera(doc, vnode);
-        } else if (key == "settings") {
-            //settings = parse_settings(doc, vnode);
+        } else if (key == "renderer") {
+            renderer = parse_renderer(doc, vnode);
         }
     }
-    return make_shared<Scene>(primitives, camera);
+    return make_shared<Scene>(aggregate, camera, renderer);
 }
 
-vector<Primitive> Parser::parse_primitives(yaml_document_t *doc, yaml_node_t *node) {
+shared_ptr<Aggregate> Parser::parse_primitives(yaml_document_t *doc, yaml_node_t *node) {
     assert(node->type == YAML_SEQUENCE_NODE);
     vector<Primitive> primitives;
     auto seq = node->data.sequence;
@@ -104,7 +107,7 @@ vector<Primitive> Parser::parse_primitives(yaml_document_t *doc, yaml_node_t *no
         auto inode = yaml_document_get_node(doc, *item);
         primitives.push_back(parse_primitive(doc, inode));
     }
-    return primitives;
+    return make_shared<Aggregate>(primitives);
 }
 
 Primitive Parser::parse_primitive(yaml_document_t *doc, yaml_node_t *node) {
@@ -302,26 +305,28 @@ shared_ptr<Film> Parser::parse_film(yaml_document_t *doc, yaml_node_t *node) {
     return make_shared<Film>(xres, yres);
 }
 
-/*
-Scene::Settings Parser::parse_settings(yaml_document_t *doc, yaml_node_t *node) {
-    assert(node->type == YAML_MAPPING_NODE);
-    Scene::Settings settings;
-    settings.frame[0] = -128;
-    settings.frame[1] = -128;
-    settings.frame[2] = +128;
-    settings.frame[3] = +128;
-    auto map = node->data.mapping;
-    for (auto *item = map.pairs.start; item != map.pairs.top; item++) {
-        auto knode = yaml_document_get_node(doc, item->key);
-        auto vnode = yaml_document_get_node(doc, item->value);
-        string key = get_scalar<string>(knode);
-        if (key == "frame") {
-            auto seq = get_sequence<int, 4>(doc, vnode);
-            copy(seq.begin(), seq.end(), settings.frame);
+shared_ptr<Renderer> Parser::parse_renderer(yaml_document_t *doc, yaml_node_t *node) {
+    string tag((char *)node->tag);
+    if (tag == "!sampler") {
+        assert(node->type == YAML_MAPPING_NODE);
+        int samples_per_pixel = 1;
+        int thread_tiles[2] = {1, 1};
+        auto map = node->data.mapping;
+        for (auto *item = map.pairs.start; item != map.pairs.top; item++) {
+            auto knode = yaml_document_get_node(doc, item->key);
+            auto vnode = yaml_document_get_node(doc, item->value);
+            string key = get_scalar<string>(knode);
+            if (key == "samples_per_pixel") {
+                samples_per_pixel = get_scalar<int>(vnode);
+            } else if (key == "thread_tiles") {
+                auto seq = get_sequence<int, 2>(doc, vnode);
+                thread_tiles[0] = seq[0];
+                thread_tiles[1] = seq[1];
+            }
         }
+        return make_shared<Sampler>(samples_per_pixel, thread_tiles);
     }
-    return settings;
+    throw std::runtime_error("unknown renderer type");
 }
-*/
 
 }}

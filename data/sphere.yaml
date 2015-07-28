@@ -61,9 +61,7 @@ primitives:
     transform: !translate { delta: [0.9, 0.9, 0.9] }
   - geometry: !sphere { radius: 0.1 }
     material: !diffuse { color: [255, 255, 255] }
-    transform:
-      - !scale { coefs: [2.0, 2.0, 2.0] }
-      - !translate { delta: [1.0, 1.0, 1.0] }
+    transform: !translate { delta: [1.0, 1.0, 1.0] }
 camera: !perspective
   transform: !look_at { position: [0.0, 0.0, -2.0], target: [0.0, 0.0, 0.0] }
   field_of_view: 60.0
@@ -71,6 +69,6 @@ camera: !perspective
   focal_distance: 2.0
   film:
     resolution: [512, 512]
-settings:
-  renderer: !metropolis { samples_per_pixel: 128, direct_samples: 8 }
-  sampler: !low_discrepancy { pixel_samples: 4 }
+renderer: !sampler
+  samples_per_pixel: 256
+  thread_tiles: [2, 2]
