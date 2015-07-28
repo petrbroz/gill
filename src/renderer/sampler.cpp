@@ -8,9 +8,7 @@ namespace gill { namespace renderer {
 
 using namespace std;
 
-const int samples = 32;
-
-void render_fragment(const Aggregate *aggregate, const Camera *camera, int minx, int miny, int maxx, int maxy) {
+void render_block(const Aggregate *aggregate, const Camera *camera, int minx, int miny, int maxx, int maxy, int samples) {
     float t;
     Primitive::Intersection pi;
     for (int y = miny; y <= maxy; ++y) {
@@ -53,14 +51,14 @@ void Sampler::render(const Aggregate *aggregate, const Camera *camera) const {
             for (int i = 0; i < _thread_tiles[0]; ++i) {
                 int min_x = i * seg_x;
                 int max_x = (i + 1) * seg_x - 1;
-                threads.push_back(thread(render_fragment, aggregate, camera, min_x, min_y, max_x, max_y));
+                threads.push_back(thread(render_block, aggregate, camera, min_x, min_y, max_x, max_y, _samples_per_pixel));
             }
         }
         for (thread &t : threads) {
             t.join();
         }
     } else {
-        render_fragment(aggregate, camera, 0, 0, res_x - 1, res_y - 1);
+        render_block(aggregate, camera, 0, 0, res_x - 1, res_y - 1, _samples_per_pixel);
     }
     auto end_time = clock();
 
