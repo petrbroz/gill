@@ -11,5 +11,5 @@ camera: !perspective
   film:
     resolution: [512, 512]
 renderer: !sampler
-  samples_per_pixel: 256
+  samples_per_pixel: 64
   thread_tiles: [1, 1]

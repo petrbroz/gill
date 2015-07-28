@@ -5,10 +5,10 @@ primitives:
 camera: !perspective
   transform: !look_at { position: [-3.0, 0.0, -3.0], target: [0.0, 0.0, 0.0] }
   field_of_view: 60.0
-  lens_radius: 0.1
+  lens_radius: 0.15
   focal_distance: 3.0
   film:
     resolution: [512, 512]
 renderer: !sampler
-  samples_per_pixel: 256
+  samples_per_pixel: 64
   thread_tiles: [1, 1]
