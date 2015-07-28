@@ -46,10 +46,10 @@ void Sampler::render(const Aggregate *aggregate, const Camera *camera) const {
 
     auto begin_time = clock();
     vector<thread> threads;
-    for (int j = 0; j < _thread_tiles[0]; ++j) {
+    for (int j = 0; j < _thread_tiles[1]; ++j) {
         int min_y = j * seg_y;
         int max_y = (j + 1) * seg_y - 1;
-        for (int i = 0; i < _thread_tiles[1]; ++i) {
+        for (int i = 0; i < _thread_tiles[0]; ++i) {
             int min_x = i * seg_x;
             int max_x = (i + 1) * seg_x - 1;
             threads.push_back(thread(render_fragment, aggregate, camera, min_x, min_y, max_x, max_y));

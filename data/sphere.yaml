@@ -71,4 +71,4 @@ camera: !perspective
     resolution: [512, 512]
 renderer: !sampler
   samples_per_pixel: 256
-  thread_tiles: [2, 2]
+  thread_tiles: [1, 1]

@@ -1,4 +1,5 @@
 #include <vector>
+#include <algorithm>
 #include "core/math.h"
 
 namespace gill { namespace core {

@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <cassert>
+#include <memory>
 
 #include "core/vector.h"
 #include "core/matrix.h"
