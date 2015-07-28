@@ -1,12 +1,14 @@
 #include <ctime>
 #include <cmath>
 #include <thread>
+#include <chrono>
 
 #include "renderer/sampler.h"
 
 namespace gill { namespace renderer {
 
 using namespace std;
+using namespace std::chrono;
 
 void render_block(const Aggregate *aggregate, const Camera *camera, int minx, int miny, int maxx, int maxy, int samples) {
     float t;
@@ -42,7 +44,7 @@ void Sampler::render(const Aggregate *aggregate, const Camera *camera) const {
     int seg_x = res_x / _thread_tiles[0];
     int seg_y = res_y / _thread_tiles[1];
 
-    auto begin_time = clock();
+    auto begin_time = high_resolution_clock::now();
     if (_thread_tiles[0] > 1 || _thread_tiles[1] > 1) {
         vector<thread> threads;
         for (int j = 0; j < _thread_tiles[1]; ++j) {
@@ -60,13 +62,14 @@ void Sampler::render(const Aggregate *aggregate, const Camera *camera) const {
     } else {
         render_block(aggregate, camera, 0, 0, res_x - 1, res_y - 1, _samples_per_pixel);
     }
-    auto end_time = clock();
+    auto end_time = high_resolution_clock::now();
+    duration<double, std::milli> elapsed = end_time - begin_time;
 
     camera->_film->print_ppm();
     cerr << "resolution:[" << res_x << "," << res_y << "]" << endl;
     cerr << "samples_per_pixel:" << _samples_per_pixel << endl;
     cerr << "thread_tiles:[" << _thread_tiles[0] << "," << _thread_tiles[1] << "]" << endl;
-    cerr << "render_time:" << float(end_time - begin_time) / CLOCKS_PER_SEC << "s" << endl;
+    cerr << "render_time:" << elapsed.count() << "ms" << endl;
 }
 
 }}
