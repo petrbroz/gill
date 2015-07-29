@@ -3,6 +3,7 @@
 
 #include <yaml.h>
 #include <vector>
+#include <map>
 
 #include "core/aggregate.h"
 #include "core/camera.h"
@@ -27,6 +28,9 @@ public:
 protected:
     yaml_parser_t _parser;
     FILE *_input;
+    std::map<int, std::shared_ptr<Geometry>> _geometry_cache;
+    std::map<int, std::shared_ptr<Material>> _material_cache;
+    std::map<int, std::shared_ptr<Transform>> _transform_cache;
 
     std::shared_ptr<Scene> parse_scene(yaml_document_t *doc, yaml_node_t *node);
     std::shared_ptr<Aggregate> parse_primitives(yaml_document_t *doc, yaml_node_t *node);

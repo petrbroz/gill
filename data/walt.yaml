@@ -1,27 +1,27 @@
 primitives:
-  - geometry: !mesh { url: obj/walt.obj }
-    material: !diffuse { color: [255, 255, 255] }
+  - geometry: &walt !mesh { url: obj/walt.obj }
+    material: &diff !diffuse { color: [255, 255, 255] }
     transform:
-      - !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
+      - &rot !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
       - !translate { delta: [-96.0, 0.0, 64.0] }
-  - geometry: !mesh { url: obj/walt.obj }
-    material: !diffuse { color: [255, 255, 255] }
+  - geometry: *walt
+    material: *diff
     transform:
-      - !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
+      - *rot
       - !translate { delta: [-48.0, 0.0, 32.0] }
-  - geometry: !mesh { url: obj/walt.obj }
-    material: !diffuse { color: [255, 255, 255] }
+  - geometry: *walt
+    material: *diff
     transform:
-      - !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
-  - geometry: !mesh { url: obj/walt.obj }
-    material: !diffuse { color: [255, 255, 255] }
+      - *rot
+  - geometry: *walt
+    material: *diff
     transform:
-      - !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
+      - *rot
       - !translate { delta: [48.0, 0.0, 32.0] }
-  - geometry: !mesh { url: obj/walt.obj }
-    material: !diffuse { color: [255, 255, 255] }
+  - geometry: *walt
+    material: *diff
     transform:
-      - !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
+      - *rot
       - !translate { delta: [96.0, 0.0, 64.0] }
 camera: !perspective
   transform: !look_at { position: [0.0, 32.0, -64.0], target: [0.0, 32.0, 0.0] }

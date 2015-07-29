@@ -74,6 +74,9 @@ shared_ptr<Scene> Parser::next_scene() {
     if (root) {
         scene = parse_scene(&document, root);
     }
+    _geometry_cache.clear();
+    _material_cache.clear();
+    _transform_cache.clear();
     yaml_document_delete(&document);
     return scene;
 }
@@ -133,6 +136,13 @@ Primitive Parser::parse_primitive(yaml_document_t *doc, yaml_node_t *node) {
 }
 
 shared_ptr<Geometry> Parser::parse_geometry(yaml_document_t *doc, yaml_node_t *node) {
+    int index = node - doc->nodes.start;
+    auto cache = _geometry_cache.find(index);
+    if (cache != _geometry_cache.end()) {
+        return cache->second;
+    }
+
+    shared_ptr<Geometry> geometry = nullptr;
     string tag((char *)node->tag);
     if (tag == "!mesh") {
         assert(node->type == YAML_MAPPING_NODE);
@@ -147,9 +157,9 @@ shared_ptr<Geometry> Parser::parse_geometry(yaml_document_t *doc, yaml_node_t *n
             }
         }
         if (file_exists(url + ".mesh") && file_exists(url + ".kdtree")) {
-            return Mesh::from_cache_file(url.c_str());
+            geometry = Mesh::from_cache_file(url.c_str());
         } else {
-            return Mesh::from_obj_file(url.c_str());
+            geometry = Mesh::from_obj_file(url.c_str());
         }
     } else if (tag == "!sphere") {
         assert(node->type == YAML_MAPPING_NODE);
@@ -163,20 +173,46 @@ shared_ptr<Geometry> Parser::parse_geometry(yaml_document_t *doc, yaml_node_t *n
                 radius = get_scalar<float>(vnode);
             }
         }
-        return make_shared<Sphere>(radius);
+        geometry = make_shared<Sphere>(radius);
     } else if (tag == "!plane") {
-        return make_shared<Plane>();
+        geometry = make_shared<Plane>();
+    }
+
+    if (geometry) {
+        _geometry_cache.insert(pair<int, shared_ptr<Geometry>>(index, geometry));
+        return geometry;
     } else {
-        return make_shared<Sphere>(0.0);
+        throw std::runtime_error("unknown geometry type");
     }
 }
 
 shared_ptr<Material> Parser::parse_material(yaml_document_t *doc, yaml_node_t *node) {
+    int index = node - doc->nodes.start;
+    auto cache = _material_cache.find(index);
+    if (cache != _material_cache.end()) {
+        return cache->second;
+    }
+
     assert(node->type == YAML_MAPPING_NODE);
-    return make_shared<Material>();
+    auto material = make_shared<Material>();
+
+    if (material) {
+        _material_cache.insert(pair<int, shared_ptr<Material>>(index, material));
+        return material;
+    } else {
+        throw std::runtime_error("unknown material type");
+    }
 }
 
 shared_ptr<Transform> Parser::parse_transform(yaml_document_t *doc, yaml_node_t *node) {
+    int index = node - doc->nodes.start;
+    auto cache = _transform_cache.find(index);
+    if (cache != _transform_cache.end()) {
+        return cache->second;
+    }
+
+    shared_ptr<Transform> transform = nullptr;
+
     if (node->type == YAML_SEQUENCE_NODE) {
         vector<shared_ptr<Transform>> transforms;
         auto seq = node->data.sequence;
@@ -184,7 +220,7 @@ shared_ptr<Transform> Parser::parse_transform(yaml_document_t *doc, yaml_node_t 
             auto inode = yaml_document_get_node(doc, *item);
             transforms.push_back(parse_transform(doc, inode));
         }
-        return Transform::compose(transforms);
+        transform = Transform::compose(transforms);
     } else {
         string tag((char *)node->tag);
         if (tag == "!translate") {
@@ -199,7 +235,7 @@ shared_ptr<Transform> Parser::parse_transform(yaml_document_t *doc, yaml_node_t 
                     delta = Vector(&seq[0]);
                 }
             }
-            return Transform::translate(delta);
+            transform = Transform::translate(delta);
         } else if (tag == "!scale") {
             Vector coefs(1.0, 1.0, 1.0);
             auto map = node->data.mapping;
@@ -212,7 +248,7 @@ shared_ptr<Transform> Parser::parse_transform(yaml_document_t *doc, yaml_node_t 
                     coefs = Vector(&seq[0]);
                 }
             }
-            return Transform::scale(coefs);
+            transform = Transform::scale(coefs);
         } else if (tag == "!rotate") {
             Vector axis(0.0, 1.0, 0.0);
             float angle = 0.0;
@@ -228,7 +264,7 @@ shared_ptr<Transform> Parser::parse_transform(yaml_document_t *doc, yaml_node_t 
                     angle = get_scalar<float>(vnode);
                 }
             }
-            return Transform::rotate(axis, angle);
+            transform = Transform::rotate(axis, angle);
         } else if (tag == "!look_at") {
             Vector position(0.0, 0.0, 0.0);
             Vector target(0.0, 0.0, 1.0);
@@ -249,11 +285,17 @@ shared_ptr<Transform> Parser::parse_transform(yaml_document_t *doc, yaml_node_t 
                     up = Vector(&seq[0]);
                 }
             }
-            return Transform::look_at(position, target, up);
+            transform = Transform::look_at(position, target, up);
         } else if (tag == "!identity") {
-            return make_shared<Transform>();
+            transform = make_shared<Transform>();
         }
-        return make_shared<Transform>();
+    }
+
+    if (transform) {
+        _transform_cache.insert(pair<int, shared_ptr<Transform>>(index, transform));
+        return transform;
+    } else {
+        throw std::runtime_error("unknown transform type");
     }
 }
 
