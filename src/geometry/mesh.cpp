@@ -70,7 +70,7 @@ bool Mesh::intersect(const Ray &ray, float &t, Geometry::Intersection *gi) const
 #else
     Mesh::Triangle::Intersection ti;
     bool hit = _accelerator->intersect(_triangles, ray, t, &ti);
-    if (gi) {
+    if (hit && gi) {
         gi->p = ti.p;
         gi->n = ti.n;
     }
@@ -144,7 +144,6 @@ void Mesh::load(const char *filename) {
 }
 
 shared_ptr<Mesh> Mesh::from_obj_file(const char *filename) {
-    auto begin_time = clock();
     ifstream input(filename);
     regex vertex_re("v ([0-9.e-]+) ([0-9.e-]+) ([0-9.e-]+)");
     regex face_re("f ([0-9]*)(?:/[0-9]*)?(?:/[0-9]*)? ([0-9]*)(?:/[0-9]*)?(?:/[0-9]*)? ([0-9]*)(?:/[0-9]*)?(?:/[0-9]*)?");
@@ -169,15 +168,10 @@ shared_ptr<Mesh> Mesh::from_obj_file(const char *filename) {
     tree_file += ".kdtree";
     mesh->_accelerator->save(tree_file.c_str());
 
-    auto end_time = clock();
-    cerr << "load_time:" << float(end_time - begin_time) / CLOCKS_PER_SEC << "s" << endl;
-    cerr << "triangles:" << mesh->_triangles.size() << endl;
     return mesh;
 }
 
 shared_ptr<Mesh> Mesh::from_cache_file(const char *filename) {
-    auto begin_time = clock();
-
     auto mesh = make_shared<Mesh>();
     string mesh_file(filename);
     mesh_file += ".mesh";
@@ -185,11 +179,11 @@ shared_ptr<Mesh> Mesh::from_cache_file(const char *filename) {
     string tree_file(filename);
     tree_file += ".kdtree";
     mesh->_accelerator.reset(new KdTree<Mesh::Triangle>(tree_file.c_str()));
-
-    auto end_time = clock();
-    cerr << "load_time:" << float(end_time - begin_time) / CLOCKS_PER_SEC << "s" << endl;
-    cerr << "triangles:" << mesh->_triangles.size() << endl;
     return mesh;
+}
+
+int Mesh::num_triangles() const {
+    return _triangles.size();
 }
 
 }}

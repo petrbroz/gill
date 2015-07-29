@@ -2,14 +2,55 @@
 primitives:
   - geometry: !mesh { url: obj/bunny.obj }
     material: !diffuse { color: [255, 255, 255] }
-    transform: !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
+    transform:
+      - !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
+      - !translate { delta: [-0.2, 0.0, 0.0] }
+  - geometry: !mesh { url: obj/bunny.obj }
+    material: !diffuse { color: [255, 255, 255] }
+    transform:
+      - !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
+  - geometry: !mesh { url: obj/bunny.obj }
+    material: !diffuse { color: [255, 255, 255] }
+    transform:
+      - !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
+      - !translate { delta: [0.2, 0.0, 0.0] }
+  - geometry: !mesh { url: obj/bunny.obj }
+    material: !diffuse { color: [255, 255, 255] }
+    transform:
+      - !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
+      - !translate { delta: [-0.2, 0.0, 0.2] }
+  - geometry: !mesh { url: obj/bunny.obj }
+    material: !diffuse { color: [255, 255, 255] }
+    transform:
+      - !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
+      - !translate { delta: [0.0, 0.0, 0.2] }
+  - geometry: !mesh { url: obj/bunny.obj }
+    material: !diffuse { color: [255, 255, 255] }
+    transform:
+      - !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
+      - !translate { delta: [0.2, 0.0, 0.2] }
+  - geometry: !mesh { url: obj/bunny.obj }
+    material: !diffuse { color: [255, 255, 255] }
+    transform:
+      - !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
+      - !translate { delta: [-0.2, 0.0, 0.4] }
+  - geometry: !mesh { url: obj/bunny.obj }
+    material: !diffuse { color: [255, 255, 255] }
+    transform:
+      - !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
+      - !translate { delta: [0.0, 0.0, 0.4] }
+  - geometry: !mesh { url: obj/bunny.obj }
+    material: !diffuse { color: [255, 255, 255] }
+    transform:
+      - !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
+      - !translate { delta: [0.2, 0.0, 0.4] }
 camera: !perspective
-  transform: !look_at { position: [0.0, 0.1, -0.25], target: [0.0, 0.1, 0.0] }
+  transform: !look_at { position: [0.0, 0.25, -0.25], target: [0.0, 0.1, 0.1] }
   field_of_view: 60.0
-  lens_radius: 0.02
-  focal_distance: 0.2
+  lens_radius: 0.01
+  focal_distance: 0.4
   film:
     resolution: [512, 512]
 renderer: !sampler
   samples_per_pixel: 64
-  thread_tiles: [1, 1]
+  thread_tiles: [4, 4]

@@ -255,14 +255,18 @@ public:
             if (segment.node->is_leaf()) {
                 int geom_index = segment.node->header >> 2;
                 int geom_count = segment.node->geom_count;
-                float _t = Infinity;
+                float old_t = t;
+                bool hit = false;
                 for (int i = geom_index; i < geom_index + geom_count; ++i) {
                     const Geom &geom = geoms[geom_refs[i]];
-                    geom.intersect(ray, _t, isec);
+                    hit |= geom.intersect(ray, t, isec);
                 }
-                if (_t >= segment.tmin && _t <= segment.tmax) {
-                    t = _t;
-                    return true;
+                if (hit) {
+                    if (t >= segment.tmin && t <= segment.tmax) {
+                        return true;
+                    } else {
+                        t = old_t; // The closest 't' has changed and must be reset
+                    }
                 }
             } else {
                 float split = segment.node->split;

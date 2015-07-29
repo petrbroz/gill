@@ -15,11 +15,11 @@ BBox Primitive::bounds() const {
     return (*_ltow)(_geom->bounds());
 }
 
-bool Primitive::intersect(const Ray &ray, float &t, Primitive::Intersection *i) const {
+bool Primitive::intersect(const Ray &ray, float &t, Primitive::Intersection *isec) const {
     Ray r = (*_wtol)(ray);
     Geometry::Intersection *gi = nullptr;
-    if (i) {
-        gi = &i->gi;
+    if (isec) {
+        gi = &isec->gi;
     }
     bool hit = _geom->intersect(r, t, gi);
     if (hit && gi) {
