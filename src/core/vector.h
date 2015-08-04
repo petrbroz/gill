@@ -1,3 +1,22 @@
+/**
+ * @file
+ * Common vector/point/normal operator overloads and functions.
+ *
+ * Vectors, points and normals use the same internal representation (3 floats),
+ * but are intentionally defined as separate structures in order to implement
+ * the correct behavior with gill::core::Transform objects (for example, applying
+ * a translation to gill::core::Vector should have no effect).
+ *
+ * @note
+ * While it is tempting to use templates to provide general operator overloads
+ * and functions for Vector/Point/Normal, it is not straightforward to restrict
+ * the templates to only allow the 3 types, and as a result of that the generic
+ * templates may clash with other parts of the code, e.g., with the overloads
+ * of std::vector<...>::iterator operators.
+ * Therefore, the inline functions here will be intentionally copied for every
+ * structure for which they make sense.
+ */
+
 #ifndef GILL_CORE_VECTOR_H_
 #define GILL_CORE_VECTOR_H_
 
@@ -13,17 +32,8 @@ struct Point;
 struct Normal;
 
 /**
- * Common vector/point/normal operators and functions.
- *
- * While it is tempting to use templates to provide general operator overloads
- * and functions for Vector/Point/Normal, it is not straightforward to restrict
- * the templates to only allow the 3 types, and as a result of that the generic
- * templates may clash with other parts of the code, e.g., with the overloads
- * of std::vector<...>::iterator operators.
- * Therefore, the inline functions here will be intentionally copied for every
- * structure for which they make sense.
+ * Vector in a three-dimensional Euclidian space.
  */
-
 struct Vector {
     float x, y, z;
     Vector(float value = 0.0) : x(value), y(value), z(value) {}
@@ -53,6 +63,9 @@ inline std::ostream& operator<<(std::ostream &out, const Vector &v) {
     return out;
 }
 
+/**
+ * Point in a three-dimensional Euclidian space.
+ */
 struct Point {
     float x, y, z;
     Point(float value = 0.0) : x(value), y(value), z(value) {}
@@ -82,6 +95,9 @@ inline std::ostream& operator<<(std::ostream &out, const Point &p) {
     return out;
 }
 
+/**
+ * Normal in a three-dimensional Euclidian space.
+ */
 struct Normal {
     float x, y, z;
     Normal(float value = 0.0) : x(value), y(value), z(value) {}

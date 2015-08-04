@@ -2,7 +2,6 @@
 #define GILL_CORE_BBOX_H_
 
 #include <iostream>
-#include <limits>
 #include <cassert>
 
 #include "core/math.h"
@@ -11,8 +10,9 @@
 
 namespace gill { namespace core {
 
-const float Infinity = std::numeric_limits<float>::infinity();
-
+/**
+ * Axis-aligned bounding box.
+ */
 struct BBox {
     Point min, max;
 
@@ -23,11 +23,19 @@ struct BBox {
         max = gill::core::max(p1, p2);
     }
 
+    /**
+     * Checks whether the bounding box contains a point.
+     * @param p Input point.
+     * @returns True if the point lies inside the bounding box.
+     */
     bool contains(const Point &p) const {
         return p.x >= min.x && p.y >= min.y && p.z >= min.z
             && p.x <= max.x && p.y <= max.y && p.z <= max.z;
     }
 
+    /**
+     * Checks whether the bounding box is intersected by a ray.
+     */
     bool intersects(const Ray &r, float &tmin, float &tmax) const {
         tmin = 0.0;
         tmax = +Infinity;

@@ -12,6 +12,9 @@ namespace gill { namespace camera {
 
 using namespace gill::core;
 
+/**
+ * Perspective projection camera.
+ */
 class PerspectiveCamera : public ProjectiveCamera {
 public:
     PerspectiveCamera(std::shared_ptr<Transform> ltow, std::shared_ptr<Film> film,

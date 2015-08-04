@@ -18,6 +18,9 @@ using namespace gill::geometry;
 
 namespace gill { namespace core {
 
+/**
+ * Parser of YAML-based scene description documents.
+ */
 class Parser {
 public:
     Parser();

@@ -9,6 +9,9 @@
 
 namespace gill { namespace core {
 
+/**
+ * Generic definition of a wavelength spectrum distribution with predefined number of discrete coefficients.
+ */
 template <int num_coefs>
 class CoefficientSpectrum {
 public:
@@ -142,6 +145,9 @@ const float SpectrumMin = SPECTRUM_MIN;
 const float SpectrumMax = SPECTRUM_MAX;
 const int SpectrumSamples = SPECTRUM_RES;
 
+/**
+ * Spectral curve defined by a number of Y-values for evenly distributed lambdas.
+ */
 class SampledSpectrum : public CoefficientSpectrum<SpectrumSamples> {
 public:
     static SampledSpectrum from_samples(const float *w, const float *v, int n);

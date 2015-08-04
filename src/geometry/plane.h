@@ -12,6 +12,9 @@ using namespace gill::core;
 
 namespace gill { namespace geometry {
 
+/**
+ * Plane geometry with unit-length sides, centered around the origin in the XY plane, facing in the +Z direction.
+ */
 class Plane : public Geometry {
 public:
     BBox bounds() const override;

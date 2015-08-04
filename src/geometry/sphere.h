@@ -13,6 +13,9 @@ using namespace gill::core;
 
 namespace gill { namespace geometry {
 
+/**
+ * Unit sphere.
+ */
 class Sphere : public Geometry {
 public:
     Sphere(float radius) : _radius(radius) {}

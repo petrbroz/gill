@@ -14,7 +14,7 @@ using namespace gill::geometry;
 namespace gill { namespace core {
 
 /**
- * Geometry, material and transform of a specific scene object.
+ * Scene entity encapsulating a geometry, material, and a local-to-world transformation.
  */
 class Primitive {
 public:
@@ -38,10 +38,8 @@ public:
 
 protected:
     std::shared_ptr<Geometry> _geom;
-    /// Transformation from local to world coordinate system
-    std::shared_ptr<Transform> _ltow;
-    /// Transformation from world to local coordinate system
-    std::shared_ptr<Transform> _wtol;
+    std::shared_ptr<Transform> _ltow; /// Transformation from local to world coordinate system
+    std::shared_ptr<Transform> _wtol; /// Transformation from world to local coordinate system
 };
 
 inline std::ostream& operator<<(std::ostream &out, const Primitive &primitive) {

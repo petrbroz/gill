@@ -17,13 +17,19 @@ namespace gill { namespace core {
 const int MaxTreeSegments = 64;
 const int KdTreeFileMagic = 0xacc1;
 
+/**
+ * Generic kD-tree for accelerating ray-to-geometry intersection tests.
+ * Geometry must be a type with two methods:
+ * - bounds() - returning the geometry bounds in kD-tree's coordinate system.
+ * - intersect(ray, t, intersection) - computing an intersection of the geometry with a ray.
+ */
 template <typename Geom>
 class KdTree {
 
     typedef typename Geom::Intersection Intersection;
 
     /**
-     * Compact (8byte) representation of a kd-tree node.
+     * Compact 8-byte representation of a kD-tree node.
      * The 2 least significant bits of 'header' define the split axis (0 = X, 1 = Y, 2 = Z, 3 = none/leaf).
      * For leaves, the higher 30 bits of 'header' define index into a list of geometries
      * that overlap the leaf volume (and 'geom_count' defines their count).
@@ -50,6 +56,10 @@ class KdTree {
         }
     };
 
+    /**
+     * Representation of either the minimum or the maximum of a geometry bounds in certain direction.
+     * Used for sorting the boundaries when computing the ideal split plane.
+     */
     struct Edge {
         float split;
         uint32_t index;
@@ -72,6 +82,9 @@ class KdTree {
         }
     };
 
+    /**
+     * Current node and ray range during a kD-tree traversal.
+     */
     struct TreeSegment {
         Node *node;
         float tmin, tmax;
@@ -93,8 +106,10 @@ class KdTree {
         return n;
     }
 
-    float isec_cost, trav_cost;
-    int max_geoms, max_depth;
+    float isec_cost; /// The computation cost of intersecting a ray with one geometry
+    float trav_cost; /// The computation cost of traversing children of a kD-tree node
+    int max_geoms; /// Max. number of geometries allowed in a leaf node.
+    int max_depth; /// Max. allowed depth of the kD-tree.
     BBox total_bounds;
     std::vector<Node> nodes;
     std::vector<uint32_t> geom_refs;
@@ -313,6 +328,9 @@ public:
         std::cerr << "Geom Refs: " << geom_refs.size() << std::endl;
     }
 
+    /**
+     * Prints the kD-tree nodes to stderr in graphviz DOT format.
+     */
     void print_dot() {
         std::cerr << "digraph G {" << std::endl;
         for (int i = 0; i < nodes.size(); i++) {
@@ -328,6 +346,11 @@ public:
         std::cerr << "}" << std::endl;
     }
 
+    /**
+     * Serializes the kD-tree into a binary file.
+     * Used for caching purposes.
+     * @param filename Name of the output file.
+     */
     void save(const char *filename) {
         auto f = fopen(filename, "wb");
         fwrite(&KdTreeFileMagic, sizeof(KdTreeFileMagic), 1, f);
@@ -346,6 +369,11 @@ public:
         fclose(f);
     }
 
+    /**
+     * Deserializes the kD-tree from a binary file.
+     * Used for caching purposes.
+     * @param filename Name of the input file.
+     */
     void load(const char *filename) {
         auto f = fopen(filename, "rb");
         int magic;

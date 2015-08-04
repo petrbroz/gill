@@ -16,7 +16,7 @@ namespace gill { namespace geometry {
 
 /**
  * Geometry represented as a triangular mesh.
- * The geometry always works with local coordinate system. It is the purpose of Primitive
+ * The geometry always works with local coordinate system. It is the role of gill::core::Primitive
  * to position/orient/scale an instance of the geometry in the scene.
  */
 class Mesh : public Geometry {

@@ -6,10 +6,13 @@
 
 namespace gill { namespace core {
 
+/**
+ * Medium for capturing the rendering results.
+ */
 class Film {
 public:
-    int _xres, _yres;
-    float _xdim, _ydim;
+    int _xres, _yres; /// Resolution of the film
+    float _xdim, _ydim; /// Physical dimensions of the film
     Spectrum *data;
 
     Film(int xres, int yres) : _xres(xres), _yres(yres) {

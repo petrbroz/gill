@@ -12,6 +12,9 @@
 
 namespace gill { namespace core {
 
+/**
+ * Affine transformation using a 4x4g gill::core::Matrix.
+ */
 class Transform {
     Matrix _m, _inv;
 

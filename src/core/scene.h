@@ -7,6 +7,10 @@
 
 namespace gill { namespace core {
 
+/**
+ * Top-level entity encapsulating the objects to render (gill::core::Aggregate),
+ * the camera to generate rays from, and the renderer for computing the output.
+ */
 class Scene {
 public:
     Scene(std::shared_ptr<Aggregate> root, std::shared_ptr<Camera> camera, std::shared_ptr<Renderer> renderer);

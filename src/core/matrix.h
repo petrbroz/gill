@@ -6,6 +6,9 @@
 
 namespace gill { namespace core {
 
+/**
+ * 4x4 matrix in row-major order.
+ */
 struct Matrix {
     float m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33;
     Matrix(float value = 0.0) :
