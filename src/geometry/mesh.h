@@ -4,11 +4,11 @@
 #include <vector>
 #include <iostream>
 
-#include "core/vector.h"
-#include "core/ray.h"
 #include "core/bbox.h"
+#include "core/geometry.h"
 #include "core/kdtree.h"
-#include "geometry/geometry.h"
+#include "core/ray.h"
+#include "core/vector.h"
 
 using namespace gill::core;
 

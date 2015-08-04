@@ -1,5 +1,5 @@
-#ifndef GILL_GEOMETRY_GEOMETRY_H_
-#define GILL_GEOMETRY_GEOMETRY_H_
+#ifndef GILL_CORE_GEOMETRY_H_
+#define GILL_CORE_GEOMETRY_H_
 
 #include <vector>
 #include <iostream>
@@ -8,10 +8,11 @@
 #include "core/ray.h"
 #include "core/bbox.h"
 
-using namespace gill::core;
+namespace gill { namespace core {
 
-namespace gill { namespace geometry {
-
+/**
+ * Abstraction of a geometry, able to define its bounds and compute ray intersections.
+ */
 class Geometry {
 public:
     struct Intersection {

@@ -5,9 +5,9 @@
 #include <iostream>
 
 #include "core/bbox.h"
+#include "core/geometry.h"
 #include "core/ray.h"
 #include "core/vector.h"
-#include "geometry/geometry.h"
 
 using namespace gill::core;
 

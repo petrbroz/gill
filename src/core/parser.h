@@ -8,13 +8,11 @@
 #include "core/aggregate.h"
 #include "core/camera.h"
 #include "core/film.h"
+#include "core/geometry.h"
 #include "core/material.h"
 #include "core/primitive.h"
-#include "core/scene.h"
 #include "core/renderer.h"
-#include "geometry/geometry.h"
-
-using namespace gill::geometry;
+#include "core/scene.h"
 
 namespace gill { namespace core {
 

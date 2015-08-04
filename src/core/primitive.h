@@ -3,13 +3,11 @@
 
 #include <iostream>
 
-#include "core/transform.h"
 #include "core/bbox.h"
+#include "core/geometry.h"
 #include "core/ray.h"
+#include "core/transform.h"
 #include "core/vector.h"
-#include "geometry/geometry.h"
-
-using namespace gill::geometry;
 
 namespace gill { namespace core {
 
