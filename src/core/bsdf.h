@@ -21,6 +21,7 @@ inline float sin_phi(const Vector &w) {
     float sst = squared_sin_theta(w);
     return sst > 0.f ? clamp(w.y / std::sqrt(sst), -1.f, +1.f) : 0.f;
 }
+inline bool same_hemisphere(const Vector &w, const Vector &wp) { return w.z * wp.z > 0.f; }
 
 /**
  * Abstraction of either a bidirectional reflectance or a bidirectional transmittance distribution function.
@@ -29,7 +30,7 @@ inline float sin_phi(const Vector &w) {
  */
 class BxDF {
 public:
-    enum class Type {
+    enum class Type : int {
         Reflection          = 1,
         Transmission        = 1 << 1,
         Diffuse             = 1 << 2,
@@ -62,7 +63,7 @@ public:
      * @param wi Incident light direction.
      * @note u1, u2 and pdf will be used for Monte Carlo integration.
      */
-    //virtual Spectrum sample_f(const Vector &wo, const Vector &wi, float u1, float u2, float *pdf) const;
+    virtual Spectrum sample_f(const Vector &wo, Vector &wi, float u1, float u2, float *pdf) const;
 
     /**
      * Compute the 'hemispherical-directional' reflectance.
@@ -77,8 +78,12 @@ public:
      */
     //virtual Spectrum rho(int num_samples, const float *samples1, const float *samples2) const;
 
-    //virtual float pdf(const Vector &wo, const Vector &wi) const;
+    virtual float pdf(const Vector &wo, const Vector &wi) const;
 };
+
+inline BxDF::Type operator|(BxDF::Type lhs, BxDF::Type rhs) {
+    return (BxDF::Type)(static_cast<int>(lhs) | static_cast<int>(rhs));
+}
 
 /**
  * Helper class representing a BTDF based on an existing BRDF or vice versa.
@@ -87,6 +92,8 @@ class BRDFuncToBTDFunc : public BxDF {
 public:
     BRDFuncToBTDFunc(BxDF *bxdf);
     Spectrum f(const Vector &wo, const Vector &wi) const override;
+    Spectrum sample_f(const Vector &wo, Vector &wi, float u1, float u2, float *pdf) const override;
+    float pdf(const Vector &wo, const Vector &wi) const override;
 
 protected:
     BxDF *_bxdf;
@@ -99,10 +106,43 @@ class ScaledBxDF : public BxDF {
 public:
     ScaledBxDF(BxDF *bxdf, const Spectrum &scale);
     Spectrum f(const Vector &wo, const Vector &wi) const override;
+    Spectrum sample_f(const Vector &wo, Vector &wi, float u1, float u2, float *pdf) const override;
+    float pdf(const Vector &wo, const Vector &wi) const override;
 
 protected:
     BxDF *_bxdf;
     Spectrum _scale;
+};
+
+/**
+ * Perfpect specular reflection.
+ */
+class SpecularReflection : public BxDF {
+public:
+    SpecularReflection(Fresnel *fresnel, const Spectrum &r);
+    Spectrum f(const Vector &wo, const Vector &wi) const override;
+    Spectrum sample_f(const Vector &wo, Vector &wi, float u1, float u2, float *pdf) const override;
+    float pdf(const Vector &wo, const Vector &wi) const override;
+
+protected:
+    Fresnel *_fresnel;
+    Spectrum _r;
+};
+
+/**
+ * Perfpect specular transmission.
+ */
+class SpecularTransmission : public BxDF {
+public:
+    SpecularTransmission(const Spectrum &t, float eta_i, float eta_t);
+    Spectrum f(const Vector &wo, const Vector &wi) const override;
+    Spectrum sample_f(const Vector &wo, Vector &wi, float u1, float u2, float *pdf) const override;
+    float pdf(const Vector &wo, const Vector &wi) const override;
+
+protected:
+    Spectrum _t;
+    float _eta_i, _eta_t;
+    FresnelDielectric _fresnel;
 };
 
 /**

@@ -25,7 +25,7 @@ Spectrum fresnel_diel(float cos_i, float cos_t, const Spectrum &eta_i, const Spe
 Spectrum FresnelDielectric::evaluate(float cos_i) const {
     cos_i = clamp(cos_i, -1.f, +1.f);
     float ei = _eta_i, et = _eta_t;
-    if (cos_i > 0.f) {
+    if (cos_i <= 0.f) {
         swap(ei, et);
     }
     float sin_t = ei/et * sqrt(max(0.f, 1.f - cos_i * cos_i)); // Snell's law

@@ -8,13 +8,15 @@
 namespace gill { namespace core {
 
 const float Infinity = std::numeric_limits<float>::infinity();
+const float Pi = 3.14159265358979f;
+const float InvPi = 1.f / Pi;
 
 inline bool almost_zero(float v) {
     return std::abs(v) < 1e-8;
 }
 
 inline float radians(float degrees) {
-    return degrees * 3.14159265 / 180.0;
+    return degrees * Pi / 180.f;
 }
 
 inline float lerp(float v0, float v1, float t) {
