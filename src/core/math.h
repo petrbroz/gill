@@ -2,6 +2,7 @@
 #define GILL_CORE_MATH_H_
 
 #include <cmath>
+#include <algorithm>
 #include <limits>
 
 namespace gill { namespace core {
@@ -18,6 +19,10 @@ inline float radians(float degrees) {
 
 inline float lerp(float v0, float v1, float t) {
     return v0 + t * (v1 - v0);
+}
+
+inline float clamp(float v, float min, float max) {
+    return std::min(max, std::max(min, v));
 }
 
 /**

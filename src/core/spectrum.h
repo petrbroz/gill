@@ -170,6 +170,10 @@ public:
     RGB(float r = 0.0, float g = 0.0, float b = 0.0) {
         c[0] = r; c[1] = g; c[2] = b;
     }
+
+    RGB(const CoefficientSpectrum<3> &spectrum) {
+        c[0] = spectrum[0]; c[1] = spectrum[1]; c[2] = spectrum[2];
+    }
 };
 
 
