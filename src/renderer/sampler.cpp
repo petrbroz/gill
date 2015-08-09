@@ -15,14 +15,14 @@ void render_block(const Aggregate *aggregate, const Camera *camera, int minx, in
         for (int x = minx; x <= maxx; ++x) {
             float r = 0.0, g = 0.0, b = 0.0;
             for (int s = 0; s < samples; ++s) {
-                Primitive::Intersection pi;
+                Intersection isec;
                 float t = Infinity;
                 float u = 2.0 * rand() / RAND_MAX - 1.0;
                 float v = 2.0 * rand() / RAND_MAX - 1.0;
                 Camera::Sample sample = {(float)x, (float)y, u, v};
                 Ray ray = camera->generate_ray(sample);
-                if (aggregate->intersect(ray, t, &pi)) {
-                    Normal n = normalize(pi.gi.n);
+                if (aggregate->intersect(ray, t, &isec)) {
+                    Normal n = normalize(isec.n);
                     r += n.x * 0.5 + 0.5;
                     g += n.y * 0.5 + 0.5;
                     b += n.z * 0.5 + 0.5;

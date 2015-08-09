@@ -27,11 +27,11 @@ public:
      * @note The method will only modify 't' and 'isec' if an intersection closer than 't' was found.
      * @returns True if an intersection was found closer than the current 't'.
      */
-    bool intersect(const Ray &ray, float &t, Primitive::Intersection *isec) const;
+    bool intersect(const Ray &ray, float &t, Intersection *isec) const;
 
 protected:
     std::vector<Primitive> _primitives;
-    std::unique_ptr<KdTree<Primitive>> _accelerator;
+    std::unique_ptr<KdTree> _accelerator;
 };
 
 }}

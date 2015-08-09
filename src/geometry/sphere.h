@@ -20,7 +20,7 @@ class Sphere : public Geometry {
 public:
     Sphere(float radius) : _radius(radius) {}
     BBox bounds() const override;
-    bool intersect(const Ray &ray, float &t, Geometry::Intersection *i) const override;
+    bool intersect(const Ray &ray, float &t, Intersection *i) const override;
 
 protected:
     float _radius;

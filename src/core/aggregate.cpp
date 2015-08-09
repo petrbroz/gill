@@ -15,17 +15,17 @@ using namespace std;
 
 Aggregate::Aggregate(const std::vector<Primitive> &primitives) : _primitives(primitives) {
     Primitive * prims = &_primitives[0];
-    _accelerator.reset(new KdTree<Primitive>(_primitives.size(),
+    _accelerator.reset(new KdTree(_primitives.size(),
         IntersectionCost, TraversalCost, MaxGeoms, MaxDepth,
         [prims](uint32_t i) {
             return prims[i].bounds();
         },
-        [prims](uint32_t i, const Ray &ray, float &t, Primitive::Intersection *isec) {
+        [prims](uint32_t i, const Ray &ray, float &t, Intersection *isec) {
             return prims[i].intersect(ray, t, isec);
         }));
 }
 
-bool Aggregate::intersect(const Ray &ray, float &t, Primitive::Intersection *isec) const {
+bool Aggregate::intersect(const Ray &ray, float &t, Intersection *isec) const {
     return _accelerator->intersect(ray, t, isec);
 }
 

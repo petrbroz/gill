@@ -8,6 +8,7 @@
 #include "core/ray.h"
 #include "core/transform.h"
 #include "core/vector.h"
+#include "core/intersection.h"
 
 namespace gill { namespace core {
 
@@ -16,18 +17,6 @@ namespace gill { namespace core {
  */
 class Primitive {
 public:
-
-    /**
-     * Collection of data related to a specific primitive intersection.
-     */
-    struct Intersection {
-        Primitive *primitive;
-        Geometry::Intersection gi;
-        float u, v;
-        Vector dpdu, dpdv;
-        Normal dndu, dndv;
-    };
-
     Primitive(std::shared_ptr<Geometry> geom, std::shared_ptr<Transform> ltow, std::shared_ptr<Transform> wtol);
     BBox local_bounds() const;
     BBox bounds() const;

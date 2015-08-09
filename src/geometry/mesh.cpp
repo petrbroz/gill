@@ -20,7 +20,7 @@ BBox Mesh::Triangle::bounds(Mesh *mesh) const {
     return bbox;
 }
 
-bool Mesh::Triangle::intersect(Mesh *mesh, const Ray &ray, float &t, Mesh::Triangle::Intersection *i) const {
+bool Mesh::Triangle::intersect(Mesh *mesh, const Ray &ray, float &t, Intersection *i) const {
     Point p0 = mesh->_vertices[i1], p1 = mesh->_vertices[i2], p2 = mesh->_vertices[i3];
     Vector e1 = p1 - p0, e2 = p2 - p0;
     Vector P = cross(ray.d, e2);
@@ -59,7 +59,7 @@ BBox Mesh::bounds() const {
     return _bounds;
 }
 
-bool Mesh::intersect(const Ray &ray, float &t, Geometry::Intersection *gi) const {
+bool Mesh::intersect(const Ray &ray, float &t, Intersection *isec) const {
 #ifdef BRUTE_FORCE
     for (const Triangle &triangle : _triangles) {
         if (triangle.intersect(ray, t, nullptr)) {
@@ -68,13 +68,7 @@ bool Mesh::intersect(const Ray &ray, float &t, Geometry::Intersection *gi) const
     }
     return false;
 #else
-    Mesh::Triangle::Intersection ti;
-    bool hit = _accelerator->intersect(ray, t, &ti);
-    if (hit && gi) {
-        gi->p = ti.p;
-        gi->n = ti.n;
-    }
-    return hit;
+    return _accelerator->intersect(ray, t, isec);
 #endif
 }
 
@@ -155,12 +149,12 @@ shared_ptr<Mesh> Mesh::from_obj_file(const char *filename) {
         }
     }
     Mesh * mesh_ptr = mesh.get();
-    mesh->_accelerator.reset(new KdTree<Mesh::Triangle>(mesh->_triangles.size(), 80.0, 10.0, 8, 32,
+    mesh->_accelerator.reset(new KdTree(mesh->_triangles.size(), 80.0, 10.0, 8, 32,
         [mesh_ptr](uint32_t i) {
             const Triangle &tri = mesh_ptr->_triangles[i];
             return tri.bounds(mesh_ptr);
         },
-        [mesh_ptr](uint32_t i, const Ray &ray, float &t, Mesh::Triangle::Intersection *isec) {
+        [mesh_ptr](uint32_t i, const Ray &ray, float &t, Intersection *isec) {
             const Triangle &tri = mesh_ptr->_triangles[i];
             return tri.intersect(mesh_ptr, ray, t, isec);
         }));
@@ -185,12 +179,12 @@ shared_ptr<Mesh> Mesh::from_cache_file(const char *filename) {
     string tree_file(filename);
     tree_file += ".kdtree";
     Mesh * mesh_ptr = mesh.get();
-    mesh->_accelerator.reset(new KdTree<Mesh::Triangle>(tree_file.c_str(),
+    mesh->_accelerator.reset(new KdTree(tree_file.c_str(),
         [mesh_ptr](uint32_t i) {
             const Triangle &tri = mesh_ptr->_triangles[i];
             return tri.bounds(mesh_ptr);
         },
-        [mesh_ptr](uint32_t i, const Ray &ray, float &t, Mesh::Triangle::Intersection *isec) {
+        [mesh_ptr](uint32_t i, const Ray &ray, float &t, Intersection *isec) {
             const Triangle &tri = mesh_ptr->_triangles[i];
             return tri.intersect(mesh_ptr, ray, t, isec);
         }));

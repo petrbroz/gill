@@ -15,16 +15,12 @@ BBox Primitive::bounds() const {
     return (*_ltow)(_geom->bounds());
 }
 
-bool Primitive::intersect(const Ray &ray, float &t, Primitive::Intersection *isec) const {
+bool Primitive::intersect(const Ray &ray, float &t, Intersection *isec) const {
     Ray r = (*_wtol)(ray);
-    Geometry::Intersection *gi = nullptr;
-    if (isec) {
-        gi = &isec->gi;
-    }
-    bool hit = _geom->intersect(r, t, gi);
-    if (hit && gi) {
-        gi->p = (*_ltow)(gi->p);
-        gi->n = (*_ltow)(gi->n);
+    bool hit = _geom->intersect(r, t, isec);
+    if (hit && isec) {
+        isec->p = (*_ltow)(isec->p);
+        isec->n = (*_ltow)(isec->n);
     }
     return hit;
 }

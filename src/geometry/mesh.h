@@ -9,6 +9,7 @@
 #include "core/kdtree.h"
 #include "core/ray.h"
 #include "core/vector.h"
+#include "core/intersection.h"
 
 using namespace gill::core;
 
@@ -28,11 +29,6 @@ public:
      * integration with accelerators, and for performance improvements through additional caching.
      */
     struct Triangle {
-        struct Intersection {
-            Point p;
-            Normal n;
-        };
-
         int i1, i2, i3;
 
         BBox bounds(Mesh *mesh) const;
@@ -41,7 +37,7 @@ public:
     };
 
     BBox bounds() const override;
-    bool intersect(const Ray &ray, float &t, Geometry::Intersection *i) const override;
+    bool intersect(const Ray &ray, float &t, Intersection *i) const override;
     int num_triangles() const;
     void save(const char *filename);
     void load(const char *filename);
@@ -54,7 +50,7 @@ protected:
     std::vector<Point> _vertices;
     std::vector<Normal> _normals;
     BBox _bounds;
-    std::unique_ptr<KdTree<Triangle>> _accelerator;
+    std::unique_ptr<KdTree> _accelerator;
 };
 
 inline std::ostream& operator<<(std::ostream& out, const Mesh& mesh) {

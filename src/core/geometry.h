@@ -7,6 +7,7 @@
 #include "core/vector.h"
 #include "core/ray.h"
 #include "core/bbox.h"
+#include "core/intersection.h"
 
 namespace gill { namespace core {
 
@@ -15,13 +16,6 @@ namespace gill { namespace core {
  */
 class Geometry {
 public:
-    struct Intersection {
-        float t;
-        float u, v;
-        Vector p;
-        Normal n;
-    };
-
     virtual BBox bounds() const = 0;
     virtual bool intersect(const Ray &ray, float &t, Intersection *i) const = 0;
 };
