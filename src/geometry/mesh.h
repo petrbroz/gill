@@ -33,11 +33,10 @@ public:
             Normal n;
         };
 
-        Mesh *mesh;
         int i1, i2, i3;
 
-        BBox bounds() const;
-        bool intersect(const Ray &ray, float &t, Intersection *i) const;
+        BBox bounds(Mesh *mesh) const;
+        bool intersect(Mesh *mesh, const Ray &ray, float &t, Intersection *isec) const;
         friend std::ostream& operator<<(std::ostream& out, const Mesh& mesh);
     };
 

@@ -14,11 +14,19 @@ const int MaxDepth = 32;
 using namespace std;
 
 Aggregate::Aggregate(const std::vector<Primitive> &primitives) : _primitives(primitives) {
-    _accelerator.reset(new KdTree<Primitive>(_primitives, IntersectionCost, TraversalCost, MaxGeoms, MaxDepth));
+    Primitive * prims = &_primitives[0];
+    _accelerator.reset(new KdTree<Primitive>(_primitives.size(),
+        IntersectionCost, TraversalCost, MaxGeoms, MaxDepth,
+        [prims](uint32_t i) {
+            return prims[i].bounds();
+        },
+        [prims](uint32_t i, const Ray &ray, float &t, Primitive::Intersection *isec) {
+            return prims[i].intersect(ray, t, isec);
+        }));
 }
 
 bool Aggregate::intersect(const Ray &ray, float &t, Primitive::Intersection *isec) const {
-    return _accelerator->intersect(_primitives, ray, t, isec);
+    return _accelerator->intersect(ray, t, isec);
 }
 
 }}
