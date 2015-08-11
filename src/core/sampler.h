@@ -19,9 +19,8 @@ public:
      * @param x_max Maximum X-value of the image segment.
      * @param y_min Minimum Y-value of the image segment.
      * @param y_max Maximum Y-value of the image segment.
-     * @param spp Samples-per-pixel.
      */
-    Sampler(int x_min, int x_max, int y_min, int y_max, int spp);
+    Sampler(int x_min, int x_max, int y_min, int y_max);
     virtual ~Sampler();
 
     /**
@@ -59,7 +58,7 @@ public:
 
 protected:
     void compute_subwindow(int h_tiles, int v_tiles, int i, int j, int *x_min, int *x_max, int *y_min, int *y_max) const;
-    int _x_min, _x_max, _y_min, _y_max, _spp;
+    int _x_min, _x_max, _y_min, _y_max;
 };
 
 }}
