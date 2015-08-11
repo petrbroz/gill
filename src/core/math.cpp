@@ -35,10 +35,10 @@ float average_samples(const vector<Sample> &samples, float x0, float x1) {
         if (s0.x >= x0 && s1.x <= x1) {
             sum += 0.5 * (s0.y + s1.y) * (s1.x - s0.x);
         } else if (s0.x < x0 && s1.x > x0) {
-            float tmp = lerp(s0.y, s1.y, (x0 - s0.x) / (s1.x - s0.x));
+            float tmp = lerp<float>((x0 - s0.x) / (s1.x - s0.x), s0.y, s1.y);
             sum += 0.5 * (tmp + s1.y) * (s1.x - x0);
         } else if (s0.x < x1 && s1.x > x1) {
-            float tmp = lerp(s0.y, s1.y, (x1 - s0.x) / (s1.x - s0.x));
+            float tmp = lerp<float>((x1 - s0.x) / (s1.x - s0.x), s0.y, s1.y);
             sum += 0.5 * (s0.y + tmp) * (x1 - s0.x);
         }
     }
@@ -54,8 +54,8 @@ void resample(const float *xi, const float *yi, int ni, float *yo, float min_xo,
     }
     sort(samples.begin(), samples.end());
     for (int i = 0; i < no; ++i) {
-        float x0 = lerp(min_xo, max_xo, float(i) / no);
-        float x1 = lerp(min_xo, max_xo, float(i + 1) / no);
+        float x0 = lerp<float>(float(i) / no, min_xo, max_xo);
+        float x1 = lerp<float>(float(i + 1) / no, min_xo, max_xo);
         yo[i] = average_samples(samples, x0, x1);
     }
 }

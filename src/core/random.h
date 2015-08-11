@@ -5,8 +5,10 @@
 
 namespace gill { namespace core {
 
+typedef std::mt19937 RNG;
+
 template<typename T>
-T random(std::mt19937 &rng, const T &min, const T &max) {
+T random(RNG &rng, const T &min, const T &max) {
     std::uniform_int_distribution<T> distribution(min, max);
     return distribution(rng);
 }
