@@ -4,6 +4,7 @@
 namespace gill { namespace sampler {
 
 using namespace gill::core;
+using namespace std;
 
 StratifiedSampler::StratifiedSampler(int x_min, int x_max, int y_min, int y_max, int spp)
     : Sampler(x_min, x_max, y_min, y_max), _spp(spp) {
@@ -19,10 +20,10 @@ int StratifiedSampler::get_sample_batch(Camera::Sample *samples, RNG &rng) {
     }
 
     for (int i = 0; i < _spp; ++i) {
-        samples[i].image_x = _x + random<float>(rng, 0.f, 1.f);
-        samples[i].image_y = _y + random<float>(rng, 0.f, 1.f);
-        samples[i].lens_u = random<float>(rng, 0.f, 1.f);
-        samples[i].lens_v = random<float>(rng, 0.f, 1.f);
+        samples[i].image_x = (float)_x + random_float(rng, 0.f, 1.f);
+        samples[i].image_y = (float)_y + random_float(rng, 0.f, 1.f);
+        samples[i].lens_u = random_float(rng, 0.f, 1.f);
+        samples[i].lens_v = random_float(rng, 0.f, 1.f);
     }
 
     _x++;

@@ -10,11 +10,10 @@ int main(int argc, char *argv[]) {
     }
 
     Parser parser(argv[1]);
-    while (auto scene = parser.next_scene()) {
-        auto root = scene->root();
-        auto camera = scene->camera();
-        auto renderer = scene->renderer();
-        renderer->render(root.get(), camera.get());
+    while (auto doc = parser.next_document()) {
+        auto scene = doc->scene;
+        auto renderer = doc->renderer;
+        renderer->render(scene.get());
     }
     return 0;
 }

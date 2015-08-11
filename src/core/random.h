@@ -7,9 +7,13 @@ namespace gill { namespace core {
 
 typedef std::mt19937 RNG;
 
-template<typename T>
-T random(RNG &rng, const T &min, const T &max) {
-    std::uniform_int_distribution<T> distribution(min, max);
+inline float random_float(RNG &rng, const float &min, const float &max) {
+    std::uniform_real_distribution<float> distribution(min, max);
+    return distribution(rng);
+}
+
+inline int random_int(RNG &rng, const int &min, const int &max) {
+    std::uniform_int_distribution<int> distribution(min, max);
     return distribution(rng);
 }
 

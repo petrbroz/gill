@@ -1,14 +1,16 @@
-primitives:
-  - geometry: !mesh { url: obj/woola.obj }
-    material: !diffuse { color: [255, 255, 255] }
-    transform: !identity {}
-camera: !perspective
-  transform: !look_at { position: [-3.0, 0.0, -3.0], target: [0.0, 0.0, 0.0] }
-  field_of_view: 60.0
-  lens_radius: 0.15
-  focal_distance: 3.0
-  film:
-    resolution: [512, 512]
-renderer: !sampler
-  samples_per_pixel: 64
+scene:
+  primitives:
+    - geometry: !mesh { url: obj/woola.obj }
+      material: !diffuse { color: [255, 255, 255] }
+      transform: !identity {}
+renderer: !sampled
+  camera: !perspective
+    transform: !look_at { position: [-3.0, 0.0, -3.0], target: [0.0, 0.0, 0.0] }
+    field_of_view: 60.0
+    lens_radius: 0.15
+    focal_distance: 3.0
+    film:
+      resolution: [512, 512]
+  sampler: !stratified
+    samples_per_pixel: 64
   thread_tiles: [4, 4]

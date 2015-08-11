@@ -7,7 +7,8 @@
 #include "geometry/sphere.h"
 #include "geometry/plane.h"
 #include "camera/perspective.h"
-#include "renderer/sampler.h"
+#include "renderer/sampled.h"
+#include "sampler/stratified.h"
 
 namespace gill { namespace core {
 
@@ -15,6 +16,7 @@ using namespace std;
 using namespace gill::geometry;
 using namespace gill::camera;
 using namespace gill::renderer;
+using namespace gill::sampler;
 
 bool file_exists(const string &filename) {
     auto f = fopen(filename.c_str(), "r");
@@ -44,43 +46,49 @@ Parser::~Parser() {
     }
 }
 
-shared_ptr<Scene> Parser::next_scene() {
+shared_ptr<Parser::Document> Parser::next_document() {
     yaml_parser_load(&_parser, &_document);
     yaml_node_t *root = yaml_document_get_root_node(&_document);
-    shared_ptr<Scene> scene = nullptr;
+    shared_ptr<Parser::Document> doc = nullptr;
     if (root) {
-        scene = parse_scene(root);
+        doc = parse_document(root);
     }
     _transforms.clear();
     _geometries.clear();
     _materials.clear();
     yaml_document_delete(&_document);
-    return scene;
+    return doc;
+}
+
+shared_ptr<Parser::Document> Parser::parse_document(yaml_node_t *node) {
+    auto doc = make_shared<Parser::Document>();
+    _traverse_mapping(node, [this, doc](string &key, yaml_node_t *value) {
+        if (key == "scene") {
+            doc->scene = parse_scene(value);
+        } else if (key == "renderer") {
+            doc->renderer = parse_renderer(value);
+        }
+    });
+    return doc;
 }
 
 shared_ptr<Scene> Parser::parse_scene(yaml_node_t *node) {
     assert(node->type == YAML_MAPPING_NODE);
-    shared_ptr<Aggregate> aggregate = nullptr;
-    shared_ptr<Camera> camera = nullptr;
-    shared_ptr<Renderer> renderer = nullptr;
-    _traverse_mapping(node, [this, &aggregate, &camera, &renderer](string &key, yaml_node_t *value) {
+    vector<Primitive> primitives;
+    _traverse_mapping(node, [this, &primitives](string &key, yaml_node_t *value) {
         if (key == "primitives") {
-            aggregate = parse_primitives(value);
-        } else if (key == "camera") {
-            camera = parse_camera(value);
-        } else if (key == "renderer") {
-            renderer = parse_renderer(value);
+            primitives = parse_primitives(value);
         }
     });
-    return make_shared<Scene>(aggregate, camera, renderer);
+    return make_shared<Scene>(primitives);
 }
 
-shared_ptr<Aggregate> Parser::parse_primitives(yaml_node_t *node) {
+vector<Primitive> Parser::parse_primitives(yaml_node_t *node) {
     vector<Primitive> primitives;
     _traverse_sequence(node, [this, &primitives](yaml_node_t *item) {
         primitives.push_back(parse_primitive(item));
     });
-    return make_shared<Aggregate>(primitives);
+    return primitives;
 }
 
 Primitive Parser::parse_primitive(yaml_node_t *node) {
@@ -236,6 +244,42 @@ shared_ptr<Transform> Parser::parse_transform(yaml_node_t *node) {
     }
 }
 
+shared_ptr<Renderer> Parser::parse_renderer(yaml_node_t *node) {
+    string tag((char *)node->tag);
+    shared_ptr<Camera> camera = nullptr;
+    if (tag == "!sampled") {
+        shared_ptr<Sampler> sampler = nullptr;
+        int thread_tiles[2] = {1, 1};
+        _traverse_mapping(node, [this, &camera, &sampler, &thread_tiles](string &key, yaml_node_t *value) {
+            if (key == "camera") {
+                camera = parse_camera(value);
+            } else if (key == "sampler") {
+                sampler = parse_sampler(value);
+            } else if (key == "thread_tiles") {
+                auto seq = _get_sequence<int, 2>(value);
+                thread_tiles[0] = seq[0];
+                thread_tiles[1] = seq[1];
+            }
+        });
+        return make_shared<SampledRenderer>(camera, sampler, thread_tiles);
+    }
+    throw std::runtime_error("unknown renderer type");
+}
+
+shared_ptr<Sampler> Parser::parse_sampler(yaml_node_t *node) {
+    string tag((char *)node->tag);
+    if (tag == "!stratified") {
+        int spp = 1;
+        _traverse_mapping(node, [this, &spp](string &key, yaml_node_t *value) {
+            if (key == "samples_per_pixel") {
+                spp = _get_scalar<int>(value);
+            }
+        });
+        return make_shared<StratifiedSampler>(0, 511, 0, 511, spp);
+    }
+    throw std::runtime_error("unknown sampler type");
+}
+
 shared_ptr<Camera> Parser::parse_camera(yaml_node_t *node) {
     string tag((char *)node->tag);
     if (tag == "!perspective") {
@@ -272,25 +316,6 @@ shared_ptr<Film> Parser::parse_film(yaml_node_t *node) {
         }
     });
     return make_shared<Film>(xres, yres);
-}
-
-shared_ptr<Renderer> Parser::parse_renderer(yaml_node_t *node) {
-    string tag((char *)node->tag);
-    if (tag == "!sampler") {
-        int samples_per_pixel = 1;
-        int thread_tiles[2] = {1, 1};
-        _traverse_mapping(node, [this, &samples_per_pixel, &thread_tiles](string &key, yaml_node_t *value) {
-            if (key == "samples_per_pixel") {
-                samples_per_pixel = _get_scalar<int>(value);
-            } else if (key == "thread_tiles") {
-                auto seq = _get_sequence<int, 2>(value);
-                thread_tiles[0] = seq[0];
-                thread_tiles[1] = seq[1];
-            }
-        });
-        return make_shared<Sampler>(samples_per_pixel, thread_tiles);
-    }
-    throw std::runtime_error("unknown renderer type");
 }
 
 void Parser::_traverse_mapping(yaml_node_t *node, function<void(std::string&, yaml_node_t*)> func) {

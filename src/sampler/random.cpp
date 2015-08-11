@@ -16,10 +16,10 @@ int RandomSampler::get_sample_batch(Camera::Sample *samples, RNG &rng) {
         return 0;
     }
 
-    samples[0].image_x = floor(lerp<float>(random<float>(rng, 0.f, 1.f), _x_min, _x_max));
-    samples[0].image_y = floor(lerp<float>(random<float>(rng, 0.f, 1.f), _y_min, _y_max));
-    samples[0].lens_u = random<float>(rng, 0.f, 1.f);
-    samples[0].lens_v = random<float>(rng, 0.f, 1.f);
+    samples[0].image_x = floor(lerp<float>(random_float(rng, 0.f, 1.f), _x_min, _x_max));
+    samples[0].image_y = floor(lerp<float>(random_float(rng, 0.f, 1.f), _y_min, _y_max));
+    samples[0].lens_u = random_float(rng, 0.f, 1.f);
+    samples[0].lens_v = random_float(rng, 0.f, 1.f);
     _used_samples++;
 
     return 1;
