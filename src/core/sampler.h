@@ -1,19 +1,12 @@
 #ifndef GILL_CORE_SAMPLER_H_
 #define GILL_CORE_SAMPLER_H_
 
-#include <iostream>
-
+#include "core/camera.h"
 #include "core/ray.h"
 #include "core/random.h"
 #include "core/spectrum.h"
-#include "core/intersection.h"
 
 namespace gill { namespace core {
-
-struct Sample {
-    float img_x, img_y;
-    float lens_u, lens_v;
-};
 
 /**
  * Abstraction of an algorithm generating image samples to be processed by the renderer.
@@ -42,7 +35,7 @@ public:
      * @param rng Random number generator.
      * @returns Number of generated samples. If 0, the sampler has finished its work.
      */
-    virtual int get_sample_batch(Sample *samples, RNG &rng) = 0;
+    virtual int get_sample_batch(Camera::Sample *samples, RNG &rng) = 0;
 
     /**
      * Accepts results for the generated samples, potentially adjusting sampler's next choices.
@@ -52,7 +45,7 @@ public:
      * @param count Number of samples, rays and radiances being reported.
      * @returns True if the reported results should be included in the output.
      */
-    virtual bool report_results(Sample *samples, const Ray *rays, const Spectrum *radiances, int count);
+    virtual bool report_results(Camera::Sample *samples, const Ray *rays, const Spectrum *radiances, int count);
 
     /**
      * Creates a subsampler for multithreaded/multitiled workflows.

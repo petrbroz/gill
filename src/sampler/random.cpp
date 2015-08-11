@@ -13,14 +13,14 @@ RandomSampler::RandomSampler(int x_min, int x_max, int y_min, int y_max, int spp
 
 int RandomSampler::max_batch_size() const { return _spp; }
 
-int RandomSampler::get_sample_batch(Sample *samples, RNG &rng) {
+int RandomSampler::get_sample_batch(Camera::Sample *samples, RNG &rng) {
     if (_y > _y_max) {
         return 0;
     }
 
     for (int i = 0; i < _spp; ++i) {
-        samples[i].img_x = _x + random<float>(rng, 0.f, 1.f);
-        samples[i].img_y = _y + random<float>(rng, 0.f, 1.f);
+        samples[i].image_x = _x + random<float>(rng, 0.f, 1.f);
+        samples[i].image_y = _y + random<float>(rng, 0.f, 1.f);
         samples[i].lens_u = random<float>(rng, 0.f, 1.f);
         samples[i].lens_v = random<float>(rng, 0.f, 1.f);
     }
