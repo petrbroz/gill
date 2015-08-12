@@ -76,12 +76,7 @@ public:
         if (almost_zero(pixel.weight)) {
             return Spectrum(0.0);
         } else {
-            //return pixel.radiance / pixel.weight;
-            return clamp(Spectrum(
-                pixel.radiance[0] / pixel.weight,
-                pixel.radiance[1] / pixel.weight,
-                pixel.radiance[2] / pixel.weight
-            ), 0.f, 1.f);
+            return clamp(pixel.radiance / pixel.weight, 0.f, 1.f);
         }
     }
 
