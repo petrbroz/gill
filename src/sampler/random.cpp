@@ -11,7 +11,7 @@ RandomSampler::RandomSampler(int x_min, int x_max, int y_min, int y_max, int num
 
 int RandomSampler::max_batch_size() const { return 1; }
 
-int RandomSampler::get_sample_batch(Camera::Sample *samples, RNG &rng) {
+int RandomSampler::get_sample_batch(Sample *samples, RNG &rng) {
     if (_num_samples == _used_samples) {
         return 0;
     }

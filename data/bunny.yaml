@@ -52,6 +52,8 @@ renderer: !sampled
     focal_distance: 0.4
     film:
       resolution: [512, 512]
+      filter: !triangle
+        window: [1.5, 1.5]
   sampler: !stratified
     samples_per_pixel: 64
   thread_tiles: [4, 4]

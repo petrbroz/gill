@@ -24,6 +24,11 @@ public:
      */
     virtual float evaluate(float x, float y) const = 0;
 
+    float width() const { return _width; };
+    float height() const { return _height; };
+    float inv_width() const { return _inv_width; };
+    float inv_height() const { return _inv_height; };
+
 protected:
     const float _width, _height;
     const float _inv_width, _inv_height;

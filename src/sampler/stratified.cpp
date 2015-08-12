@@ -14,7 +14,7 @@ StratifiedSampler::StratifiedSampler(int x_min, int x_max, int y_min, int y_max,
 
 int StratifiedSampler::max_batch_size() const { return _spp; }
 
-int StratifiedSampler::get_sample_batch(Camera::Sample *samples, RNG &rng) {
+int StratifiedSampler::get_sample_batch(Sample *samples, RNG &rng) {
     if (_y > _y_max) {
         return 0;
     }

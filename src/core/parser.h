@@ -52,6 +52,7 @@ protected:
     std::shared_ptr<Sampler> parse_sampler(yaml_node_t *node);
     std::shared_ptr<Camera> parse_camera(yaml_node_t *node);
     std::shared_ptr<Film> parse_film(yaml_node_t *node);
+    std::shared_ptr<Filter> parse_filter(yaml_node_t *node);
 
     void _traverse_mapping(yaml_node_t *node, std::function<void(std::string&, yaml_node_t*)> func);
     void _traverse_sequence(yaml_node_t *node, std::function<void(yaml_node_t*)> func);

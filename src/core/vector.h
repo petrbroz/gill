@@ -21,6 +21,7 @@
 #define GILL_CORE_VECTOR_H_
 
 #include <cmath>
+#include <algorithm>
 #include <iostream>
 #include <type_traits>
 #include <vector>

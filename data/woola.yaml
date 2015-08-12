@@ -11,6 +11,10 @@ renderer: !sampled
     focal_distance: 3.0
     film:
       resolution: [512, 512]
+      filter: !mitchell
+        window: [2.0, 2.0]
+        b: 1.0
+        c: 1.0
   sampler: !stratified
     samples_per_pixel: 64
   thread_tiles: [4, 4]

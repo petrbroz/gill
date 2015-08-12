@@ -28,10 +28,13 @@ renderer: !sampled
   camera: !perspective
     transform: !look_at { position: [0.0, 32.0, -64.0], target: [0.0, 32.0, 0.0] }
     field_of_view: 90.0
-    lens_radius: 1.0
+    lens_radius: 1.5
     focal_distance: 50.0
     film:
       resolution: [512, 512]
+      filter: !gaussian
+        window: [2.0, 2.0]
+        alpha: 1.0
   sampler: !stratified
     samples_per_pixel: 64
   thread_tiles: [4, 4]

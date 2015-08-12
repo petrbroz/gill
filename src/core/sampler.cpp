@@ -12,7 +12,7 @@ Sampler::Sampler(int x_min, int x_max, int y_min, int y_max)
 
 Sampler::~Sampler() {}
 
-bool Sampler::report_results(Camera::Sample *samples, const Ray *rays, const Spectrum *radiances, int count) {
+bool Sampler::report_results(Sample *samples, const Ray *rays, const Spectrum *radiances, int count) {
     return true;
 }
 

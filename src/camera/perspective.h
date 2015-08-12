@@ -19,7 +19,7 @@ class PerspectiveCamera : public ProjectiveCamera {
 public:
     PerspectiveCamera(std::shared_ptr<Transform> ltow, std::shared_ptr<Film> film,
             float fov, float lens_radius, float focal_dist);
-    Ray generate_ray(const Camera::Sample &sample) const;
+    Ray generate_ray(const Sample &sample) const;
 };
 
 }}

@@ -12,26 +12,23 @@ using namespace std;
 using namespace std::chrono;
 
 void render_tile(const Scene *scene, const Camera *camera, Sampler *sampler) {
-    Camera::Sample *samples = new Camera::Sample[sampler->max_batch_size()];
+    Sample *samples = new Sample[sampler->max_batch_size()];
     RNG rng;
     int count;
     while ((count = sampler->get_sample_batch(samples, rng)) > 0) {
-        float r = 0.0, g = 0.0, b = 0.0;
-        int sum = 0;
         for (int i = 0; i < count; ++i) {
             Ray ray = camera->generate_ray(samples[i]);
             Intersection isec;
             float t = Infinity;
             if (scene->intersect(ray, t, &isec)) {
                 Normal n = normalize(isec.n);
-                r += n.x * 0.5 + 0.5;
-                g += n.y * 0.5 + 0.5;
-                b += n.z * 0.5 + 0.5;
-                sum++;
+                float r = n.x * 0.5 + 0.5;
+                float g = n.y * 0.5 + 0.5;
+                float b = n.z * 0.5 + 0.5;
+                camera->_film->add_sample(samples[i], Spectrum(r, g, b));
+            } else {
+                camera->_film->add_sample(samples[i], Spectrum(0.f));
             }
-        }
-        if (sum > 0) {
-            camera->_film->set_sample(floor(samples[0].image_x), floor(samples[0].image_y), Spectrum(r / count, g / count, b / count));
         }
     }
     delete[] samples;

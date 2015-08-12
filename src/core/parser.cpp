@@ -9,6 +9,10 @@
 #include "camera/perspective.h"
 #include "renderer/sampled.h"
 #include "sampler/stratified.h"
+#include "filter/box.h"
+#include "filter/triangle.h"
+#include "filter/gaussian.h"
+#include "filter/mitchell.h"
 
 namespace gill { namespace core {
 
@@ -17,6 +21,7 @@ using namespace gill::geometry;
 using namespace gill::camera;
 using namespace gill::renderer;
 using namespace gill::sampler;
+using namespace gill::filter;
 
 bool file_exists(const string &filename) {
     auto f = fopen(filename.c_str(), "r");
@@ -308,14 +313,68 @@ shared_ptr<Camera> Parser::parse_camera(yaml_node_t *node) {
 
 shared_ptr<Film> Parser::parse_film(yaml_node_t *node) {
     int xres = 0, yres = 0;
-    _traverse_mapping(node, [this, &xres, &yres](string &key, yaml_node_t *value) {
+    shared_ptr<Filter> filter = nullptr;
+    _traverse_mapping(node, [this, &xres, &yres, &filter](string &key, yaml_node_t *value) {
         if (key == "resolution") {
             auto seq = _get_sequence<int, 2>(value);
             xres = seq[0];
             yres = seq[1];
+        } else if (key == "filter") {
+            filter = parse_filter(value);
         }
     });
-    return make_shared<Film>(xres, yres);
+    return make_shared<Film>(xres, yres, filter);
+}
+
+shared_ptr<Filter> Parser::parse_filter(yaml_node_t *node) {
+    string tag((char *)node->tag);
+    float window[2] = {0.f, 0.f};
+    if (tag == "!box") {
+        _traverse_mapping(node, [this, &window](string &key, yaml_node_t *value) {
+            if (key == "window") {
+                auto seq = _get_sequence<int, 2>(value);
+                window[0] = seq[0];
+                window[1] = seq[1];
+            }
+        });
+        return make_shared<BoxFilter>(window[0], window[1]);
+    } else if (tag == "!triangle") {
+        _traverse_mapping(node, [this, &window](string &key, yaml_node_t *value) {
+            if (key == "window") {
+                auto seq = _get_sequence<int, 2>(value);
+                window[0] = seq[0];
+                window[1] = seq[1];
+            }
+        });
+        return make_shared<TriangleFilter>(window[0], window[1]);
+    } else if (tag == "!gaussian") {
+        float alpha = 0.f;
+        _traverse_mapping(node, [this, &window, &alpha](string &key, yaml_node_t *value) {
+            if (key == "window") {
+                auto seq = _get_sequence<int, 2>(value);
+                window[0] = seq[0];
+                window[1] = seq[1];
+            } else if (key == "alpha") {
+                alpha = _get_scalar<float>(value);
+            }
+        });
+        return make_shared<GaussianFilter>(window[0], window[1], alpha);
+    } else if (tag == "!mitchell") {
+        float b = 0.f, c = 0.f;
+        _traverse_mapping(node, [this, &window, &b, &c](string &key, yaml_node_t *value) {
+            if (key == "window") {
+                auto seq = _get_sequence<int, 2>(value);
+                window[0] = seq[0];
+                window[1] = seq[1];
+            } else if (key == "a") {
+                b = _get_scalar<float>(value);
+            } else if (key == "b") {
+                c = _get_scalar<float>(value);
+            }
+        });
+        return make_shared<MitchellFilter>(window[0], window[1], b, c);
+    }
+    throw std::runtime_error("unknown filter type");
 }
 
 void Parser::_traverse_mapping(yaml_node_t *node, function<void(std::string&, yaml_node_t*)> func) {
