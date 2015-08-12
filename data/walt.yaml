@@ -1,35 +1,40 @@
-primitives:
-  - geometry: &walt !mesh { url: obj/walt.obj }
-    material: &diff !diffuse { color: [255, 255, 255] }
-    transform:
-      - &rot !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
-      - !translate { delta: [-96.0, 0.0, 64.0] }
-  - geometry: *walt
-    material: *diff
-    transform:
-      - *rot
-      - !translate { delta: [-48.0, 0.0, 32.0] }
-  - geometry: *walt
-    material: *diff
-    transform:
-      - *rot
-  - geometry: *walt
-    material: *diff
-    transform:
-      - *rot
-      - !translate { delta: [48.0, 0.0, 32.0] }
-  - geometry: *walt
-    material: *diff
-    transform:
-      - *rot
-      - !translate { delta: [96.0, 0.0, 64.0] }
-camera: !perspective
-  transform: !look_at { position: [0.0, 32.0, -64.0], target: [0.0, 32.0, 0.0] }
-  field_of_view: 90.0
-  lens_radius: 1.0
-  focal_distance: 50.0
-  film:
-    resolution: [512, 512]
-renderer: !sampler
-  samples_per_pixel: 64
+scene:
+  primitives:
+    - geometry: &walt !mesh { url: obj/walt.obj }
+      material: &diff !diffuse { color: [255, 255, 255] }
+      transform:
+        - &rot !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
+        - !translate { delta: [-96.0, 0.0, 64.0] }
+    - geometry: *walt
+      material: *diff
+      transform:
+        - *rot
+        - !translate { delta: [-48.0, 0.0, 32.0] }
+    - geometry: *walt
+      material: *diff
+      transform:
+        - *rot
+    - geometry: *walt
+      material: *diff
+      transform:
+        - *rot
+        - !translate { delta: [48.0, 0.0, 32.0] }
+    - geometry: *walt
+      material: *diff
+      transform:
+        - *rot
+        - !translate { delta: [96.0, 0.0, 64.0] }
+renderer: !sampled
+  camera: !perspective
+    transform: !look_at { position: [0.0, 32.0, -64.0], target: [0.0, 32.0, 0.0] }
+    field_of_view: 90.0
+    lens_radius: 1.5
+    focal_distance: 50.0
+    film:
+      resolution: [512, 512]
+      filter: !gaussian
+        window: [2.0, 2.0]
+        alpha: 1.0
+  sampler: !stratified
+    samples_per_pixel: 64
   thread_tiles: [4, 4]

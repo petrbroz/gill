@@ -171,8 +171,93 @@ public:
         c[0] = r; c[1] = g; c[2] = b;
     }
 
-    RGB(const CoefficientSpectrum<3> &spectrum) {
-        c[0] = spectrum[0]; c[1] = spectrum[1]; c[2] = spectrum[2];
+    RGB(const CoefficientSpectrum<3> &s) {
+        c[0] = s[0]; c[1] = s[1]; c[2] = s[2];
+    }
+
+    /*
+    inline bool operator==(const RGB &rhs) const {
+        for (int i = 0; i < 3; ++i) {
+            if (c[i] != rhs.c[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    inline bool operator!=(const RGB &rhs) const {
+        return !(*this == rhs);
+    }
+
+    inline RGB &operator+=(const RGB &rhs) {
+        for (int i = 0; i < 3; ++i) { c[i] += rhs.c[i]; }
+        return *this;
+    }
+
+    inline RGB operator+(const RGB &rhs) const {
+        RGB result = *this;
+        return result += rhs;
+    }
+
+    inline RGB &operator-=(const RGB &rhs) {
+        for (int i = 0; i < 3; ++i) { c[i] -= rhs.c[i]; }
+        return *this;
+    }
+
+    inline RGB operator-(const RGB &rhs) const {
+        RGB result = *this;
+        return result -= rhs;
+    }
+
+    inline RGB &operator*=(float rhs) {
+        for (int i = 0; i < 3; ++i) { c[i] *= rhs; }
+        return *this;
+    }
+
+    inline RGB operator*(float rhs) const {
+        RGB result = *this;
+        return result *= rhs;
+    }
+
+    inline RGB &operator/=(float rhs) {
+        for (int i = 0; i < 3; ++i) { c[i] /= rhs; }
+        return *this;
+    }
+
+    inline RGB operator/(float rhs) const {
+        RGB result = *this;
+        return result /= rhs;
+    }
+
+    inline RGB &operator*=(const RGB &rhs) {
+        for (int i = 0; i < 3; ++i) { c[i] *= rhs.c[i]; }
+        return *this;
+    }
+
+    inline RGB operator*(const RGB &rhs) const {
+        RGB result = *this;
+        return result *= rhs;
+    }
+
+    inline float& operator[](int i) {
+        assert(i >= 0 && i < 3);
+        return c[i];
+    }
+
+    inline float operator[](int i) const {
+        assert(i >= 0 && i < 3);
+        return c[i];
+    }
+    */
+
+    inline RGB operator/(const RGB &rhs) const {
+        RGB result = *this;
+        return result /= rhs;
+    }
+
+    inline RGB &operator/=(const RGB &rhs) {
+        for (int i = 0; i < 3; ++i) { c[i] /= rhs.c[i]; }
+        return *this;
     }
 };
 

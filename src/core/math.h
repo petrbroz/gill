@@ -19,7 +19,8 @@ inline float radians(float degrees) {
     return degrees * Pi / 180.f;
 }
 
-inline float lerp(float v0, float v1, float t) {
+template<typename T>
+inline T lerp(float t, T v0, T v1) {
     return v0 + t * (v1 - v0);
 }
 

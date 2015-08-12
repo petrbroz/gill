@@ -18,7 +18,7 @@ namespace gill { namespace geometry {
 class Plane : public Geometry {
 public:
     BBox bounds() const override;
-    bool intersect(const Ray &ray, float &t, Geometry::Intersection *i) const override;
+    bool intersect(const Ray &ray, float &t, Intersection *isec) const override;
 };
 
 }}

@@ -1,56 +1,59 @@
-# Basic scene example
-primitives:
-  - geometry: &bunny !mesh { url: obj/bunny.obj }
-    material: &diff !diffuse { color: [255, 255, 255] }
-    transform:
-      - &rot !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
-      - !translate { delta: [-0.2, 0.0, 0.0] }
-  - geometry: *bunny
-    material: *diff
-    transform:
-      - *rot
-  - geometry: *bunny
-    material: *diff
-    transform:
-      - *rot
-      - !translate { delta: [0.2, 0.0, 0.0] }
-  - geometry: *bunny
-    material: *diff
-    transform:
-      - *rot
-      - !translate { delta: [-0.2, 0.0, 0.2] }
-  - geometry: *bunny
-    material: *diff
-    transform:
-      - *rot
-      - !translate { delta: [0.0, 0.0, 0.2] }
-  - geometry: *bunny
-    material: *diff
-    transform:
-      - *rot
-      - !translate { delta: [0.2, 0.0, 0.2] }
-  - geometry: *bunny
-    material: *diff
-    transform:
-      - *rot
-      - !translate { delta: [-0.2, 0.0, 0.4] }
-  - geometry: *bunny
-    material: *diff
-    transform:
-      - *rot
-      - !translate { delta: [0.0, 0.0, 0.4] }
-  - geometry: *bunny
-    material: *diff
-    transform:
-      - *rot
-      - !translate { delta: [0.2, 0.0, 0.4] }
-camera: !perspective
-  transform: !look_at { position: [0.0, 0.25, -0.25], target: [0.0, 0.1, 0.1] }
-  field_of_view: 60.0
-  lens_radius: 0.01
-  focal_distance: 0.4
-  film:
-    resolution: [512, 512]
-renderer: !sampler
-  samples_per_pixel: 64
+scene:
+  primitives:
+    - geometry: &bunny !mesh { url: obj/bunny.obj }
+      material: &diff !diffuse { color: [255, 255, 255] }
+      transform:
+        - &rot !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
+        - !translate { delta: [-0.2, 0.0, 0.0] }
+    - geometry: *bunny
+      material: *diff
+      transform:
+        - *rot
+    - geometry: *bunny
+      material: *diff
+      transform:
+        - *rot
+        - !translate { delta: [0.2, 0.0, 0.0] }
+    - geometry: *bunny
+      material: *diff
+      transform:
+        - *rot
+        - !translate { delta: [-0.2, 0.0, 0.2] }
+    - geometry: *bunny
+      material: *diff
+      transform:
+        - *rot
+        - !translate { delta: [0.0, 0.0, 0.2] }
+    - geometry: *bunny
+      material: *diff
+      transform:
+        - *rot
+        - !translate { delta: [0.2, 0.0, 0.2] }
+    - geometry: *bunny
+      material: *diff
+      transform:
+        - *rot
+        - !translate { delta: [-0.2, 0.0, 0.4] }
+    - geometry: *bunny
+      material: *diff
+      transform:
+        - *rot
+        - !translate { delta: [0.0, 0.0, 0.4] }
+    - geometry: *bunny
+      material: *diff
+      transform:
+        - *rot
+        - !translate { delta: [0.2, 0.0, 0.4] }
+renderer: !sampled
+  camera: !perspective
+    transform: !look_at { position: [0.0, 0.25, -0.25], target: [0.0, 0.1, 0.1] }
+    field_of_view: 60.0
+    lens_radius: 0.01
+    focal_distance: 0.4
+    film:
+      resolution: [512, 512]
+      filter: !triangle
+        window: [1.5, 1.5]
+  sampler: !stratified
+    samples_per_pixel: 64
   thread_tiles: [4, 4]

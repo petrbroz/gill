@@ -15,7 +15,7 @@ BBox Sphere::bounds() const {
     return BBox(Point(-_radius), Point(_radius));
 }
 
-bool Sphere::intersect(const Ray &ray, float &t, Geometry::Intersection *gi) const {
+bool Sphere::intersect(const Ray &ray, float &t, Intersection *isec) const {
     Vector rd = ray.d, ro = ray.o;
     float a = dot(rd, rd);
     float b = 2.0 * dot(ro, rd);
@@ -34,9 +34,9 @@ bool Sphere::intersect(const Ray &ray, float &t, Geometry::Intersection *gi) con
 
     if (_t >= 0.0 && _t < t) {
         t = _t;
-        if (gi) {
-            gi->p = ray(t);
-            gi->n = Normal((gi->p - Point(0.0)) / _radius);
+        if (isec) {
+            isec->p = ray(t);
+            isec->n = Normal((isec->p - Point(0.0)) / _radius);
         }
         return true;
     } else {

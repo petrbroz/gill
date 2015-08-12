@@ -5,6 +5,7 @@
 
 #include "core/transform.h"
 #include "core/film.h"
+#include "core/sampler.h"
 
 namespace gill { namespace core {
 
@@ -13,15 +14,6 @@ namespace gill { namespace core {
  */
 class Camera {
 public:
-
-    /**
-     * Ray generation input.
-     */
-    struct Sample {
-        float image_x, image_y;
-        float lens_u, lens_v;
-    };
-
     /**
      * Initializes a camera.
      * @param ltow Local-to-world transformation. In its local space, the camera points in the +Z direction,
