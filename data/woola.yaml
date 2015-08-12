@@ -1,5 +1,11 @@
 scene:
   primitives:
+    - geometry: !plane {}
+      material: !diffuse { color: [255, 255, 255] }
+      transform:
+        - !scale { coefs: [8.0, 8.0, 8.0] }
+        - !rotate { axis: [1.0, 0.0, 0.0], angle: 90.0 }
+        - !translate { delta: [0.0, -1.3, 0.0] }
     - geometry: !mesh { url: obj/woola.obj }
       material: !diffuse { color: [255, 255, 255] }
       transform: !identity {}
