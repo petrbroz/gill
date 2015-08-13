@@ -13,15 +13,17 @@
 #include "filter/triangle.h"
 #include "filter/gaussian.h"
 #include "filter/mitchell.h"
+#include "material/matte.h"
 
 namespace gill { namespace core {
 
 using namespace std;
-using namespace gill::geometry;
 using namespace gill::camera;
+using namespace gill::filter;
+using namespace gill::geometry;
+using namespace gill::material;
 using namespace gill::renderer;
 using namespace gill::sampler;
-using namespace gill::filter;
 
 bool file_exists(const string &filename) {
     auto f = fopen(filename.c_str(), "r");
@@ -161,8 +163,18 @@ shared_ptr<Material> Parser::parse_material(yaml_node_t *node) {
         return cache->second;
     }
 
-    assert(node->type == YAML_MAPPING_NODE);
-    auto material = make_shared<Material>();
+    shared_ptr<Material> material = nullptr;
+    string tag((char *)node->tag);
+    if (tag == "!matte") {
+        Spectrum color(0.0, 0.0, 0.0);
+        _traverse_mapping(node, [this, &color](string &key, yaml_node_t *value) {
+            if (key == "color") {
+                auto seq = _get_sequence<float, 3>(value);
+                color = Spectrum(seq[0], seq[1], seq[2]);
+            }
+        });
+        material = make_shared<MatteMaterial>(color);
+    }
 
     if (material) {
         _materials.insert(pair<int, shared_ptr<Material>>(index, material));

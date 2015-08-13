@@ -1,12 +1,12 @@
 scene:
   primitives:
     - geometry: !plane {}
-      material: !diffuse { color: [255, 255, 255] }
+      material: !matte { color: [128, 128, 128] }
       transform:
         - !scale { coefs: [2.0, 2.0, 2.0] }
         - !rotate { axis: [1.0, 0.0, 0.0], angle: 90.0 }
     - geometry: &bunny !mesh { url: obj/bunny.obj }
-      material: &diff !diffuse { color: [255, 255, 255] }
+      material: &diff !matte { color: [0, 255, 0] }
       transform:
         - &rot !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
         - !translate { delta: [-0.2, 0.0, 0.0] }

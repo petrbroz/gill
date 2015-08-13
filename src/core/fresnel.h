@@ -8,7 +8,7 @@ namespace gill { namespace core {
 
 /**
  * Interface for computing Fresnel reflection coefficients, assuming the light is not polarized.
- * @note Fresnel class itself always evaluates to 100% reflection.
+ * @note The base Fresnel class always evaluates to 100% reflection.
  */
 class Fresnel {
 public:
@@ -21,6 +21,9 @@ public:
     virtual Spectrum evaluate(float cos_i) const;
 };
 
+/**
+ * Fresnel function for dielectric media.
+ */
 class FresnelDielectric : public Fresnel {
 public:
     FresnelDielectric(float eta_i, float &eta_t) : _eta_i(eta_i), _eta_t(eta_t) {}
@@ -30,6 +33,9 @@ protected:
     float _eta_i, _eta_t;
 };
 
+/**
+ * Fresnel function for conductive media.
+ */
 class FresnelConductor : public Fresnel {
 public:
     FresnelConductor(const Spectrum &eta, const Spectrum &absorp) : _eta(eta), _absorp(absorp) {}
