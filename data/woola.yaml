@@ -1,13 +1,19 @@
 scene:
   primitives:
     - geometry: !plane {}
-      material: !matte { color: [128, 128, 128] }
+      material: !emissive { color: [1.0, 1.0, 1.0] }
+      transform:
+        - !scale { coefs: [32.0, 32.0, 32.0] }
+        - !rotate { axis: [1.0, 0.0, 0.0], angle: 90.0 }
+        - !translate { delta: [0.0, 5.0, 0.0] }
+    - geometry: !plane {}
+      material: !matte { color: [0.75, 0.75, 0.75] }
       transform:
         - !scale { coefs: [8.0, 8.0, 8.0] }
         - !rotate { axis: [1.0, 0.0, 0.0], angle: 90.0 }
         - !translate { delta: [0.0, -1.3, 0.0] }
     - geometry: !mesh { url: obj/woola.obj }
-      material: !matte { color: [255, 0, 0] }
+      material: !matte { color: [0.9, 0.8, 0.7] }
       transform: !identity {}
 renderer: !sampled
   camera: !perspective
@@ -22,5 +28,5 @@ renderer: !sampled
         b: 1.0
         c: 1.0
   sampler: !stratified
-    samples_per_pixel: 64
+    samples_per_pixel: 256
   thread_tiles: [4, 4]

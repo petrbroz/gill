@@ -9,6 +9,7 @@
 #include "core/transform.h"
 #include "core/vector.h"
 #include "core/intersection.h"
+#include "core/material.h"
 
 namespace gill { namespace core {
 
@@ -17,7 +18,8 @@ namespace gill { namespace core {
  */
 class Primitive {
 public:
-    Primitive(std::shared_ptr<Geometry> geom, std::shared_ptr<Transform> ltow, std::shared_ptr<Transform> wtol);
+    Primitive(std::shared_ptr<Geometry> geom, std::shared_ptr<Material> material,
+            std::shared_ptr<Transform> ltow, std::shared_ptr<Transform> wtol);
     BBox local_bounds() const;
     BBox bounds() const;
     bool intersect(const Ray &ray, float &t, Intersection *i) const;
@@ -25,6 +27,7 @@ public:
 
 protected:
     std::shared_ptr<Geometry> _geom;
+    std::shared_ptr<Material> _material;
     std::shared_ptr<Transform> _ltow; /// Transformation from local to world coordinate system
     std::shared_ptr<Transform> _wtol; /// Transformation from world to local coordinate system
 };

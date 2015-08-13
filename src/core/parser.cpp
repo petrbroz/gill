@@ -14,6 +14,7 @@
 #include "filter/gaussian.h"
 #include "filter/mitchell.h"
 #include "material/matte.h"
+#include "material/emissive.h"
 
 namespace gill { namespace core {
 
@@ -112,7 +113,7 @@ Primitive Parser::parse_primitive(yaml_node_t *node) {
         }
     });
     Transform inv = inverse(*transform);
-    return Primitive(geometry, transform, make_shared<Transform>(inv));
+    return Primitive(geometry, material, transform, make_shared<Transform>(inv));
 }
 
 shared_ptr<Geometry> Parser::parse_geometry(yaml_node_t *node) {
@@ -174,6 +175,15 @@ shared_ptr<Material> Parser::parse_material(yaml_node_t *node) {
             }
         });
         material = make_shared<MatteMaterial>(color);
+    } else if (tag == "!emissive") {
+        Spectrum color(0.0, 0.0, 0.0);
+        _traverse_mapping(node, [this, &color](string &key, yaml_node_t *value) {
+            if (key == "color") {
+                auto seq = _get_sequence<float, 3>(value);
+                color = Spectrum(seq[0], seq[1], seq[2]);
+            }
+        });
+        material = make_shared<EmissiveMaterial>(color);
     }
 
     if (material) {

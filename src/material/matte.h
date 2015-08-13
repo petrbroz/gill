@@ -15,6 +15,8 @@ public:
     ~MatteMaterial();
     virtual BSDF * bsdf(const Intersection &isec) const override;
 
+    virtual Spectrum _refl() const override { return _kd; }
+
 protected:
     Spectrum _kd;
     BSDF * _bsdf;

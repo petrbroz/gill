@@ -1,13 +1,19 @@
 scene:
   primitives:
     - geometry: !plane {}
-      material: !matte { color: [128, 128, 128] }
+      material: !emissive { color: [1.0, 1.0, 1.0] }
+      transform:
+        - !scale { coefs: [512.0, 512.0, 512.0] }
+        - !rotate { axis: [1.0, 0.0, 0.0], angle: 90.0 }
+        - !translate { delta: [0.0, 96.0, 32.0] }
+    - geometry: !plane {}
+      material: !matte { color: [0.75, 0.75, 0.75] }
       transform:
         - !scale { coefs: [256.0, 256.0, 256.0] }
         - !rotate { axis: [1.0, 0.0, 0.0], angle: 90.0 }
         - !translate { delta: [0.0, 0.0, 32.0] }
     - geometry: &walt !mesh { url: obj/walt.obj }
-      material: &diff !matte { color: [255, 255, 255] }
+      material: &diff !matte { color: [0.9, 0.8, 0.7] }
       transform:
         - &rot !rotate { axis: [0.0, 1.0, 0.0], angle: 180.0 }
         - !translate { delta: [-96.0, 0.0, 64.0] }
@@ -42,5 +48,5 @@ renderer: !sampled
         window: [2.0, 2.0]
         alpha: 1.0
   sampler: !stratified
-    samples_per_pixel: 64
+    samples_per_pixel: 256
   thread_tiles: [4, 4]

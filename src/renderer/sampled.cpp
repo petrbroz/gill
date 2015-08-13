@@ -11,6 +11,36 @@ namespace gill { namespace renderer {
 using namespace std;
 using namespace std::chrono;
 
+inline Vector fuzz_normal(const Normal &n, const Sample &sample) {
+    if (n.x > n.y && n.x > n.z) {
+        return normalize(Vector(n.x, n.y + sample.lens_u - 0.5, n.z + sample.lens_v - 0.5));
+    } else if (n.y > n.x && n.y > n.z) {
+        return normalize(Vector(n.x + sample.lens_u - 0.5, n.y, n.z + sample.lens_v - 0.5));
+    } else {
+        return normalize(Vector(n.x + sample.lens_u - 0.5, n.y + sample.lens_v - 0.5, n.z));
+    }
+};
+
+Spectrum trace(int level, const Sample &sample, const Ray &ray, const Scene *scene) {
+    if (level < 0) {
+        return Spectrum(0.f);
+    }
+
+    Intersection isec;
+    float t = Infinity;
+    if (scene->intersect(ray, t, &isec)) {
+        if (!is_black(isec.emit)) {
+            return isec.emit;
+        } else if (!is_black(isec.refl)) {
+            Vector next_normal = fuzz_normal(isec.n, sample);
+            Ray next_ray(isec.p + next_normal * 0.01, next_normal);
+            return isec.refl * trace(level - 1, sample, next_ray, scene);
+        }
+    }
+
+    return Spectrum(0.f);
+}
+
 void render_tile(const Scene *scene, const Camera *camera, Sampler *sampler) {
     Sample *samples = new Sample[sampler->max_batch_size()];
     RNG rng;
@@ -18,17 +48,7 @@ void render_tile(const Scene *scene, const Camera *camera, Sampler *sampler) {
     while ((count = sampler->get_sample_batch(samples, rng)) > 0) {
         for (int i = 0; i < count; ++i) {
             Ray ray = camera->generate_ray(samples[i]);
-            Intersection isec;
-            float t = Infinity;
-            if (scene->intersect(ray, t, &isec)) {
-                Normal n = normalize(isec.n);
-                float r = n.x * 0.5 + 0.5;
-                float g = n.y * 0.5 + 0.5;
-                float b = n.z * 0.5 + 0.5;
-                camera->_film->add_sample(samples[i], Spectrum(r, g, b));
-            } else {
-                camera->_film->add_sample(samples[i], Spectrum(0.f));
-            }
+            camera->_film->add_sample(samples[i], trace(5, samples[i], ray, scene));
         }
     }
     delete[] samples;

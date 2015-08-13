@@ -2,6 +2,7 @@
 #define GILL_CORE_INTERSECTION_H_
 
 #include "core/vector.h"
+#include "core/spectrum.h"
 
 namespace gill { namespace core {
 
@@ -14,6 +15,7 @@ struct Intersection {
     float u, v;
     Vector dpdu, dpdv;
     Normal dndu, dndv;
+    Spectrum emit, refl;
 };
 
 }}

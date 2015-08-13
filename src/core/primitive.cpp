@@ -1,11 +1,13 @@
 #include "core/primitive.h"
+#include "material/emissive.h"
 
 namespace gill { namespace core {
 
 using namespace std;
 
-Primitive::Primitive(shared_ptr<Geometry> geom, shared_ptr<Transform> ltow, shared_ptr<Transform> wtol)
-    : _geom(geom), _ltow(ltow), _wtol(wtol) { }
+Primitive::Primitive(shared_ptr<Geometry> geom, shared_ptr<Material> material,
+        shared_ptr<Transform> ltow, shared_ptr<Transform> wtol)
+    : _geom(geom), _material(material), _ltow(ltow), _wtol(wtol) { }
 
 BBox Primitive::local_bounds() const {
     return _geom->bounds();
@@ -27,6 +29,8 @@ bool Primitive::intersect(const Ray &ray, float &t, Intersection *isec) const {
     if (hit && isec) {
         isec->p = (*_ltow)(isec->p);
         isec->n = (*_ltow)(isec->n);
+        isec->emit = _material->_emit();
+        isec->refl = _material->_refl();
         t = distance(isec->p, ray.o) / length(ray.d);
     }
     return hit;
