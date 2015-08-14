@@ -28,7 +28,7 @@ bool Primitive::intersect(const Ray &ray, float &t, Intersection *isec) const {
     bool hit = _geom->intersect(local_ray, local_t, isec);
     if (hit && isec) {
         isec->p = (*_ltow)(isec->p);
-        isec->n = (*_ltow)(isec->n);
+        isec->n = normalize((*_ltow)(isec->n));
         isec->emit = _material->_emit();
         isec->refl = _material->_refl();
         t = distance(isec->p, ray.o) / length(ray.d);
