@@ -5,6 +5,7 @@
 
 #include "renderer/sampled.h"
 #include "core/random.h"
+#include "core/montecarlo.h"
 
 namespace gill { namespace renderer {
 
@@ -12,6 +13,7 @@ using namespace std;
 using namespace std::chrono;
 
 inline Vector fuzz_normal(const Normal &n, const Sample &sample) {
+    /*
     if (n.x > n.y && n.x > n.z) {
         return normalize(Vector(n.x, n.y + sample.lens_u - 0.5, n.z + sample.lens_v - 0.5));
     } else if (n.y > n.x && n.y > n.z) {
@@ -19,6 +21,8 @@ inline Vector fuzz_normal(const Normal &n, const Sample &sample) {
     } else {
         return normalize(Vector(n.x + sample.lens_u - 0.5, n.y + sample.lens_v - 0.5, n.z));
     }
+    */
+    return uniform_hemisphere_sample(sample.lens_u, sample.lens_v);
 };
 
 Spectrum trace(int level, const Sample &sample, const Ray &ray, const Scene *scene) {

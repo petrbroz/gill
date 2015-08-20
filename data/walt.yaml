@@ -48,5 +48,5 @@ renderer: !sampled
         window: [2.0, 2.0]
         alpha: 1.0
   sampler: !stratified
-    samples_per_pixel: 512
+    samples_per_pixel: 256
   thread_tiles: [4, 4]
