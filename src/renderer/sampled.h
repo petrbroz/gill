@@ -12,7 +12,8 @@ using namespace gill::core;
 
 class SampledRenderer : public Renderer {
 public:
-    SampledRenderer(std::shared_ptr<Camera> camera, std::shared_ptr<Sampler> sampler, int thread_tiles[2]);
+    SampledRenderer(std::shared_ptr<Camera> camera, std::shared_ptr<SurfaceIntegrator> surface_integrator,
+            std::shared_ptr<Sampler> sampler, int thread_tiles[2]);
     virtual void render(const Scene *scene) const override;
 
 protected:

@@ -32,4 +32,6 @@ renderer: !sampled
         c: 1.0
   sampler: !stratified
     samples_per_pixel: 256
+  surface_integrator: !path
+    max_depth: 4
   thread_tiles: [4, 4]

@@ -15,6 +15,7 @@
 #include "filter/mitchell.h"
 #include "material/matte.h"
 #include "material/emissive.h"
+#include "integrator/path.h"
 
 namespace gill { namespace core {
 
@@ -25,6 +26,7 @@ using namespace gill::geometry;
 using namespace gill::material;
 using namespace gill::renderer;
 using namespace gill::sampler;
+using namespace gill::integrator;
 
 bool file_exists(const string &filename) {
     auto f = fopen(filename.c_str(), "r");
@@ -276,19 +278,22 @@ shared_ptr<Renderer> Parser::parse_renderer(yaml_node_t *node) {
     shared_ptr<Camera> camera = nullptr;
     if (tag == "!sampled") {
         shared_ptr<Sampler> sampler = nullptr;
+        shared_ptr<SurfaceIntegrator> surf_integrator = nullptr;
         int thread_tiles[2] = {1, 1};
-        _traverse_mapping(node, [this, &camera, &sampler, &thread_tiles](string &key, yaml_node_t *value) {
+        _traverse_mapping(node, [this, &camera, &sampler, &surf_integrator, &thread_tiles](string &key, yaml_node_t *value) {
             if (key == "camera") {
                 camera = parse_camera(value);
             } else if (key == "sampler") {
                 sampler = parse_sampler(value);
+            } else if (key == "surface_integrator") {
+                surf_integrator = parse_surface_integrator(value);
             } else if (key == "thread_tiles") {
                 auto seq = _get_sequence<int, 2>(value);
                 thread_tiles[0] = seq[0];
                 thread_tiles[1] = seq[1];
             }
         });
-        return make_shared<SampledRenderer>(camera, sampler, thread_tiles);
+        return make_shared<SampledRenderer>(camera, surf_integrator, sampler, thread_tiles);
     }
     throw std::runtime_error("unknown renderer type");
 }
@@ -305,6 +310,20 @@ shared_ptr<Sampler> Parser::parse_sampler(yaml_node_t *node) {
         return make_shared<StratifiedSampler>(0, 511, 0, 511, spp);
     }
     throw std::runtime_error("unknown sampler type");
+}
+
+shared_ptr<SurfaceIntegrator> Parser::parse_surface_integrator(yaml_node_t *node) {
+    string tag((char *)node->tag);
+    if (tag == "!path") {
+        int max_depth = 4;
+        _traverse_mapping(node, [this, &max_depth](string &key, yaml_node_t *value) {
+            if (key == "max_depth") {
+                max_depth = _get_scalar<int>(value);
+            }
+        });
+        return make_shared<PathIntegrator>(max_depth);
+    }
+    throw std::runtime_error("unknown surface integrator type");
 }
 
 shared_ptr<Camera> Parser::parse_camera(yaml_node_t *node) {

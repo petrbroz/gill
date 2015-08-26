@@ -5,6 +5,16 @@ namespace gill { namespace core {
 
 using namespace std;
 
+shared_ptr<Transform> Transform::coord_sys(const Vector &right, const Vector &up, const Vector &front) {
+    Matrix m(
+        right.x, up.x, front.x, 0.f,
+        right.y, up.y, front.y, 0.f,
+        right.z, up.z, front.z, 0.f,
+        0.f, 0.f, 0.f, 1.f
+    );
+    return make_shared<Transform>(m, inverse(m));
+}
+
 shared_ptr<Transform> Transform::translate(const Vector& delta) {
     return Transform::translate(delta.x, delta.y, delta.z);
 }

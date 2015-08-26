@@ -24,6 +24,7 @@ public:
     Transform(const Matrix& m, const Matrix& inv) : _m(m), _inv(inv) {}
     Transform(const Transform& t) : _m(t._m), _inv(t._inv) {}
 
+    static std::shared_ptr<Transform> coord_sys(const Vector &right, const Vector &up, const Vector &front);
     static std::shared_ptr<Transform> translate(const Vector& delta);
     static std::shared_ptr<Transform> translate(float dx, float dy, float dz);
     static std::shared_ptr<Transform> scale(const Vector& coefs);

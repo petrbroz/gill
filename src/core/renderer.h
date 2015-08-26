@@ -3,6 +3,7 @@
 
 #include "core/scene.h"
 #include "core/camera.h"
+#include "core/integrator.h"
 
 namespace gill { namespace core {
 
@@ -11,11 +12,13 @@ namespace gill { namespace core {
  */
 class Renderer {
 public:
-    Renderer(std::shared_ptr<Camera> camera) : _camera(camera) {}
+    Renderer(std::shared_ptr<Camera> camera, std::shared_ptr<SurfaceIntegrator> surface_integrator)
+        : _camera(camera), _surface_integrator(surface_integrator) {}
     virtual void render(const Scene *scene) const = 0;
 
 protected:
     std::shared_ptr<Camera> _camera;
+    std::shared_ptr<SurfaceIntegrator> _surface_integrator;
 };
 
 }}

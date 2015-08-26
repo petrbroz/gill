@@ -48,6 +48,8 @@ bool Mesh::Triangle::intersect(Mesh *mesh, const Ray &ray, float &t, Intersectio
         if (i) {
             i->p = ray(t);
             i->n = normalize(cross(e1, e2));
+            //i->dpdu = e1;
+            //i->dpdv = e2;
         }
         return true;
     } else {

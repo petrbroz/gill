@@ -14,6 +14,7 @@
 #include "core/renderer.h"
 #include "core/sampler.h"
 #include "core/scene.h"
+#include "core/integrator.h"
 
 namespace gill { namespace core {
 
@@ -51,6 +52,7 @@ protected:
     std::shared_ptr<Renderer> parse_renderer(yaml_node_t *node);
     std::shared_ptr<Sampler> parse_sampler(yaml_node_t *node);
     std::shared_ptr<Camera> parse_camera(yaml_node_t *node);
+    std::shared_ptr<SurfaceIntegrator> parse_surface_integrator(yaml_node_t *node);
     std::shared_ptr<Film> parse_film(yaml_node_t *node);
     std::shared_ptr<Filter> parse_filter(yaml_node_t *node);
 
