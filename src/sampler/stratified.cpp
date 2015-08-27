@@ -1,6 +1,8 @@
 #include "sampler/stratified.h"
 #include "core/random.h"
 
+#include <sstream>
+
 namespace gill { namespace sampler {
 
 using namespace gill::core;
@@ -39,6 +41,12 @@ Sampler * StratifiedSampler::get_subsampler(int h_tiles, int v_tiles, int i, int
     int x0, x1, y0, y1;
     compute_subwindow(h_tiles, v_tiles, i, j, &x0, &x1, &y0, &y1);
     return new StratifiedSampler(x0, x1, y0, y1, _spp);
+}
+
+string StratifiedSampler::to_string() const {
+    ostringstream desc(ostringstream::ate);
+    desc << "stratified (" << _spp << " spp)";
+    return desc.str();
 }
 
 }}

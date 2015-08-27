@@ -22,6 +22,14 @@ public:
      */
     bool intersect(const Ray &ray, float &t, Intersection *isec) const;
 
+    int total_faces() const {
+        int total = 0;
+        for (auto &p : _primitives) {
+            total += p.num_faces();
+        }
+        return total;
+    }
+
 protected:
     std::vector<Primitive> _primitives;
     std::unique_ptr<KdTree> _accelerator;

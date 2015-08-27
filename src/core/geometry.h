@@ -18,6 +18,7 @@ class Geometry {
 public:
     virtual BBox bounds() const = 0;
     virtual bool intersect(const Ray &ray, float &t, Intersection *i) const = 0;
+    virtual int num_faces() const = 0;
 };
 
 }}

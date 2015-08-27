@@ -11,6 +11,7 @@ public:
     virtual int max_batch_size() const override;
     virtual int get_sample_batch(gill::core::Sample *samples, gill::core::RNG &rng) override;
     virtual gill::core::Sampler * get_subsampler(int h_tiles, int v_tiles, int i, int j) override;
+    virtual std::string to_string() const override;
 
 protected:
     int _num_samples, _used_samples;

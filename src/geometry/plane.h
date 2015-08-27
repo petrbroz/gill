@@ -19,6 +19,7 @@ class Plane : public Geometry {
 public:
     BBox bounds() const override;
     bool intersect(const Ray &ray, float &t, Intersection *isec) const override;
+    int num_faces() const { return 1; }
 };
 
 }}

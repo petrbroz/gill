@@ -61,6 +61,8 @@ void SampledRenderer::render(const Scene *scene) const {
 
     _camera->_film->print_ppm();
     cerr << "resolution:[" << res_x << "," << res_y << "]" << endl;
+    cerr << "total_faces:" << scene->total_faces() << endl;
+    cerr << "sampler:" << _sampler->to_string() << endl;
     cerr << "thread_tiles:[" << _thread_tiles[0] << "," << _thread_tiles[1] << "]" << endl;
     cerr << "render_time:" << elapsed.count() << "ms" << endl;
 }

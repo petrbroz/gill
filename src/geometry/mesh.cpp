@@ -193,8 +193,4 @@ shared_ptr<Mesh> Mesh::from_cache_file(const char *filename) {
     return mesh;
 }
 
-int Mesh::num_triangles() const {
-    return _triangles.size();
-}
-
 }}

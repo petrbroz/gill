@@ -63,6 +63,8 @@ public:
      */
     virtual Sampler * get_subsampler(int h_tiles, int v_tiles, int i, int j) = 0;
 
+    virtual std::string to_string() const = 0;
+
 protected:
     void compute_subwindow(int h_tiles, int v_tiles, int i, int j, int *x_min, int *x_max, int *y_min, int *y_max) const;
     int _x_min, _x_max, _y_min, _y_max;

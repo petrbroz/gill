@@ -38,7 +38,7 @@ public:
 
     BBox bounds() const override;
     bool intersect(const Ray &ray, float &t, Intersection *i) const override;
-    int num_triangles() const;
+    int num_faces() const { return _triangles.size(); }
     void save(const char *filename);
     void load(const char *filename);
     static std::shared_ptr<Mesh> from_obj_file(const char *filename);

@@ -23,6 +23,7 @@ public:
     BBox local_bounds() const;
     BBox bounds() const;
     bool intersect(const Ray &ray, float &t, Intersection *i) const;
+    int num_faces() const { return _geom->num_faces(); }
     friend std::ostream& operator<<(std::ostream &out, const Primitive &primitive);
 
 protected:

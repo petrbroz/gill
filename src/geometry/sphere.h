@@ -21,6 +21,7 @@ public:
     Sphere(float radius) : _radius(radius) {}
     BBox bounds() const override;
     bool intersect(const Ray &ray, float &t, Intersection *i) const override;
+    int num_faces() const { return 1; }
 
 protected:
     float _radius;

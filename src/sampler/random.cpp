@@ -2,9 +2,12 @@
 #include "core/random.h"
 #include "core/math.h"
 
+#include <sstream>
+
 namespace gill { namespace sampler {
 
 using namespace gill::core;
+using namespace std;
 
 RandomSampler::RandomSampler(int x_min, int x_max, int y_min, int y_max, int num_samples)
     : Sampler(x_min, x_max, y_min, y_max), _num_samples(num_samples), _used_samples(0) {}
@@ -29,6 +32,12 @@ Sampler * RandomSampler::get_subsampler(int h_tiles, int v_tiles, int i, int j) 
     int x0, x1, y0, y1;
     compute_subwindow(h_tiles, v_tiles, i, j, &x0, &x1, &y0, &y1);
     return new RandomSampler(x0, x1, y0, y1, _num_samples / (h_tiles * v_tiles));
+}
+
+string RandomSampler::to_string() const {
+    ostringstream desc(ostringstream::ate);
+    desc << "random (" << _num_samples << " samples total)";
+    return desc.str();
 }
 
 }}
