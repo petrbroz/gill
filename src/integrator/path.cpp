@@ -15,7 +15,17 @@ Spectrum trace(int level, const Ray &ray, const Scene *scene, const Sample &samp
             return isec.emit;
         } else if (!is_black(isec.refl)) {
             Vector next_normal = uniform_hemisphere_sample(sample.lens_u, sample.lens_v);
-            Ray next_ray(isec.p + next_normal * 0.001, next_normal);
+            next_normal = normalize(isec.n + next_normal);
+            /*
+            if (isec.dpdu.x != 0.f || isec.dpdu.y != 0.f || isec.dpdu.z != 0.f) {
+                isec.n = normalize(isec.n);
+                Vector tmp1 = normalize(isec.dpdu);
+                Vector tmp2 = normalize(cross(tmp1, isec.n));
+                auto xform = Transform::coord_sys(tmp1, tmp2, isec.n);
+                next_normal = normalize((*xform)(next_normal));
+            }
+            */
+            Ray next_ray(isec.p + next_normal * 0.01, next_normal);
             return isec.refl * trace(level - 1, next_ray, scene, sample);
         }
     }

@@ -28,6 +28,8 @@ bool Plane::intersect(const Ray &ray, float &t, Intersection *isec) const {
         if (isec) {
             isec->p = _p;
             isec->n = Normal(0.0, 0.0, oz > 0.0 ? 1.0 : -1.0);
+            isec->dpdu = Vector(1.0, 0.0, 0.0);
+            isec->dpdv = Vector(0.0, 1.0, 0.0);
         }
         return true;
     } else {
