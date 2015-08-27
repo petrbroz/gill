@@ -11,7 +11,7 @@ const float IntersectionCost = 80.0;
 /** Computation cost of traversing a node of the accelerator. */
 const float TraversalCost = 10.0;
 /** Maximum number of entities allowed in a leaf of the accelerator. */
-const int MaxGeoms = 8;
+const int MaxGeoms = 1;
 /** Maximum allowed depth of the accelerator. */
 const int MaxDepth = 32;
 
