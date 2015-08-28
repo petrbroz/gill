@@ -14,6 +14,12 @@ Spectrum trace(int level, const Ray &ray, const Scene *scene, const Sample &samp
         if (!is_black(isec.emit)) {
             return isec.emit;
         } else if (!is_black(isec.refl)) {
+            Ray next_ray(isec.p, reflect(ray.d, isec.n));
+            return isec.refl * trace(level - 1, next_ray, scene, sample);
+        } else if (!is_black(isec.trsm)) {
+            Ray next_ray(isec.p, normalize(ray.d + isec.n * 0.1));
+            return isec.trsm * trace(level - 1, next_ray, scene, sample);
+        } else if (!is_black(isec.diff)) {
             Vector next_normal = uniform_hemisphere_sample(sample.lens_u, sample.lens_v);
             next_normal = normalize(isec.n + next_normal);
             /*
@@ -26,7 +32,7 @@ Spectrum trace(int level, const Ray &ray, const Scene *scene, const Sample &samp
             }
             */
             Ray next_ray(isec.p + next_normal * 0.01, next_normal);
-            return isec.refl * trace(level - 1, next_ray, scene, sample);
+            return isec.diff * trace(level - 1, next_ray, scene, sample);
         }
     }
 

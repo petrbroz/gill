@@ -15,7 +15,7 @@ struct Intersection {
     float u, v;
     Vector dpdu, dpdv;
     Normal dndu, dndv;
-    Spectrum emit, refl;
+    Spectrum emit, diff, refl, trsm;
 };
 
 }}

@@ -15,6 +15,8 @@
 #include "filter/mitchell.h"
 #include "material/matte.h"
 #include "material/emissive.h"
+#include "material/mirror.h"
+#include "material/glass.h"
 #include "integrator/path.h"
 
 namespace gill { namespace core {
@@ -177,6 +179,24 @@ shared_ptr<Material> Parser::parse_material(yaml_node_t *node) {
             }
         });
         material = make_shared<MatteMaterial>(color);
+    } else if (tag == "!mirror") {
+        Spectrum color(0.0, 0.0, 0.0);
+        _traverse_mapping(node, [this, &color](string &key, yaml_node_t *value) {
+            if (key == "color") {
+                auto seq = _get_sequence<float, 3>(value);
+                color = Spectrum(seq[0], seq[1], seq[2]);
+            }
+        });
+        material = make_shared<MirrorMaterial>(color);
+    } else if (tag == "!glass") {
+        Spectrum color(0.0, 0.0, 0.0);
+        _traverse_mapping(node, [this, &color](string &key, yaml_node_t *value) {
+            if (key == "color") {
+                auto seq = _get_sequence<float, 3>(value);
+                color = Spectrum(seq[0], seq[1], seq[2]);
+            }
+        });
+        material = make_shared<GlassMaterial>(color);
     } else if (tag == "!emissive") {
         Spectrum color(0.0, 0.0, 0.0);
         _traverse_mapping(node, [this, &color](string &key, yaml_node_t *value) {

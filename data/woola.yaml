@@ -15,11 +15,14 @@ scene:
     - geometry: !mesh { url: obj/woola.obj }
       material: !matte { color: [0.9, 0.8, 0.7] }
       transform: !identity {}
+    - geometry: !sphere { radius: 0.5 }
+      material: !mirror { color: [0.9, 0.9, 0.9] }
+      transform: !translate { delta: [1.25, -0.75, -1.25] }
 renderer: !sampled
   camera: !perspective
     transform: !look_at { position: [-3.0, 0.0, -3.0], target: [0.0, 0.0, 0.0] }
     field_of_view: 60.0
-    lens_radius: 0.15
+    lens_radius: 0.05
     focal_distance: 3.0
     film:
       resolution: [512, 512]
@@ -28,7 +31,7 @@ renderer: !sampled
         b: 1.0
         c: 1.0
   sampler: !stratified
-    samples_per_pixel: 256
+    samples_per_pixel: 128
   surface_integrator: !path
     max_depth: 4
   thread_tiles: [4, 4]

@@ -15,7 +15,6 @@ public:
 
     //TODO: what should a light return?
     virtual BSDF * bsdf(const Intersection &isec) const override;
-
     virtual Spectrum _emit() const override { return _emissive; }
 
 protected:

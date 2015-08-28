@@ -32,7 +32,9 @@ bool Primitive::intersect(const Ray &ray, float &t, Intersection *isec) const {
         isec->dpdu = (*_ltow)(isec->dpdu);
         isec->dpdv = (*_ltow)(isec->dpdv);
         isec->emit = _material->_emit();
+        isec->diff = _material->_diff();
         isec->refl = _material->_refl();
+        isec->trsm = _material->_trsm();
         t = distance(isec->p, ray.o) / length(ray.d);
     }
     return hit;
