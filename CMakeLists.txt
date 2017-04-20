@@ -24,6 +24,8 @@ include_directories("src")
 
 add_subdirectory(src)
 add_subdirectory(doc)
-if (BUILD_TESTS)
-    add_subdirectory(test)
-endif(BUILD_TESTS)
+
+# Temporarily disabled (googletest was moved to github)
+#if (BUILD_TESTS)
+#    add_subdirectory(test)
+#endif(BUILD_TESTS)
