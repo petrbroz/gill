@@ -7,7 +7,8 @@ Yet another path tracer.
 - C++11
 - cmake
 - libyaml
-- (optional) doxygen
+- Doxygen (optional, used for building docs)
+- ImageMagick (optional, used to embed text into images)
 
 ## Building
 
@@ -16,4 +17,10 @@ mkdir build
 cd build
 cmake ..
 make
+```
+
+## Running
+
+```
+scripts/run-examples
 ```
