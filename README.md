@@ -1,6 +1,6 @@
 # gill
 
-Yet another path tracer.
+Yet another path tracer. See [examples](https://github.com/petrbroz/gill/wiki/Gallery).
 
 ## Dependencies
 
